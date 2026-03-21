@@ -518,6 +518,8 @@
 </head>
 <body>
     
+    <div id="pro-progress-bar" style="position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: #0f172a; z-index: 999999; transition: width 0.3s ease-out, opacity 0.3s ease; opacity: 0; box-shadow: 0 0 10px rgba(15,23,42,0.5);"></div>
+
     <div class="top-bar">
         <div class="top-banner">Product from strude.com</div>
         
@@ -651,8 +653,23 @@
 
         // --- Standard Navigation Links ---
         window.navigateTo = (url) => {
-            window.location.href = url;
+            const bar = document.getElementById('pro-progress-bar');
+            if(bar) {
+                bar.style.opacity = '1';
+                bar.style.width = '60%';
+                setTimeout(() => { bar.style.width = '100%'; }, 200);
+            }
+            setTimeout(() => { window.location.href = url; }, 350);
         };
+
+        // BFCache reset for progress bar
+        window.addEventListener('pageshow', function(event) {
+            const bar = document.getElementById('pro-progress-bar');
+            if (bar) {
+                bar.style.opacity = '0';
+                bar.style.width = '0%';
+            }
+        });
         
         window.updateFileName = function(input) {
             const display = document.getElementById('file-name-display');

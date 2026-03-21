@@ -531,6 +531,15 @@
             setTimeout(() => { window.location.href = url; }, 350);
         };
 
+        // BFCache reset for progress bar
+        window.addEventListener('pageshow', function(event) {
+            const bar = document.getElementById('pro-progress-bar');
+            if (bar) {
+                bar.style.opacity = '0';
+                bar.style.width = '0%';
+            }
+        });
+
         window.openAuth = () => {
             // Pass the current URL so auth.html knows where to return us
             const currentUrl = encodeURIComponent(window.location.href);
