@@ -512,6 +512,14 @@
     </div>
 
     <script>
+        // --- XSS Protection Function ---
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag]));
+        }
+
         // GLOBAL FUNCTIONS
         window.navigateTo = (url) => {
             const bar = document.getElementById('pro-progress-bar');
@@ -532,7 +540,7 @@
         window.goHome = () => navigateTo('index.html');
 
         const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_bLQjs0QMG8COtCALOJz7hw_M9NWKRyl';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
         
         let db;
         try {
@@ -603,9 +611,9 @@
                 item.style.padding = '20px 0';
                 item.style.textAlign = 'left';
                 item.innerHTML = `
-                    <div style="font-weight:800; color:#0f172a; font-size:15px; margin-bottom:4px;">${coName}</div>
+                    <div style="font-weight:800; color:#0f172a; font-size:15px; margin-bottom:4px;">${escapeHTML(coName)}</div>
                     <div style="color:#00c853; font-size:13px; margin-bottom:6px;">${"★".repeat(r.rating)}</div>
-                    <p style="color:#475569; font-size:14px; line-height:1.5; margin:0;">${r.comment}</p>
+                    <p style="color:#475569; font-size:14px; line-height:1.5; margin:0;">${escapeHTML(r.comment)}</p>
                 `;
                 list.appendChild(item);
             });
@@ -756,7 +764,7 @@
                             <div class="review-author" style="margin: 0;">
                                 <div class="author-avatar">${initials}</div>
                                 <div style="display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
-                                    <div class="author-name" style="line-height: 1.2;">${reviewerName}</div>
+                                    <div class="author-name" style="line-height: 1.2;">${escapeHTML(reviewerName)}</div>
                                     <div class="author-date" style="font-size: 11px; margin-top: 3px;">${date}</div>
                                 </div>
                             </div>
@@ -765,8 +773,8 @@
                         </div>
                         
                         <div class="review-content-wrapper" style="flex: 1; padding-left: 6px;">
-                            <div style="font-size: 11px; font-weight: 800; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Reviewed: ${coName}</div>
-                            <p class="review-body">${r.comment || ''}</p>
+                            <div style="font-size: 11px; font-weight: 800; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Reviewed: ${escapeHTML(coName)}</div>
+                            <p class="review-body">${escapeHTML(r.comment || '')}</p>
                             ${seeMoreHtml}
                             <div class="verified-badge">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -835,8 +843,8 @@
                                 <div style="display: flex; align-items: center; gap: 14px;">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                                     <div style="display: flex; flex-direction: column; text-align: left; gap: 3px;">
-                                        <span style="font-weight: 700; color: #0f172a; font-size: 15px; line-height: 1;">${co.name}</span>
-                                        <span style="font-size: 12px; color: #64748b; font-weight: 500; line-height: 1;">${subtitle} <span style="margin: 0 4px;">•</span> <span style="color:#00c853; font-weight: 700;">★ ${co.rating || 'New'}</span></span>
+                                        <span style="font-weight: 700; color: #0f172a; font-size: 15px; line-height: 1;">${escapeHTML(co.name)}</span>
+                                        <span style="font-size: 12px; color: #64748b; font-weight: 500; line-height: 1;">${escapeHTML(subtitle)} <span style="margin: 0 4px;">•</span> <span style="color:#00c853; font-weight: 700;">★ ${co.rating || 'New'}</span></span>
                                     </div>
                                 </div>
                                 <span class="res-arrow" style="color: #cbd5e1; font-size: 18px; transition: transform 0.2s, color 0.2s;">→</span>

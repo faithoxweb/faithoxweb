@@ -244,7 +244,7 @@
         };
 
         const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_bLQjs0QMG8COtCALOJz7hw_M9NWKRyl';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
         
         let db;
         try {
@@ -253,12 +253,19 @@
             console.error("Supabase failed to init:", e);
         }
 
-        // NEW: Function to check where the user was before they hit auth
+        // --- XSS & OPEN REDIRECT PATCHED ---
         function getReturnUrl() {
             const params = new URLSearchParams(window.location.search);
             const returnTo = params.get('returnTo');
-            // Default back to index.html if we don't have a specific page to return to
-            return returnTo ? decodeURIComponent(returnTo) : 'index.html';
+            if (returnTo) {
+                const decoded = decodeURIComponent(returnTo);
+                // Prevent Javascript injection in the URL (DOM-based XSS)
+                if (decoded.trim().toLowerCase().startsWith('javascript:') || decoded.trim().toLowerCase().startsWith('data:')) {
+                    return 'index.html';
+                }
+                return decoded;
+            }
+            return 'index.html';
         }
 
         async function handleLogin() {

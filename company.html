@@ -641,6 +641,14 @@
     </footer>
 
     <script>
+        // --- XSS Protection Function ---
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag]));
+        }
+
         // --- Standard Navigation Links ---
         window.navigateTo = (url) => {
             window.location.href = url;
@@ -682,12 +690,12 @@
                 <div class="review-author" style="margin-bottom: 24px;">
                     <div class="author-avatar" style="width:48px; height:48px; font-size:16px;">${initials}</div>
                     <div class="author-info" style="margin-left: 12px; flex: 1;">
-                        <div class="author-name" style="font-size: 16px;">${reviewerName}</div>
+                        <div class="author-name" style="font-size: 16px;">${escapeHTML(reviewerName)}</div>
                         <div class="author-date" style="font-size: 13px;">${date}</div>
                     </div>
                     <div class="review-stars" style="font-size: 18px;">${stars}</div>
                 </div>
-                <div class="rm-text">${r.comment}</div>
+                <div class="rm-text">${escapeHTML(r.comment)}</div>
                 ${photosHtml}
             `;
             
@@ -757,7 +765,7 @@
         }
 
         const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_bLQjs0QMG8COtCALOJz7hw_M9NWKRyl';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const params = new URLSearchParams(window.location.search);
@@ -778,7 +786,7 @@
             const { data: co, error } = await db.from('companies').select('*').eq('id', companyId).single();
             if (error || !co) { return; }
 
-            document.title = co.name + ' | Faithox';
+            document.title = escapeHTML(co.name) + ' | Faithox';
             
             const titleEl = document.getElementById('dynamic-company-name');
             if (titleEl) titleEl.innerText = co.name;
@@ -893,7 +901,7 @@
                         <div class="review-author" style="margin: 0;">
                             <div class="author-avatar">${initials}</div>
                             <div style="display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
-                                <div class="author-name" style="line-height: 1.2;">${reviewerName}</div>
+                                <div class="author-name" style="line-height: 1.2;">${escapeHTML(reviewerName)}</div>
                                 <div class="author-date" style="font-size: 11px; margin-top: 3px;">${date}</div>
                             </div>
                         </div>
@@ -902,7 +910,7 @@
                     </div>
                     
                     <div class="review-content-wrapper" style="flex: 1; padding-left: 6px;">
-                        <p class="review-body">${r.comment}</p>
+                        <p class="review-body">${escapeHTML(r.comment)}</p>
                         ${seeMoreHtml}
                         <div class="verified-badge">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
