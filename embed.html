@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faithox Review Widget</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: transparent; 
+            overflow: hidden; 
+            color: #1e293b;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .widget-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100vh;
+            max-height: 100vh;
+            padding: 10px;
+        }
+
+        .reviews-scroll-container {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-right: 6px;
+        }
+
+        /* Widget Scrollbar */
+        .reviews-scroll-container::-webkit-scrollbar { width: 6px; }
+        .reviews-scroll-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .reviews-scroll-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .reviews-scroll-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Review Card adapted for Widget */
+        .review-item { 
+            background: #f8f8f8;
+            border-radius: 14px; 
+            padding: 16px; 
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+        .review-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: #d1d8e0; }
+
+        .review-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .review-author { display: flex; align-items: center; gap: 8px; }
+        .author-avatar { 
+            width: 32px; height: 32px; border-radius: 50%; 
+            background: #0f172a; color: #fff; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 12px; font-weight: 800; flex-shrink: 0;
+        }
+        .author-name { font-size: 14px; font-weight: 700; color: #0f172a; line-height: 1.2; }
+        .author-date { font-size: 11px; color: #94a3b8; font-weight: 500; margin-top: 2px; }
+
+        .rating-pill {
+            display: inline-flex; align-items: center; gap: 2px;
+            padding: 0 8px; height: 24px; border-radius: 4px;
+            background: #242424;
+        }
+        .rating-pill .star { width: 14px; height: 14px; color: #334155; display: inline-flex; align-items: center; justify-content: center; }
+        .rating-pill .star svg { width: 100%; height: 100%; fill: currentColor; }
+        .rating-pill.rating-5 .filled, .rating-pill.rating-4 .filled { color: #10B981; }
+        .rating-pill.rating-3 .filled { color: #F59E0B; }
+        .rating-pill.rating-2 .filled { color: #F97316; }
+        .rating-pill.rating-1 .filled { color: #EF4444; }
+
+        .review-body { 
+            font-size: 13px; color: #475569; line-height: 1.5;
+            display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+        .verified-badge { 
+            display: inline-flex; align-items: center; gap: 4px; 
+            background: #f0fdf4; color: #16a34a; 
+            padding: 2px 8px; border-radius: 20px; 
+            font-size: 10px; font-weight: 700; width: fit-content;
+        }
+        .verified-badge svg { width: 10px; height: 10px; stroke: #16a34a; }
+
+        .widget-footer {
+            padding-top: 12px;
+            background: transparent;
+            margin-top: auto;
+        }
+        .see-more-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            background: #0f172a;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .see-more-btn:hover { background: #1e293b; transform: translateY(-1px); }
+        .faithox-branding { text-align: center; font-size: 10px; font-weight: 600; color: #94a3b8; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
+
+    </style>
+</head>
+<body>
+
+    <div class="widget-wrapper">
+        <div class="reviews-scroll-container" id="widget-reviews-list">
+            <p style="text-align:center; color:#64748b; font-size:13px; padding: 20px; font-weight: 500;">Loading reviews...</p>
+        </div>
+        <div class="widget-footer">
+            <a id="see-more-link" href="#" target="_blank" class="see-more-btn" style="display: none;">
+                Read all reviews
+            </a>
+            <div class="faithox-branding">Powered by Faithox</div>
+        </div>
+    </div>
+
+    <script>
+        // XSS Protection
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag]));
+        }
+
+        const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const params = new URLSearchParams(window.location.search);
+        const companyId = params.get('id');
+
+        async function loadWidgetReviews() {
+            const list = document.getElementById('widget-reviews-list');
+
+            if (!companyId) {
+                list.innerHTML = "<p style='text-align:center; color:#ef4444; font-size:13px; padding: 20px; font-weight: 600;'>Error: Product ID missing.</p>";
+                return;
+            }
+
+            // Fetch latest 10 reviews
+            const { data: reviews, error } = await db
+                .from('reviews')
+                .select('*')
+                .eq('company_id', companyId)
+                .order('created_at', { ascending: false })
+                .limit(10);
+
+            if (error || !reviews || reviews.length === 0) {
+                list.innerHTML = "<p style='text-align:center; color:#64748b; font-size:13px; padding: 20px; font-weight: 500;'>No reviews yet. Be the first to review!</p>";
+                return;
+            }
+
+            list.innerHTML = '';
+            const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
+
+            reviews.forEach(r => {
+                const reviewerName = r.reviewer_name || 'Verified User';
+                const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+                let starsHtml = '';
+                for(let i=1; i<=5; i++) {
+                    starsHtml += `<span class="star ${i <= r.rating ? 'filled' : ''}">${starSvg}</span>`;
+                }
+
+                const ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
+
+                const div = document.createElement('div');
+                div.className = 'review-item';
+                div.innerHTML = `
+                    <div class="review-header-row">
+                        <div class="review-author">
+                            <div class="author-avatar">${initials}</div>
+                            <div>
+                                <div class="author-name">${escapeHTML(reviewerName)}</div>
+                                <div class="author-date">${date}</div>
+                            </div>
+                        </div>
+                        ${ratingPill}
+                    </div>
+                    <p class="review-body">${escapeHTML(r.comment)}</p>
+                    <div class="verified-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Verified Review
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+
+            // Configure the See More button
+            const seeMoreBtn = document.getElementById('see-more-link');
+            seeMoreBtn.href = `company.html?id=${companyId}`;
+            seeMoreBtn.style.display = 'flex';
+        }
+
+        loadWidgetReviews();
+    </script>
+</body>
+</html>
