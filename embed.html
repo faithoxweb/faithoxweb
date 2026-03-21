@@ -182,13 +182,35 @@
                 const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                 const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
+                // 1. Generate Stars
                 let starsHtml = '';
                 for(let i=1; i<=5; i++) {
                     starsHtml += `<span class="star ${i <= r.rating ? 'filled' : ''}">${starSvg}</span>`;
                 }
-
                 const ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
 
+                // 2. EXTRACT PHOTOS (This is the new part!)
+                let photosHtml = '';
+                if (r.photos) {
+                    let photoUrls = [];
+                    // Check if it is an array or a string from Supabase
+                    if (Array.isArray(r.photos)) {
+                        photoUrls = r.photos;
+                    } else if (typeof r.photos === 'string') {
+                        // Safely extract any web links from the string
+                        const extractedLinks = r.photos.match(/https?:\/\/[^\s"\]}]+/g);
+                        if (extractedLinks) photoUrls = extractedLinks;
+                    }
+
+                    // If we found photos, build the HTML for them
+                    if (photoUrls.length > 0) {
+                        photosHtml = '<div style="display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 4px;">' + 
+                            photoUrls.map(url => `<img src="${escapeHTML(url)}" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" alt="Review Photo">`).join('') + 
+                        '</div>';
+                    }
+                }
+
+                // 3. Build the Review Card
                 const div = document.createElement('div');
                 div.className = 'review-item';
                 div.innerHTML = `
@@ -203,7 +225,8 @@
                         ${ratingPill}
                     </div>
                     <p class="review-body">${escapeHTML(r.comment)}</p>
-                    <div class="verified-badge">
+                    
+                    ${photosHtml} <div class="verified-badge">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         Verified Review
                     </div>
