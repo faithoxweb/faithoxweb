@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Profile | Faithox</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. BASE STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        
+        body { 
+            background: #f2f2f2;
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh; 
+            width: 100%; 
+            overflow-x: hidden; 
+            display: flex; 
+            flex-direction: column;
+            color: #1e293b;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- TOP BAR --- */
+        .top-bar {
+            background: #f8f8f8;
+            width: 100%;
+            height: 320px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            padding-left: 40px;
+            position: relative;
+        }
+
+        .top-banner {
+            position: absolute;
+            top: 0;
+            left: 0px;
+            background: #04bade;
+            color: #242424;
+            padding: 12px 24px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-radius: 0 0 7px 0px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* --- NEW SHARED PRODUCT WRAPPER --- */
+        .shared-product-wrapper {
+            display: flex;
+            align-items: stretch;
+            border: 3px solid #cbd5e1; /* Shared bold border */
+            border-radius: 16px;
+            background: #f8f8f8;
+            margin-top: 27px;
+            height: 230px;
+            box-shadow: 0 4px 166px rgba(0,0,0,0.08);
+            z-index: 2;
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        /* NEW CSS CLASS FOR THE IMAGE CONTAINER WITH RIGHT BORDER */
+        .product-img-frame {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            border-right: 3px solid #cbd5e1; /* Vertical border line added here */
+        }
+
+        .top-bar-img {
+            height: 100%;
+            max-height: 230px;
+            width: auto;
+            border-radius: 13px 0 0 13px; /* Matches inner radius so it fits perfectly */
+            object-fit: cover;
+        }
+
+        /* --- NEW BIG EXACT PRODUCT BOX --- */
+        .product-exact-box {
+            padding: 32px 40px; 
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+            flex-shrink: 0;
+            min-width: 880px;
+            position: relative;
+            z-index: 1; 
+        }
+
+        /* BANNER STYLES ADDED HERE */
+        #dynamic-company-name {
+            font-size: 28px;
+            font-weight: 800;
+            color: #f8f8f8;
+            background: #242424; /* Matches the top banner color */
+            letter-spacing: -0.5px;
+            margin: -75px 0 0 -60px; /* Pulls text left and up to attach to the image */
+            padding: 5px 35px;
+            border-radius: 0 8px 8px 0; /* Ribbon/banner rounded right side */
+            align-self: flex-start;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Ribbon fold effect */
+        #dynamic-company-name::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            border-top: 10px solid #0287a1; /* Darker blue for the shadow fold */
+            border-left: 10px solid transparent;
+        }
+
+        .product-exact-rating-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #242424; /* Make it like the review card rating pill */
+            padding: 8px 24px 8px 16px;
+            margin-left: -40px; /* Attach to the image border */
+            border-radius: 0 8px 8px 0; /* Banner shape */
+            width: fit-content;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        #exact-stars-container {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        #exact-rating-text {
+            font-size: 22px;
+            font-weight: 800;
+            color: #f8f8f8; /* White text for dark banner */
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        /* --- TOP BAR RATING SQUARE --- */
+        .top-rating-square {
+            margin-left: auto;
+            margin-right: 40px;
+            margin-top: 27px;
+            width: 250px;
+            height: 230px;
+            background: #f8f8f8;
+            border-radius: 16px;
+            border: 3px solid #cbd5e1;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        .top-rating-square-header {
+            font-size: 12px;
+            font-weight: 800;
+            color: #242424;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            margin-bottom: 0px;
+        }
+        .rating-overview { display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1; justify-content: center; }
+        .big-rating { text-align: center; flex-shrink: 0; }
+        .big-rating-val { font-size: 42px; font-weight: 800; color: #0f172a; line-height: 1; letter-spacing: -1.5px; }
+        .big-rating-stars { color: #88e788; font-size: 16px; letter-spacing: 2px; margin: 4px 0; display: flex; justify-content: center; gap: 2px; }
+        .big-rating-count { font-size: 11px; color: #94a3b8; font-weight: 600; }
+        .rating-bars { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+        .rating-bar-row { display: flex; align-items: center; gap: 8px; }
+        .rating-bar-label { font-size: 11px; font-weight: 700; color: #64748b; width: 12px; text-align: right; flex-shrink: 0; }
+        .rating-bar-track { flex: 1; height: 5px; background: #f1f5f9; border-radius: 10px; overflow: hidden; }
+        .rating-bar-fill { height: 100%; background: #88e788; border-radius: 10px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+        .rating-bar-pct { font-size: 10px; font-weight: 700; color: #94a3b8; width: 24px; text-align: right; flex-shrink: 0; }
+
+        .glass-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -1;
+            background: rgba(225, 225, 225, 0.3);
+            backdrop-filter: blur(60px);
+            -webkit-backdrop-filter: blur(60px);
+            pointer-events: none;
+            will-change: transform;
+            transform: translateZ(0);
+        }
+
+        /* --- LAYOUT --- */
+        .page-shell { 
+            width: 100%; 
+            max-width: 100%; 
+            margin: 0; 
+            padding: 40px 24px 0; 
+            flex-grow: 1;
+            z-index: 10;
+        }
+
+        /* --- TWO COLUMN LAYOUT --- */
+        .two-col { display: flex; gap: 24px; align-items: flex-start; }
+        .col-left { flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+        .col-right { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
+
+        /* --- CARDS --- */
+        .card {
+            background: #f8f8f8;
+            border-radius: 16px;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 20px 24px 0;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .card-title { font-size: 13px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.8px; }
+        .card-body { padding: 20px 24px 24px; }
+
+        /* --- WRITE REVIEW CARD --- */
+        .write-review-card { background: #f8f8f8; border-radius: 16px; border: 1px solid #cbd5e1; box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03); margin-top: -25px; }
+        .wr-header { padding: 20px 24px; border-bottom: 1px solid #f1f5f9; }
+        .wr-title { font-size: 13px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.8px; }
+        .wr-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 12px; }
+
+        .star-rating { display: flex; gap: 6px; cursor: pointer; }
+        .star { font-size: 26px; color: #e2e8f0; transition: color 0.15s, transform 0.1s; user-select: none; }
+        .star:hover { transform: scale(1.15); }
+        .star.active { color: #88e788; }
+
+        #review-input { 
+            width: 100%; height: 110px; padding: 14px 16px; border-radius: 10px; 
+            border: 1.5px solid #e2e8f0; font-family: inherit; resize: none; 
+            font-size: 14px; color: #0f172a; background: #fafafa;
+            transition: all 0.2s; line-height: 1.5;
+        }
+        #review-input:focus { border-color: #0f172a; background: #fff; box-shadow: 0 0 0 3px rgba(15,23,42,0.05); }
+        #review-input::placeholder { color: #94a3b8; }
+
+        .photo-upload-label { 
+            display: flex; align-items: center; justify-content: center; gap: 8px; 
+            font-size: 13px; font-weight: 600; color: #64748b; cursor: pointer; 
+            padding: 10px; border: 1.5px dashed #d1d8e0; border-radius: 10px; 
+            transition: all 0.2s; background: #fafafa;
+        }
+        .photo-upload-label:hover { border-color: #0f172a; color: #0f172a; background: #f8fafc; }
+        .photo-upload-label svg { width: 16px; height: 16px; }
+        #file-name-display { font-size: 12px; font-weight: 600; color: #22c55e; text-align: center; min-height: 18px; }
+
+        .post-btn { 
+            width: 100%; background: #0f172a; color: #ffffff; border: none; 
+            padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 700; 
+            font-size: 14px; transition: all 0.2s; letter-spacing: 0.2px;
+        }
+        .post-btn:hover { background: #1e293b; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(15,23,42,0.15); }
+        .post-btn:active { transform: translateY(0); }
+
+        /* --- REVIEWS SECTION --- */
+        .reviews-section { margin-top: 0; }
+        .reviews-section-header { 
+            display: flex; align-items: center; justify-content: space-between; 
+            margin-bottom: 20px; 
+        }
+        .reviews-section-title { font-size: 13px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.8px; }
+        .reviews-count-badge { 
+            background: #242424; color: #f8f8f8; padding: 4px 12px; 
+            border-radius: 4px; font-size: 12px; font-weight: 700;
+        }
+
+        #reviews-list { 
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 4px 4px 10px 0;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        #reviews-list::-webkit-scrollbar { height: 6px; }
+        #reviews-list::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        #reviews-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        #reviews-list::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .review-item { 
+            background: #f8f8f8;
+            border-radius: 14px; padding: 19px; 
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            min-width: min(85vw, 480px);
+            max-width: 480px;
+            height: 280px;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            transition: all 0.2s ease;
+            display: flex;
+            gap: 16px;
+            cursor: pointer; 
+        }
+        .review-item:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); border-color: #d1d8e0; }
+
+        /* --- STAR RATING BOX --- */
+        .rating-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0 10px 0 16px;
+            height: 28px;
+            border-radius: 0 4px 4px 0;
+            background: #242424;
+            width: fit-content;
+            margin-left: -19px;
+            margin-right: auto;
+        }
+        
+        .rating-pill .star {
+            width: 19px;
+            height: 19px; 
+            color: #334155;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .rating-pill .star svg { width: 100%; height: 100%; fill: currentColor; }
+
+        .rating-pill.rating-5 .filled, .rating-pill.rating-4 .filled { color: #10B981; }
+        .rating-pill.rating-3 .filled { color: #F59E0B; }
+        .rating-pill.rating-2 .filled { color: #F97316; }
+        .rating-pill.rating-1 .filled { color: #EF4444; }
+
+        .review-content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+            padding-right: 4px;
+        }
+
+        .review-author { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-shrink: 0; }
+        .author-avatar { 
+            width: 28px; height: 28px; border-radius: 50%; 
+            background: #0f172a; color: #fff; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 11px; font-weight: 800; flex-shrink: 0;
+        }
+        .author-name { font-size: 14px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .review-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .review-stars { color: #fbbf24; font-size: 14px; letter-spacing: 1px; flex-shrink: 0; line-height: 1; }
+        .author-date { font-size: 12px; color: #94a3b8; font-weight: 500; line-height: 1; }
+
+        .review-body { 
+            font-size: 14px; color: #475569; line-height: 1.5; margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .see-more-text {
+            font-size: 13px; color: #0f172a; font-weight: 700; margin-bottom: 8px; text-decoration: underline; display: inline-block;
+        }
+
+        .verified-badge { 
+            display: inline-flex; align-items: center; gap: 4px; 
+            background: #f0fdf4; color: #16a34a; 
+            padding: 2px 8px; border-radius: 20px; 
+            font-size: 10px; font-weight: 700; 
+            align-self: flex-start; margin-top: auto;
+        }
+        .verified-badge svg { width: 10px; height: 10px; stroke: #16a34a; }
+
+        /* --- BIG REVIEW MODAL --- */
+        #review-modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            z-index: 99990; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+            padding: 20px;
+        }
+        #review-modal.open { display: flex; }
+        .rm-content {
+            background: #fff; border-radius: 16px; width: 100%; max-width: 650px;
+            max-height: 90vh; overflow-y: auto; padding: 30px; position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .rm-content::-webkit-scrollbar { width: 6px; }
+        .rm-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .rm-close {
+            position: absolute; top: 20px; right: 20px; font-size: 18px; color: #64748b;
+            cursor: pointer; transition: 0.2s; width: 34px; height: 34px;
+            display: flex; align-items: center; justify-content: center; border-radius: 50%;
+            background: #f1f5f9; font-weight: bold;
+        }
+        .rm-close:hover { background: #e2e8f0; color: #0f172a; transform: scale(1.05); }
+        .rm-text { font-size: 16px; color: #334155; line-height: 1.7; white-space: pre-wrap; margin-bottom: 24px; }
+        .rm-photos { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 10px;}
+        .rm-photos img { width: 100%; border-radius: 8px; cursor: pointer; border: 1px solid #e2e8f0; max-height: 250px; object-fit: cover;}
+        .rm-photos img:hover { opacity: 0.85; }
+
+        /* --- PHOTO LIGHTBOX --- */
+        #lightbox { 
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); 
+            z-index: 99999; align-items: center; justify-content: center; 
+            backdrop-filter: blur(10px);
+        }
+        #lightbox.open { display: flex; }
+        #lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 12px; object-fit: contain; }
+        #lightbox-close { 
+            position: absolute; top: 24px; right: 24px; color: #fff; cursor: pointer;
+            font-size: 28px; font-weight: 300; line-height: 1; opacity: 0.7; transition: 0.2s;
+        }
+        #lightbox-close:hover { opacity: 1; }
+
+        /* --- PROFESSIONAL TWO-TIER FOOTER --- */
+        .pro-footer { 
+            width: 100%; 
+            background-color: #242424; 
+            color: #f8f8f8; 
+            font-family: 'Inter', sans-serif; 
+            margin-top: 80px; 
+        }
+        .footer-top-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 24px; 
+        }
+        
+        .footer-divider {
+            height: 1px;
+            background-color: #f8f8f8;
+            margin: 0 40px; 
+        }
+
+        .footer-bottom-row {
+            padding: 20px 0; 
+        }
+        .footer-wrapper { 
+            width: 100%; 
+            padding: 0 40px; 
+            display: flex; 
+            justify-content: flex-start; 
+            align-items: center; 
+        }
+        .footer-secured {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+        .footer-secured svg {
+            width: 18px;
+            height: 18px;
+            color: #10B981;
+        }
+        .footer-copyright {
+            font-size: 13px;
+            color: #f8f8f8;
+            font-weight: 500;
+        }
+
+        /* --- LOADER --- */
+        .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(15,23,42,0.15); border-top-color: #0f172a; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) { .two-col { flex-direction: column; } .col-right { width: 100%; } .write-review-card { margin-top: 0; } }
+        @media (max-width: 768px) {
+            .page-shell { padding: 24px 16px 0; }
+            .footer-wrapper { flex-direction: column; text-align: center; justify-content: center; }
+            .top-bar { flex-direction: column; height: auto; padding: 60px 20px 40px; gap: 20px; } /* Increased bottom padding for mobile */
+            
+            /* Responsive Updates for the Merged Container */
+            .shared-product-wrapper { flex-direction: column; height: auto; min-width: 100%; margin-top: 0; }
+            .top-bar-img { border-radius: 13px 13px 0 0; width: 100%; max-height: 250px; }
+            .product-exact-box { min-width: 100%; text-align: center; border-radius: 0 0 13px 13px; padding: 32px 20px; }
+
+            /* Mobile adjustment for image frame: remove vertical border, add horizontal */
+            .product-img-frame {
+                border-right: none;
+                border-bottom: 3px solid #cbd5e1;
+                height: auto;
+                width: 100%;
+            }
+
+            /* Mobile styling for the banner to pull it up over the image bottom edge */
+            #dynamic-company-name {
+                margin: -45px auto 10px auto; 
+                border-radius: 8px;
+                align-self: center;
+            }
+            #dynamic-company-name::after {
+                display: none;
+            }
+            
+            .product-exact-rating-row { 
+                justify-content: center; 
+                margin-left: auto; 
+                margin-right: auto; 
+                border-radius: 8px; 
+                padding: 10px 20px; 
+            }
+            .top-rating-square { margin: 0 auto; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="top-bar">
+        <div class="top-banner">Product from strude.com</div>
+        
+        <div class="shared-product-wrapper">
+            <div class="product-img-frame">
+                <img id="dynamic-company-img" src="https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/pumashoes1.avif" alt="Product Image" class="top-bar-img">
+            </div>
+
+            <div class="product-exact-box">
+                <h1 id="dynamic-company-name">strude shoes 1</h1>
+                <div class="product-exact-rating-row">
+                    <div id="exact-stars-container"></div>
+                    <span id="exact-rating-text">0.0</span>
+                </div>
+            </div>
+        </div>
+        <div class="top-rating-square">
+            <div class="top-rating-square-header">Rating Breakdown</div>
+            <div class="rating-overview">
+                <div class="big-rating">
+                    <div class="big-rating-val" id="big-rating-val">—</div>
+                    <div class="big-rating-stars" id="big-rating-stars">—</div>
+                    <div class="big-rating-count" id="big-rating-count">0 reviews</div>
+                </div>
+                <div class="rating-bars" id="rating-bars">
+                    </div>
+            </div>
+        </div>
+
+        <a id="dynamic-company-link" href="#" target="_blank" style="background: #0f172a; color: #ffffff; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; position: absolute; bottom: 0; left: 40px; transform: translateY(50%); z-index: 20; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.1); white-space: nowrap;">
+            View product on official website
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+        </a>
+    </div>
+
+    <div class="glass-overlay"></div>
+
+    <div id="review-modal" onclick="closeReviewModal()">
+        <div class="rm-content" onclick="event.stopPropagation()">
+            <div class="rm-close" onclick="closeReviewModal()">✕</div>
+            <div id="rm-body-container"></div>
+        </div>
+    </div>
+
+    <div id="lightbox">
+        <div id="lightbox-close" onclick="closeLightbox()">✕</div>
+        <img id="lightbox-img" src="" alt="Review Photo">
+    </div>
+
+    <div class="page-shell">
+
+        <div class="two-col">
+            <div class="col-left">
+
+                <div class="reviews-section">
+                    <div class="reviews-section-header" style="background-color: #f8f8f8; border-radius: 6px; padding: 7px 16px; border: 1px solid #cbd5e1;">
+                        <span class="reviews-section-title">Customer Reviews</span>
+                        <span class="reviews-count-badge" id="reviews-count-badge">0 reviews</span>
+                    </div>
+                    <div id="reviews-list"></div>
+                </div>
+                
+            </div>
+
+            <div class="col-right">
+
+                <div class="write-review-card">
+                    <div class="wr-header">
+                        <div class="wr-title">Write a Review</div>
+                    </div>
+                    <div class="wr-body">
+                        <div class="star-rating" id="star-input">
+                            <span class="star" data-value="1">★</span>
+                            <span class="star" data-value="2">★</span>
+                            <span class="star" data-value="3">★</span>
+                            <span class="star" data-value="4">★</span>
+                            <span class="star" data-value="5">★</span>
+                        </div>
+                        <textarea id="review-input" placeholder="Share your experience... What did you think?"></textarea>
+                        
+                        <div>
+                            <label for="review-photos-input" class="photo-upload-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                Attach Photos
+                            </label>
+                            <input type="file" id="review-photos-input" multiple accept="image/*" style="display:none;" onchange="updateFileName(this)">
+                            <div id="file-name-display"></div>
+                        </div>
+
+                        <button class="post-btn" onclick="submitReview()">Submit Review</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="pro-footer">
+        <div class="footer-top-row">
+            <div class="footer-secured">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Page secured by Faithox Unbiased Engine
+            </div>
+        </div>
+        
+        <div class="footer-divider"></div>
+
+        <div class="footer-bottom-row">
+            <div class="footer-wrapper">
+                <div class="footer-copyright">
+                    &copy; 2026 Faithox Limited. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Standard Navigation Links ---
+        window.navigateTo = (url) => {
+            window.location.href = url;
+        };
+        
+        window.updateFileName = function(input) {
+            const display = document.getElementById('file-name-display');
+            display.innerText = input.files.length > 0 ? `${input.files.length} photo(s) selected` : '';
+        };
+
+        // Lightbox
+        window.openLightbox = function(url) {
+            document.getElementById('lightbox-img').src = url;
+            document.getElementById('lightbox').classList.add('open');
+        };
+        window.closeLightbox = function() {
+            document.getElementById('lightbox').classList.remove('open');
+        };
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if (e.target === this) closeLightbox();
+        });
+
+        // Review Modal Handlers
+        window.openReviewModal = function(id) {
+            const r = loadedReviews.find(x => x.id === id);
+            if(!r) return;
+            
+            const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            const reviewerName = r.reviewer_name || 'Verified User';
+            const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+            
+            let photosHtml = '';
+            if(r.parsedPhotos && r.parsedPhotos.length > 0) {
+                photosHtml = '<div class="rm-photos">' + r.parsedPhotos.map(url => `<img src="${url}" onclick="openLightbox('${url}')">`).join('') + '</div>';
+            }
+            
+            document.getElementById('rm-body-container').innerHTML = `
+                <div class="review-author" style="margin-bottom: 24px;">
+                    <div class="author-avatar" style="width:48px; height:48px; font-size:16px;">${initials}</div>
+                    <div class="author-info" style="margin-left: 12px; flex: 1;">
+                        <div class="author-name" style="font-size: 16px;">${reviewerName}</div>
+                        <div class="author-date" style="font-size: 13px;">${date}</div>
+                    </div>
+                    <div class="review-stars" style="font-size: 18px;">${stars}</div>
+                </div>
+                <div class="rm-text">${r.comment}</div>
+                ${photosHtml}
+            `;
+            
+            document.getElementById('review-modal').classList.add('open');
+        };
+
+        window.closeReviewModal = function() {
+            document.getElementById('review-modal').classList.remove('open');
+        };
+
+        // UI EXACT RATING HANDLER (Handles partial star rendering dynamically)
+        function updateVisualRatings(ratingValue) {
+            const formatted = ratingValue.toFixed(1);
+            
+            // Update big top-right rating
+            const bigValEl = document.getElementById('big-rating-val');
+            if (bigValEl) bigValEl.innerText = formatted;
+            renderExactStars(ratingValue, 'big-rating-stars');
+
+            // Update new product exact rating box
+            const exactTextEl = document.getElementById('exact-rating-text');
+            if (exactTextEl) exactTextEl.innerText = formatted;
+            renderExactStars(ratingValue, 'exact-stars-container', 24); // Size adjusted to fit inside banner perfectly
+        }
+
+        function renderExactStars(rating, containerId, size = 20) {
+            const container = document.getElementById(containerId);
+            if(!container) return;
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            container.style.gap = '2px';
+            container.style.justifyContent = 'center';
+            container.style.alignItems = 'center';
+
+            // Determine filled color based on rating value just like review cards
+            let fillColor = "#10B981"; // 4-5 stars
+            if (rating < 4 && rating >= 3) fillColor = "#F59E0B"; // 3 stars
+            if (rating < 3 && rating >= 2) fillColor = "#F97316"; // 2 stars
+            if (rating < 2 && rating > 0) fillColor = "#EF4444";  // 1 star
+            if (rating === 0) fillColor = "#88e788"; 
+
+            // If it's the product exact container, apply dark theme un-filled stars like review pills
+            let useFill = containerId === 'exact-stars-container' ? fillColor : "#88e788";
+            let useEmpty = containerId === 'exact-stars-container' ? "#334155" : "#e2e8f0";
+
+            for (let i = 1; i <= 5; i++) {
+                let fillPercent = 0;
+                if (rating >= i) {
+                    fillPercent = 100;
+                } else if (rating > i - 1) {
+                    fillPercent = (rating - (i - 1)) * 100; // Calculates exactly down to decimal percent
+                }
+
+                const starId = `grad-${containerId}-${i}-${Math.random().toString(36).substr(2,5)}`;
+                const svg = `
+                <svg width="${size}" height="${size}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="${starId}" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="${fillPercent}%" stop-color="${useFill}" />
+                            <stop offset="${fillPercent}%" stop-color="${useEmpty}" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" fill="url(#${starId})"/>
+                </svg>`;
+                container.innerHTML += svg;
+            }
+        }
+
+        const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_bLQjs0QMG8COtCALOJz7hw_M9NWKRyl';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const params = new URLSearchParams(window.location.search);
+        const companyId = params.get('id');
+        let currentUser = null;
+        let selectedRating = 0;
+        let loadedReviews = []; 
+
+        async function init() {
+            const { data } = await db.auth.getSession();
+            if (data.session) {
+                currentUser = data.session.user;
+            }
+            if (companyId) { loadCompanyDetails(); loadReviews(); }
+        }
+
+        async function loadCompanyDetails() {
+            const { data: co, error } = await db.from('companies').select('*').eq('id', companyId).single();
+            if (error || !co) { return; }
+
+            document.title = co.name + ' | Faithox';
+            
+            const titleEl = document.getElementById('dynamic-company-name');
+            if (titleEl) titleEl.innerText = co.name;
+
+            if (co.name && co.name.toLowerCase().includes('strude shoes 1')) {
+                document.getElementById('dynamic-company-img').src = 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/pumashoes1.avif';
+            } else if (co.name && co.name.toLowerCase().includes('strude shoes 2')) {
+                document.getElementById('dynamic-company-img').src = 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/pumashoes2.avif';
+            } else if (co.image_url) {
+                document.getElementById('dynamic-company-img').src = co.image_url;
+            }
+            
+            if (co.website) {
+                document.getElementById('dynamic-company-link').href = co.website;
+            }
+
+            const r = parseFloat(co.rating) || 0;
+            updateVisualRatings(r); // Fallback DB rating visually before exact calculation
+            document.getElementById('big-rating-count').innerText = (co.reviews_count || 0) + ' reviews';
+        }
+
+        async function loadReviews() {
+            const { data: reviews } = await db.from('reviews').select('*').eq('company_id', companyId).order('created_at', { ascending: false });
+            const list = document.getElementById('reviews-list');
+            list.innerHTML = '';
+
+            const count = reviews ? reviews.length : 0;
+            document.getElementById('reviews-count-badge').innerText = count + ' review' + (count !== 1 ? 's' : '');
+
+            if (!reviews || reviews.length === 0) {
+                list.innerHTML = "<p style='color:#94a3b8; font-size:14px; text-align:center; padding:30px; width:100%;'>No reviews yet. Be the first to review!</p>";
+                buildRatingBars([]);
+                return;
+            }
+
+            // EXACT RATING CALCULATION
+            const totalRatingSum = reviews.reduce((sum, rev) => sum + (rev.rating || 0), 0);
+            const calculatedExactRating = totalRatingSum / reviews.length;
+            
+            // Re-render UI based on calculated exact rating
+            updateVisualRatings(calculatedExactRating);
+
+            loadedReviews = reviews; 
+            buildRatingBars(reviews);
+
+            reviews.forEach(r => {
+                const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                const reviewerName = r.reviewer_name || 'Verified User';
+                const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+                let photoUrls = [];
+                try {
+                    if (r.photos) {
+                        if (Array.isArray(r.photos)) {
+                            photoUrls = r.photos;
+                        } else if (typeof r.photos === 'string') {
+                            const trimmed = r.photos.trim();
+                            if (trimmed.startsWith('[')) {
+                                photoUrls = JSON.parse(trimmed);
+                            } else if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                                photoUrls = trimmed.slice(1, -1).split(',').map(s => s.replace(/^"|"$/g, '').trim());
+                            } else if (trimmed.startsWith('http')) {
+                                photoUrls = [trimmed];
+                            }
+                        }
+                    }
+                } catch (e) {
+                    photoUrls = [];
+                }
+                photoUrls = photoUrls.filter(u => u && typeof u === 'string' && u.startsWith('http'));
+                r.parsedPhotos = photoUrls;
+
+                // --- GENERATE STAR RATING PILL ---
+                const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
+
+                let starsHtml = '';
+                for(let i=1; i<=5; i++) {
+                    starsHtml += `<span class="star ${i <= r.rating ? 'filled' : ''}">${starSvg}</span>`;
+                }
+                let ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
+
+                // --- GENERATE PHOTOS FOR LEFT SIDE ---
+                let photoHtml = '';
+                if (photoUrls.length > 0) {
+                    let firstPhoto = photoUrls[0];
+                    let extraBox = '';
+                    
+                    if (photoUrls.length > 1) {
+                        let extraCount = photoUrls.length - 1; 
+                        extraBox = `
+                        <div style="width: 44px; height: 100%; border-radius: 6px; background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                            +${extraCount}
+                        </div>`;
+                    }
+                    
+                    photoHtml = `
+                    <div style="display: flex; gap: 8px; flex: 1; width: 100%; min-height: 0; margin-top: 4px; padding-bottom: 2px;">
+                        <img src="${firstPhoto}" style="flex: 1; width: 100%; height: 100%; border-radius: 6px; object-fit: cover; border: 1px solid #e2e8f0; min-width: 0;">
+                        ${extraBox}
+                    </div>`;
+                }
+
+                const isLong = r.comment.length > 130;
+                const seeMoreHtml = isLong ? `<span class="see-more-text">See more</span>` : '';
+
+                const div = document.createElement('div');
+                div.className = 'review-item';
+                div.setAttribute('onclick', `openReviewModal('${r.id}')`);
+                
+                div.innerHTML = `
+                    <div style="width: 42%; display: flex; flex-direction: column; gap: 10px; border-right: 1px solid #e8ecf0; padding-right: 16px; flex-shrink: 0;">
+                        <div class="review-author" style="margin: 0;">
+                            <div class="author-avatar">${initials}</div>
+                            <div style="display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
+                                <div class="author-name" style="line-height: 1.2;">${reviewerName}</div>
+                                <div class="author-date" style="font-size: 11px; margin-top: 3px;">${date}</div>
+                            </div>
+                        </div>
+                        ${ratingPill}
+                        ${photoHtml}
+                    </div>
+                    
+                    <div class="review-content-wrapper" style="flex: 1; padding-left: 6px;">
+                        <p class="review-body">${r.comment}</p>
+                        ${seeMoreHtml}
+                        <div class="verified-badge">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Verified Review
+                        </div>
+                    </div>
+                `;
+                
+                list.appendChild(div);
+            });
+        }
+
+        function buildRatingBars(reviews) {
+            const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+            reviews.forEach(r => { if (counts[r.rating] !== undefined) counts[r.rating]++; });
+            const total = reviews.length || 1;
+            const barsEl = document.getElementById('rating-bars');
+            barsEl.innerHTML = '';
+            [5, 4, 3, 2, 1].forEach(star => {
+                const pct = Math.round((counts[star] / total) * 100);
+                const row = document.createElement('div');
+                row.className = 'rating-bar-row';
+                row.innerHTML = `
+                    <span class="rating-bar-label">${star}</span>
+                    <div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-target="${pct}%"></div></div>
+                    <span class="rating-bar-pct">${pct}%</span>
+                `;
+                barsEl.appendChild(row);
+            });
+            setTimeout(() => {
+                barsEl.querySelectorAll('.rating-bar-fill').forEach(el => {
+                    el.style.width = el.dataset.target;
+                });
+            }, 100);
+        }
+
+        async function submitReview() {
+            const text = document.getElementById('review-input').value.trim();
+            const fileInput = document.getElementById('review-photos-input');
+            
+            if (!currentUser) { 
+                const currentUrl = encodeURIComponent(window.location.href);
+                navigateTo('auth.html?returnTo=' + currentUrl); 
+                return; 
+            }
+            if (!text || selectedRating === 0) { alert('Please add a star rating and write a comment.'); return; }
+
+            const btn = document.querySelector('.post-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner" style="margin:0 auto;border-top-color:#fff;"></div>';
+
+            let uploadedUrls = [];
+            if (fileInput.files && fileInput.files.length > 0) {
+                for (const file of Array.from(fileInput.files)) {
+                    const ext = file.name.split('.').pop();
+                    const path = `${currentUser.id}/${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
+                    const { error: upErr } = await db.storage.from('review-photos').upload(path, file);
+                    if (upErr) {
+                        console.error('Upload error:', upErr);
+                        alert('Photo upload failed: ' + upErr.message + '\n\nEnsure your Supabase bucket is named "review-photos" with public access.');
+                        continue;
+                    }
+                    const { data: urlData } = db.storage.from('review-photos').getPublicUrl(path);
+                    if (urlData?.publicUrl) uploadedUrls.push(urlData.publicUrl);
+                }
+            }
+
+            const reviewerName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
+            const { error } = await db.from('reviews').insert({
+                user_id: currentUser.id,
+                company_id: companyId,
+                rating: selectedRating,
+                comment: text,
+                status: 'approved',
+                reviewer_name: reviewerName,
+                photos: uploadedUrls
+            });
+
+            btn.disabled = false;
+            btn.innerText = 'Submit Review';
+
+            if (error) {
+                alert(error.message);
+            } else {
+                document.getElementById('review-input').value = '';
+                fileInput.value = '';
+                document.getElementById('file-name-display').innerText = '';
+                selectedRating = 0;
+                document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+                loadReviews();
+            }
+        }
+
+        document.querySelectorAll('.star').forEach(star => {
+            star.onclick = () => {
+                selectedRating = parseInt(star.dataset.value);
+                document.querySelectorAll('.star').forEach(s => {
+                    s.classList.toggle('active', parseInt(s.dataset.value) <= selectedRating);
+                });
+            };
+        });
+
+        init();
+    </script>
+</body>
+</html>

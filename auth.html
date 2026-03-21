@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faithox | Authentication</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        
+        body { 
+            background: #f2f2f2;
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh; 
+            width: 100vw;
+            overflow: hidden; 
+            color: #1e293b; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- FULL PAGE LAYOUT --- */
+        .page-wrapper {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- LEFT SIDE: FLEX PANEL --- */
+        .auth-side-anim {
+            flex: 1; 
+            height: 100%;
+            background: url('https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/gradientback.png') no-repeat center center;
+            background-size: cover;
+            position: relative;
+        }
+
+        /* --- RIGHT SIDE: FORM --- */
+        .auth-side-form {
+            width: 100%; 
+            max-width: 500px;
+            height: 100%;
+            background: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 440px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .form-container h2 { 
+            font-size: 32px; 
+            font-weight: 800; 
+            color: #0f172a; 
+            margin-bottom: 8px; 
+            letter-spacing: -0.5px; 
+        }
+
+        .form-container p.sub-text { 
+            font-size: 16px; 
+            color: #64748b; 
+            margin-bottom: 40px; 
+            font-weight: 500; 
+        }
+
+        .input-group { margin-bottom: 20px; }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .auth-input { 
+            width: 100%; 
+            padding: 16px 20px; 
+            border: 2px solid #cbd5e1;
+            background: #ffffff;
+            border-radius: 12px; 
+            font-size: 15px; 
+            outline: none; 
+            transition: all 0.2s ease; 
+            font-weight: 500; 
+            color: #242424; 
+        }
+
+        .auth-input:focus { 
+            border-color: #0f172a;
+            background: #e2e8f0; 
+            box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.15); 
+        }
+        
+        .auth-input::placeholder { color: #94a3b8; }
+
+        .primary-btn { 
+            width: 100%; 
+            padding: 18px; 
+            background: #242424; 
+            color: #f8f8f8; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 15px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            transition: all 0.3s ease; 
+        }
+
+        .switch-link { 
+            margin-top: 30px; 
+            font-size: 14px; 
+            color: #64748b; 
+            cursor: pointer; 
+            font-weight: 500; 
+            transition: 0.2s; 
+            text-align: center; 
+        }
+
+        .switch-link span { color: #0f172a; font-weight: 700; }
+        .switch-link:hover span { text-decoration: underline; }
+
+        .close-btn { 
+            margin-top: 20px; 
+            cursor: pointer; 
+            color: #94a3b8; 
+            font-size: 13px; 
+            font-weight: 600; 
+            transition: 0.2s; 
+            display: block; 
+            text-align: center; 
+        }
+
+        /* --- LOADER STYLES --- */
+        .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(15, 23, 42, 0.2); border-top-color: #0f172a; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* NEW TOP PROGRESS BAR */
+        .pro-progress-bar { 
+            position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: #0f172a; 
+            z-index: 999999; transition: width 0.3s ease-out, opacity 0.3s ease; opacity: 0; 
+            box-shadow: 0 0 10px rgba(15,23,42,0.5); 
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 768px) {
+            body { overflow-y: auto; overflow-x: hidden; }
+            .page-wrapper { flex-direction: column; height: auto; min-height: 100vh; }
+            
+            .auth-side-anim { width: 100%; height: 250px; }
+            
+            .auth-side-form { max-width: none; width: 100%; height: auto; padding: 20px; flex-grow: 1; border-radius: 0; }
+            .form-container { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pro-progress-bar" class="pro-progress-bar"></div>
+
+    <div class="page-wrapper">
+        
+        <div class="auth-side-anim"></div>
+
+        <div class="auth-side-form">
+            <div class="form-container">
+                
+                <div id="login-view">
+                    <h2>Welcome Back</h2>
+                    <p class="sub-text">Sign in to continue to your dashboard.</p>
+                    
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email-in" class="auth-input" placeholder="name@company.com">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="pass-in" class="auth-input" placeholder="••••••••">
+                    </div>
+                    
+                    <button class="primary-btn" onclick="handleLogin()">Sign In</button>
+                    <p class="switch-link" onclick="toggleAuthMode()">New here? <span>Create an account</span></p>
+                    <div class="close-btn" onclick="navigateTo(getReturnUrl())">Return</div>
+                </div>
+
+                <div id="signup-view" style="display:none;">
+                    <h2>Create Account</h2>
+                    <p class="sub-text">Join the community and start reviewing.</p>
+                    
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="name-up" class="auth-input" placeholder="John Doe">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email-up" class="auth-input" placeholder="name@company.com">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="pass-up" class="auth-input" placeholder="Create a strong password">
+                    </div>
+                    
+                    <button class="primary-btn" onclick="handleSignup()">Create Account</button>
+                    <p class="switch-link" onclick="toggleAuthMode()">Already have an account? <span>Sign In</span></p>
+                    <div class="close-btn" onclick="navigateTo(getReturnUrl())">Return</div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        window.navigateTo = (url) => {
+            const bar = document.getElementById('pro-progress-bar');
+            if(bar) {
+                bar.style.opacity = '1';
+                bar.style.width = '60%';
+                setTimeout(() => { bar.style.width = '100%'; }, 200);
+            }
+            setTimeout(() => { window.location.href = url; }, 350);
+        };
+
+        const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_bLQjs0QMG8COtCALOJz7hw_M9NWKRyl';
+        
+        let db;
+        try {
+            db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (e) {
+            console.error("Supabase failed to init:", e);
+        }
+
+        // NEW: Function to check where the user was before they hit auth
+        function getReturnUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const returnTo = params.get('returnTo');
+            // Default back to index.html if we don't have a specific page to return to
+            return returnTo ? decodeURIComponent(returnTo) : 'index.html';
+        }
+
+        async function handleLogin() {
+            if (!db) return;
+            const email = document.getElementById('email-in').value;
+            const password = document.getElementById('pass-in').value;
+            const { data, error } = await db.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                alert("Login Failed: " + error.message); 
+            } else {
+                navigateTo(getReturnUrl());
+            }
+        }
+
+        async function handleSignup() {
+            if (!db) return;
+            const name = document.getElementById('name-up').value;
+            const email = document.getElementById('email-up').value;
+            const password = document.getElementById('pass-up').value;
+
+            if(!name || !email || !password) {
+                alert("Please fill all fields!");
+                return;
+            }
+
+            const { data, error } = await db.auth.signUp({ 
+                email, 
+                password,
+                options: {
+                    data: {
+                        full_name: name
+                    }
+                } 
+            });
+            if (error) {
+                alert("Signup Failed: " + error.message); 
+            } else { 
+                alert("Account created! Logging in..."); 
+                navigateTo(getReturnUrl());
+            }
+        }
+
+        function toggleAuthMode() {
+            const login = document.getElementById('login-view');
+            const signup = document.getElementById('signup-view');
+            if (login.style.display === 'none') { 
+                login.style.display = 'block'; 
+                signup.style.display = 'none'; 
+            } else { 
+                login.style.display = 'none'; 
+                signup.style.display = 'block'; 
+            }
+        }
+    </script>
+</body>
+</html>
