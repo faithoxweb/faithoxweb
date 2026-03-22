@@ -24,30 +24,40 @@
             max-height: 100vh;
             padding: 10px;
         }
-
         .reviews-scroll-container {
             flex: 1;
-            overflow-y: auto;
+            /* 1. Turn on horizontal scrolling, turn off vertical */
+            overflow-x: auto;
+            overflow-y: hidden;
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding-right: 6px;
+            /* 2. Put them in a row instead of a column */
+            flex-direction: row; 
+            gap: 16px;
+            padding-bottom: 12px; /* Space for the scrollbar */
+            /* Optional: Makes it snap neatly to cards when swiping */
+            scroll-snap-type: x mandatory; 
         }
 
-        /* Widget Scrollbar */
-        .reviews-scroll-container::-webkit-scrollbar { width: 6px; }
+        /* Widget Scrollbar (Updated for horizontal) */
+        .reviews-scroll-container::-webkit-scrollbar { height: 6px; } /* Changed width to height */
         .reviews-scroll-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
         .reviews-scroll-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .reviews-scroll-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Review Card adapted for Widget */
+        /* Review Card adapted for Horizontal Widget */
         .review-item { 
             background: #f8f8f8;
             border-radius: 14px; 
             padding: 16px; 
             border: 1px solid #cbd5e1;
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-            width: 100%;
+            
+            /* 3. Give them a fixed width so they don't squish! */
+            width: 320px; 
+            min-width: 320px; 
+            flex-shrink: 0; /* Prevents shrinking */
+            scroll-snap-align: start; /* Snaps beautifully into place */
+            
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -236,7 +246,8 @@
 
             // Configure the See More button
             const seeMoreBtn = document.getElementById('see-more-link');
-            seeMoreBtn.href = `company.html?id=${companyId}`;
+            // CHANGE IT TO THIS:
+seeMoreBtn.href = `company.html?id=${companyId}`;
             seeMoreBtn.style.display = 'flex';
         }
 
