@@ -350,18 +350,8 @@
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         @media (max-width: 768px) {
-            .search-bar {
-        padding: 16px 60px 16px 24px; /* Reduces the top/bottom height */
-        font-size: 15px; /* Slightly smaller text */
-    }
-
-    /* Shrink the search button to fit the new bar height */
-    .search-icon {
-        width: 38px;
-        height: 38px;
-        top: 7px; /* Adjusts the vertical alignment */
-        right: 8px;
-    }
+        .search-bar {padding: 16px 60px 16px 24px;font-size: 15px;}
+        .search-icon {width: 38px; height: 38px; top: 7px; right: 8px; }
             body {background-size: 100% 400px;}
             .nav-options { display: none; }
             .top-bar { padding: 0 20px; }
