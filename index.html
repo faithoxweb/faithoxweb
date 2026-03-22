@@ -330,15 +330,6 @@
         #search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 2150; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.4s ease, visibility 0.4s ease; }
         #search-overlay.active { opacity: 1; visibility: visible; pointer-events: auto; }
 
-        #activityOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: none; justify-content: center; align-items: center; z-index: 9999; animation: fadeIn 0.3s ease; }
-        
-        /* ACTIVITY OVERLAY STYLES */
-        .activity-card { background: #ffffff; width: 500px; max-height: 80vh; border-radius: 24px; padding: 40px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column; color: #1e293b; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .activity-card h2 { color: #0f172a; }
-        #activity-list { flex-grow: 1; overflow-y: auto; margin-top: 20px; padding-right: 5px; }
-        .close-btn { margin-top: 15px; cursor: pointer; color: #94a3b8; font-size: 12px; font-weight: 600; transition: 0.2s; display: inline-block; text-align: center; width: 100%; }
-        .close-btn:hover { color: #0f172a; }
-
         /* --- LOADER STYLES --- */
         .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(15, 23, 42, 0.2); border-top-color: #0f172a; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -383,7 +374,7 @@
         <div class="nav-options">
             <a class="nav-link">For Business</a>
             <a class="nav-link">Contact Us</a>
-            <a class="nav-link" onclick="openActivity()">Your Activity</a>
+            <a class="nav-link" onclick="navigateTo('activity.html')">Your Activity</a>
             <div id="nav-slider"></div>
         </div>
 
@@ -506,15 +497,6 @@
         </div>
     </div>
 
-    <div id="activityOverlay">
-        <div class="activity-card">
-            <h2>Your Reviews</h2>
-            <p class="sub-text">See what you've shared with the world</p>
-            <div id="activity-list"></div>
-            <div class="close-btn" onclick="closeActivity()">Close</div>
-        </div>
-    </div>
-
     <script>
         // --- XSS Protection Function ---
         function escapeHTML(str) {
@@ -549,7 +531,6 @@
             const currentUrl = encodeURIComponent(window.location.href);
             navigateTo('auth.html?returnTo=' + currentUrl);
         };
-        window.closeActivity = () => document.getElementById('activityOverlay').style.display = 'none';
         window.goHome = () => navigateTo('index.html');
 
         const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
@@ -579,57 +560,6 @@
                     };
                 }
             } catch (e) { console.error(e); }
-        }
-
-        // NEW ACTIVITY LOGIC
-        async function openActivity() {
-            if (!currentUser) {
-                openAuth(); 
-                return;
-            }
-            
-            document.getElementById('activityOverlay').style.display = 'flex';
-            const list = document.getElementById('activity-list');
-            list.innerHTML = '<p style="color:#64748b; font-size:14px; margin-top:20px;">Loading your reviews...</p>';
-
-            // Fetch reviews
-            const { data: reviews, error } = await db
-                .from('reviews')
-                .select('*')
-                .eq('user_id', currentUser.id)
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                list.innerHTML = '<p style="color:red;">Error loading reviews.</p>';
-                return;
-            }
-
-            if (!reviews || reviews.length === 0) {
-                list.innerHTML = '<p style="color:#64748b; margin-top:20px;">You haven\'t posted any reviews yet.</p>';
-                return;
-            }
-
-            // Get Company Names manually to be safe
-            const companyIds = [...new Set(reviews.map(r => r.company_id))];
-            const { data: companiesFound } = await db.from('companies').select('id, name').in('id', companyIds);
-            
-            const companyMap = {};
-            if(companiesFound) companiesFound.forEach(c => companyMap[c.id] = c.name);
-
-            list.innerHTML = '';
-            reviews.forEach(r => {
-                const coName = companyMap[r.company_id] || 'Unknown Company';
-                const item = document.createElement('div');
-                item.style.borderBottom = '1px solid #e2e8f0';
-                item.style.padding = '20px 0';
-                item.style.textAlign = 'left';
-                item.innerHTML = `
-                    <div style="font-weight:800; color:#0f172a; font-size:15px; margin-bottom:4px;">${escapeHTML(coName)}</div>
-                    <div style="color:#00c853; font-size:13px; margin-bottom:6px;">${"★".repeat(r.rating)}</div>
-                    <p style="color:#475569; font-size:14px; line-height:1.5; margin:0;">${escapeHTML(r.comment)}</p>
-                `;
-                list.appendChild(item);
-            });
         }
 
         async function loadCompaniesGrid() {
