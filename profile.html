@@ -89,12 +89,11 @@
             document.getElementById('user-email').textContent = email;
             document.getElementById('user-name').textContent = name;
             document.getElementById('user-avatar').textContent = name.substring(0, 2).toUpperCase();
-
-            // 3. Fetch ONLY this user's reviews
+// 3. Fetch ONLY this user's reviews
             const { data: reviews, error: reviewsError } = await db
                 .from('reviews')
                 .select('*')
-                .eq('user_id', user.id) // THIS IS THE MAGIC LINE: Only grab reviews matching this user's secure ID
+                .eq('user_id', user.id) 
                 .order('created_at', { ascending: false });
 
             const container = document.getElementById('reviews-container');
@@ -109,16 +108,36 @@
                 return;
             }
 
+            // --- THE MAGIC DOUBLE FETCH TRICK ---
+            // Grab all the unique company IDs from their reviews
+            const companyIds = [...new Set(reviews.map(r => r.company_id))];
+            
+            // Ask the companies table for the real names
+            const { data: companiesFound } = await db
+                .from('companies')
+                .select('id, name')
+                .in('id', companyIds);
+            
+            // Create a dictionary to easily swap ID for Name
+            const companyMap = {};
+            if(companiesFound) {
+                companiesFound.forEach(c => companyMap[c.id] = c.name);
+            }
+            // ------------------------------------
+
             // 4. Draw the reviews on the screen
             let html = '';
             reviews.forEach(r => {
                 const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
                 const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
                 
+                // Swap the ID for the real name! (If name is missing, fallback to "Product")
+                const realProductName = companyMap[r.company_id] || 'Verified Product';
+                
                 html += `
                     <div class="review-item">
                         <div class="review-header">
-                            <span class="review-product">Item: ${r.company_id}</span>
+                            <span class="review-product">${realProductName}</span>
                             <span class="review-date">${date}</span>
                         </div>
                         <div class="stars">${stars}</div>
@@ -128,6 +147,7 @@
             });
             container.innerHTML = html;
         }
+   
 
         // Handle Logout
         document.getElementById('logout-btn').onclick = async () => {
