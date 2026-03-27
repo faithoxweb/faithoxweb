@@ -87,8 +87,8 @@
             100% { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeFromBackground {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+            0% { opacity: 0; transform: scale(0.95) translateY(15px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .hero-heading { 
@@ -545,19 +545,31 @@
 
         let currentUser = null;
 
-        async function checkUser() {
+       async function checkUser() {
             if (!db) return;
             try {
                 const { data } = await db.auth.getSession();
                 if (data.session) {
                     currentUser = data.session.user;
-                    const btn = document.querySelector('.auth-trigger-btn span');
-                    if(btn) btn.innerText = "Logout";
                     
-                    document.querySelector('.auth-trigger-btn').onclick = async () => {
-                        await db.auth.signOut();
-                        window.location.reload();
-                    };
+                    // --- THE AVATAR MAGIC ---
+                    // 1. Extract their initials from their email/name
+                    const name = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
+                    const initials = name.substring(0, 2).toUpperCase();
+
+                    // 2. Grab the Login button and turn it into a perfect circle
+                    const authBtn = document.querySelector('.auth-trigger-btn');
+                    authBtn.innerHTML = initials;
+                    authBtn.style.width = '40px';
+                    authBtn.style.height = '40px';
+                    authBtn.style.borderRadius = '50%';
+                    authBtn.style.padding = '0';
+                    authBtn.style.fontSize = '15px';
+                    authBtn.style.fontWeight = '800';
+
+                    // 3. Change its destination so it opens the Profile page!
+                    authBtn.onclick = () => navigateTo('profile.html');
+                    // -------------------------
                 }
             } catch (e) { console.error(e); }
         }
