@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Faithox</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #f8fafc; color: #0f172a; }
+        
+        /* Navigation Bar */
+        .navbar { background: #ffffff; padding: 16px 40px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .logout-btn:hover { background: #dc2626; }
+
+        /* Main Container */
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+
+        /* Profile Header Card */
+        .profile-card { background: #ffffff; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 40px; }
+        .avatar { width: 80px; height: 80px; background: #0f172a; color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; }
+        .user-info h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+        .user-info p { color: #64748b; font-size: 14px; }
+
+        /* Reviews Section */
+        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        
+        .my-reviews-list { display: flex; flex-direction: column; gap: 16px; }
+        
+        /* Individual Review Card */
+        .review-item { background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .review-header { display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;}
+        .review-product { font-weight: 700; font-size: 14px; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.5px; }
+        .review-date { font-size: 12px; color: #94a3b8; }
+        .stars { color: #10B981; font-size: 16px; letter-spacing: 2px; margin-bottom: 8px; }
+        .review-text { font-size: 14px; color: #475569; line-height: 1.5; }
+        
+        .empty-state { text-align: center; padding: 40px; color: #64748b; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Faithox</div>
+        <button class="logout-btn" id="logout-btn">Log Out</button>
+    </nav>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="avatar" id="user-avatar">?</div>
+            <div class="user-info">
+                <h1 id="user-name">Loading...</h1>
+                <p id="user-email">Loading your details...</p>
+            </div>
+        </div>
+
+        <h2 class="section-title">My Past Reviews</h2>
+        <div class="my-reviews-list" id="reviews-container">
+            <p style="text-align:center; color:#64748b;">Loading your reviews...</p>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function loadProfilePage() {
+            // 1. Check if the user is actually logged in
+            const { data: { session }, error: sessionError } = await db.auth.getSession();
+            
+            if (!session) {
+                // If not logged in, kick them back to the login page!
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            const user = session.user;
+            
+            // 2. Populate the Profile Card
+            // Supabase stores their email natively. We generate initials for the avatar.
+            const email = user.email;
+            // If you asked for a name during signup, it lives in user_metadata. Otherwise, use "User".
+            const name = user.user_metadata?.full_name || email.split('@')[0]; 
+            
+            document.getElementById('user-email').textContent = email;
+            document.getElementById('user-name').textContent = name;
+            document.getElementById('user-avatar').textContent = name.substring(0, 2).toUpperCase();
+
+            // 3. Fetch ONLY this user's reviews
+            const { data: reviews, error: reviewsError } = await db
+                .from('reviews')
+                .select('*')
+                .eq('user_id', user.id) // THIS IS THE MAGIC LINE: Only grab reviews matching this user's secure ID
+                .order('created_at', { ascending: false });
+
+            const container = document.getElementById('reviews-container');
+
+            if (reviewsError || !reviews || reviews.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="margin-bottom: 12px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        <h3>No reviews yet</h3>
+                        <p style="margin-top: 4px;">When you leave reviews on products, they will appear here.</p>
+                    </div>`;
+                return;
+            }
+
+            // 4. Draw the reviews on the screen
+            let html = '';
+            reviews.forEach(r => {
+                const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                
+                html += `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-product">Item: ${r.company_id}</span>
+                            <span class="review-date">${date}</span>
+                        </div>
+                        <div class="stars">${stars}</div>
+                        <p class="review-text">${r.comment}</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Handle Logout
+        document.getElementById('logout-btn').onclick = async () => {
+            await db.auth.signOut();
+            window.location.href = 'auth.html';
+        };
+
+        // Run the function when the page loads
+        loadProfilePage();
+    </script>
+</body>
+</html>
