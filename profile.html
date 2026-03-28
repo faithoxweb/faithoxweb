@@ -3,67 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Account | Faithox</title>
+    <title>Dashboard | Faithox</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: #f8fafc; color: #0f172a; }
-        
-        /* Navigation Bar */
-        .navbar { background: #ffffff; padding: 16px 40px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .logout-btn:hover { background: #dc2626; }
+        :root {
+            --primary: #3fa3dd;
+            --primary-hover: #81bbeb;
+            --sidebar-width: 260px;
+            --bg: #f2f2f2;
+            --surface: #f8f8f8;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --dark-surface: #242424;
+        }
 
-        /* Main Container */
-        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; outline: none; }
+        
+        body { 
+            display: flex; 
+            min-height: 100vh; 
+            background-color: var(--bg);
+            background-image: url('https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/gradientback.png');
+            background-repeat: no-repeat;
+            background-position: top center;
+            background-size: 100% 550px;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* --- Sidebar Navigation (Styled like the Index Top Bar) --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--dark-surface);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 24px;
+            position: fixed;
+            height: 100vh;
+            z-index: 10;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .logo { 
+            font-size: 24px; 
+            font-weight: 800; 
+            color: #f2f2f2; 
+            margin-bottom: 50px; 
+            letter-spacing: -0.5px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-transform: uppercase;
+        }
+        .logo span { color: var(--primary); }
+        .logo svg { stroke: var(--primary); }
+        
+        .nav-menu { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        
+        .nav-item {
+            padding: 14px 18px;
+            border-radius: 8px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+        }
+        
+        .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: #f8f8f8; }
+        .nav-item.active { background: var(--primary); color: var(--dark-surface); font-weight: 600; }
+        
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: auto;
+            font-size: 14px;
+        }
+        .logout-btn:hover { background: rgba(239, 68, 68, 0.2); }
 
-        /* Profile Header Card */
-        .profile-card { background: #ffffff; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 40px; }
-        .avatar { width: 80px; height: 80px; background: #0f172a; color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; }
-        .user-info h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-        .user-info p { color: #64748b; font-size: 14px; }
+        /* --- Main Content Area --- */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 50px;
+            max-width: 1200px;
+        }
 
-        /* Reviews Section */
-        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        .page-header { margin-bottom: 40px; margin-top: 10px; }
+        .page-header h1 { 
+            font-size: 38px; 
+            font-weight: 800; 
+            color: var(--dark-surface); 
+            letter-spacing: -1px;
+            text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .page-header p { color: var(--text-muted); margin-top: 8px; font-size: 16px; font-weight: 400; }
+
+        /* --- Profile Card --- */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            margin-bottom: 50px;
+            transition: transform 0.2s ease;
+        }
+        .profile-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            background: rgba(255, 255, 255, 0.9);
+        }
         
-        .my-reviews-list { display: flex; flex-direction: column; gap: 16px; }
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--dark-surface);
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
         
-        /* Individual Review Card */
-        .review-item { background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-        .review-header { display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;}
-        .review-product { font-weight: 700; font-size: 14px; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.5px; }
-        .review-date { font-size: 12px; color: #94a3b8; }
-        .stars { color: #10B981; font-size: 16px; letter-spacing: 2px; margin-bottom: 8px; }
-        .review-text { font-size: 14px; color: #475569; line-height: 1.5; }
+        .user-info h2 { font-size: 24px; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
+        .user-info p { 
+            color: var(--text-main); 
+            font-size: 13px; 
+            font-weight: 500;
+            background: var(--surface); 
+            padding: 8px 14px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border);
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+
+        /* --- Reviews Section --- */
+        .section-title {
+            align-self: flex-start;
+            background: var(--dark-surface);
+            color: #f8f8f8;
+            padding: 9px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
         
-        .empty-state { text-align: center; padding: 40px; color: #64748b; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1; }
+        .my-reviews-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        
+        /* Individual Review Card (Styled like .lr-card in index.html) */
+        .review-item {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+        }
+        
+        .review-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+            border-color: #d1d8e0;
+        }
+
+        .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .review-product { font-weight: 700; font-size: 15px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 10px;}
+        .review-date { font-size: 12px; color: #94a3b8; font-weight: 500; flex-shrink: 0; }
+        
+        /* Styled to mimic the rating pill aesthetic */
+        .stars { 
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 4px;
+            background: var(--dark-surface);
+            color: #fbbf24;
+            font-size: 14px;
+            letter-spacing: 2px;
+            width: fit-content;
+            margin-bottom: 14px;
+        }
+        
+        .review-text { font-size: 14px; color: #475569; line-height: 1.6; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+            border: 2px dashed var(--border);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { 
+                width: 100%; height: auto; position: relative; padding: 16px 24px; flex-direction: row; 
+                align-items: center; justify-content: space-between; border-right: none; 
+                border-bottom: 1px solid rgba(255,255,255,0.1); 
+            }
+            .logo { margin-bottom: 0; font-size: 20px; }
+            .nav-menu { display: none; }
+            .logout-btn { width: auto; margin-top: 0; padding: 8px 16px; background: transparent; border-color: transparent; }
+            .main-wrapper { margin-left: 0; padding: 24px; }
+            .page-header h1 { font-size: 28px; }
+            .profile-card { flex-direction: column; text-align: center; padding: 24px; }
+        }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo">Faithox</div>
-        <button class="logout-btn" id="logout-btn">Log Out</button>
-    </nav>
+    <aside class="sidebar">
+        <div class="logo" onclick="window.location.href='index.html'" style="cursor:pointer;">
+            Faithox
+        </div>
+        
+        <nav class="nav-menu">
+            <div class="nav-item active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                My Dashboard
+            </div>
+            <div class="nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                My Reviews
+            </div>
+            <div class="nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Settings
+            </div>
+        </nav>
 
-    <div class="container">
+        <button class="logout-btn" id="logout-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Log Out
+        </button>
+    </aside>
+
+    <main class="main-wrapper">
+        <div class="page-header">
+            <h1>Welcome back!</h1>
+            <p>Manage your account settings and view your recent activity.</p>
+        </div>
+
         <div class="profile-card">
             <div class="avatar" id="user-avatar">?</div>
             <div class="user-info">
-                <h1 id="user-name">Loading...</h1>
-                <p id="user-email">Loading your details...</p>
+                <h2 id="user-name">Loading...</h2>
+                <p>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    <span id="user-email">Loading your details...</span>
+                </p>
             </div>
         </div>
 
-        <h2 class="section-title">My Past Reviews</h2>
+        <h3 class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            My Past Reviews
+        </h3>
+        
         <div class="my-reviews-list" id="reviews-container">
-            <p style="text-align:center; color:#64748b;">Loading your reviews...</p>
+            <p style="text-align:center; color:#64748b; grid-column: 1 / -1;">Loading your reviews...</p>
         </div>
-    </div>
+    </main>
 
     <script>
+        // Your logic remains 100% untouched
         const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -89,7 +340,8 @@
             document.getElementById('user-email').textContent = email;
             document.getElementById('user-name').textContent = name;
             document.getElementById('user-avatar').textContent = name.substring(0, 2).toUpperCase();
-// 3. Fetch ONLY this user's reviews
+            
+            // 3. Fetch ONLY this user's reviews
             const { data: reviews, error: reviewsError } = await db
                 .from('reviews')
                 .select('*')
@@ -147,7 +399,6 @@
             });
             container.innerHTML = html;
         }
-   
 
         // Handle Logout
         document.getElementById('logout-btn').onclick = async () => {
