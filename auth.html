@@ -184,10 +184,9 @@
 
         <div class="auth-side-form">
             <div class="form-container">
-                
-                <div id="login-view">
-                    <h2>Welcome Back</h2>
-                    <p class="sub-text">Sign in to continue to your dashboard.</p>
+              <div id="login-view">
+                    <h2 id="login-title">Welcome Back</h2>
+                    <p class="sub-text" id="login-subtext">Sign in to continue to your dashboard.</p>
                     
                     <div class="input-group">
                         <label>Email Address</label>
@@ -200,7 +199,11 @@
                     </div>
                     
                     <button class="primary-btn" onclick="handleLogin()">Sign In</button>
+                    
                     <p class="switch-link" onclick="toggleAuthMode()">New here? <span>Create an account</span></p>
+                    
+                    <p class="switch-link" id="business-btn" style="margin-top: 10px; color: #3fa3dd;" onclick="switchToBusiness()">Are you a business? <span style="color: #0f172a;">Business Portal</span></p>
+                    
                     <div class="close-btn" onclick="navigateTo(getReturnUrl())">Return</div>
                 </div>
 
@@ -278,6 +281,18 @@
             return 'index.html';
         }
 
+        // 1. Create a memory switch for Business mode
+        let isBusinessLogin = false;
+
+        // 2. The function that transforms the login page
+        function switchToBusiness() {
+            isBusinessLogin = true;
+            document.getElementById('login-title').innerText = "Business Portal";
+            document.getElementById('login-subtext').innerText = "Sign in to manage your products and analytics.";
+            document.getElementById('business-btn').style.display = 'none'; // Hide the button once clicked
+        }
+
+        // 3. The updated Login function
         async function handleLogin() {
             if (!db) return;
             const email = document.getElementById('email-in').value;
@@ -287,7 +302,15 @@
             if (error) {
                 alert("Login Failed: " + error.message); 
             } else {
-                navigateTo(getReturnUrl());
+                const returnUrl = getReturnUrl();
+                
+                // THE SORTING HAT: 
+                // If they clicked the Business button, OR if they originally tried to open the dashboard...
+                if (isBusinessLogin || returnUrl.includes('dashboard.html')) {
+                    navigateTo('dashboard.html'); // Send them straight to the Analytics!
+                } else {
+                    navigateTo(returnUrl); // Otherwise, send Shoppers back to where they were
+                }
             }
         }
 
