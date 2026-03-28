@@ -314,7 +314,6 @@
     </main>
 
     <script>
-        // Your logic remains 100% untouched
         const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -330,6 +329,12 @@
             }
 
             const user = session.user;
+
+            // RESTRICT TO SHOPPERS ONLY
+            if (user.user_metadata?.role === 'business') {
+                window.location.href = 'dashboard.html';
+                return;
+            }
             
             // 2. Populate the Profile Card
             // Supabase stores their email natively. We generate initials for the avatar.

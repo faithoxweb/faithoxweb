@@ -113,11 +113,19 @@
             // 1. Check Authentication
             const { data: { session } } = await db.auth.getSession();
             if (!session) {
-                // NEW: Tell the auth page exactly where to send us back!
+                // Tell the auth page exactly where to send us back!
                 const currentUrl = encodeURIComponent(window.location.href);
                 window.location.href = `auth.html?returnTo=${currentUrl}`;
                 return;
             }
+
+            // RESTRICT TO BUSINESS ONLY
+            if (session.user.user_metadata?.role !== 'business') {
+                alert('Access Denied: This dashboard is for business accounts only.');
+                window.location.href = 'index.html';
+                return;
+            }
+
             currentUser = session.user;
             
             const businessName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];

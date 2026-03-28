@@ -385,7 +385,7 @@
         </div>
         
         <div class="nav-options">
-            <a class="nav-link" style="cursor:pointer;" oneclick="navigateTo('dashboard.html')">For Business</a>
+            <a class="nav-link" style="cursor:pointer;" onclick="navigateTo('auth.html?mode=business')">For Business</a>
             <a class="nav-link">Contact Us</a>
             <div id="nav-slider"></div>
         </div>
@@ -445,7 +445,7 @@
                             <h2>Grow your business</h2>
                             <p>Integrate next generation review systems by Faithox</p>
                         </div>
-                        <button class="bb-btn">Get Started</button>
+                        <button class="bb-btn" onclick="navigateTo('auth.html?mode=business')">Get Started</button>
                     </div>
 
                     <div class="bb-right-col">
@@ -637,8 +637,15 @@
                     authBtn.style.fontSize = '15px';
                     authBtn.style.fontWeight = '800';
 
-                    // 3. Change its destination so it opens the Profile page!
-                    authBtn.onclick = () => navigateTo('profile.html');
+                    // 3. Change its destination so it opens the Profile page! (or dashboard if business)
+                    const userRole = currentUser.user_metadata?.role || 'customer';
+                    authBtn.onclick = () => {
+                        if (userRole === 'business') {
+                            navigateTo('dashboard.html');
+                        } else {
+                            navigateTo('profile.html');
+                        }
+                    };
                     // -------------------------
                 }
             } catch (e) { console.error(e); }
