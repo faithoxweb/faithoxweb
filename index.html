@@ -621,6 +621,13 @@
                 const { data } = await db.auth.getSession();
                 if (data.session) {
                     currentUser = data.session.user;
+                    const userRole = currentUser.user_metadata?.role || 'customer';
+
+                    // --- BUSINESS LOCKDOWN FIX ---
+                    if (userRole === 'business') {
+                        window.location.replace('dashboard.html');
+                        return;
+                    }
                     
                     // --- THE AVATAR MAGIC ---
                     // 1. Extract their initials from their email/name
@@ -638,7 +645,6 @@
                     authBtn.style.fontWeight = '800';
 
                     // 3. Change its destination so it opens the Profile page! (or dashboard if business)
-                    const userRole = currentUser.user_metadata?.role || 'customer';
                     authBtn.onclick = () => {
                         if (userRole === 'business') {
                             navigateTo('dashboard.html');

@@ -348,8 +348,27 @@
             setMode(currentRoleMode); // Update texts
         }
 
-        // Automatically set mode if passed in URL
-        window.onload = () => {
+        // --- AUTH REDIRECT GLITCH FIX ---
+        window.onload = async () => {
+            if (db) {
+                const { data } = await db.auth.getSession();
+                if (data.session) {
+                    const userRole = data.session.user.user_metadata?.role || 'customer';
+                    if (userRole === 'business') {
+                        window.location.replace('dashboard.html');
+                        return;
+                    } else {
+                        const params = new URLSearchParams(window.location.search);
+                        const returnTo = params.get('returnTo');
+                        if (returnTo) {
+                            window.location.replace(decodeURIComponent(returnTo));
+                        } else {
+                            window.location.replace('index.html');
+                        }
+                        return;
+                    }
+                }
+            }
             const params = new URLSearchParams(window.location.search);
             if(params.get('mode') === 'business') {
                 setMode('business');
