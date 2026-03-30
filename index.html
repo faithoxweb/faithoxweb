@@ -54,26 +54,27 @@
 
        /* --- BUTTON --- */
         .auth-trigger-btn { 
-            background-color: #3fa3dd; 
+            background-color: #f8f8f8; 
             color: #242424; 
-            height: 38px; 
-            padding: 0 13px; 
+            height: 35px; 
+            padding: 0 10px; 
             border: none;
             border-radius: 6px; 
             cursor: pointer; 
             font-size: 14px; 
-            font-weight: 550; 
-            letter-spacing: 0.2px;
+            font-weight: 549;
+            -webkit-text-stroke: 0.2px #242424; 
+            letter-spacing: 0.1px;
             position: relative; 
             z-index: 2002; 
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.1s ease; 
+            transition: background-color 0.2s ease; 
         }
 
         .auth-trigger-btn:hover {
-            background-color: #81bbeb; 
+            background-color: #d8d8d8; 
         }
 
         /* --- CONTENT --- */
@@ -90,6 +91,10 @@
             0% { opacity: 0; }
             100% { opacity: 1; }
         }
+        @keyframes resultFadeIn {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
 
         .hero-heading { 
             font-family: 'Inter', sans-serif; font-size: 65px; font-weight: 800; color: #242424; margin-top: 80px; margin-bottom: 30px; line-height: 1; letter-spacing: -2.5px; text-transform: capitalize; text-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); 
@@ -99,7 +104,9 @@
 
         /* --- SEARCH BAR STYLES --- */
         .search-container { 
-            width: 100%; max-width: 650px; margin-top: 0; position: relative; display: block; z-index: 200; transition: border-radius 0.2s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 50px; 
+            width: 100%; max-width: 650px; margin-top: 0; position: relative; display: block; z-index: 200; 
+            transition: border-radius 0.2s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            border-radius: 50px; 
             animation: fadeFromBackground 0.9s ease-in-out 0.2s forwards;
             opacity: 0;
         }
@@ -108,7 +115,7 @@
         .search-icon { position: absolute; right: 10px; top: 10px; width: 46px; height: 46px; background: #242424; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 3; }
         .search-icon svg { width: 20px; height: 20px; stroke: #f2f2f2; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
-        .search-container.active { z-index: 2200; }
+        .search-container.active { z-index: 2200; max-width: 780px; }
         .search-container.active .search-bar { 
             background: #f2f2f2 !important; 
             color: #0f172a; 
@@ -127,12 +134,13 @@
             border-top: none; border-radius: 0 0 20px 20px; 
             box-shadow: 0 25px 60px rgba(0,0,0,0.15); z-index: 1; 
             display: block !important; max-height: 0; opacity: 0; visibility: hidden; overflow: hidden; 
-            transition: max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, visibility 0.2s ease; 
+            transform: translateY(-10px);
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
             margin-top: -1.5px; padding-top: 0; 
         }
-        .search-container.active .results-dropdown { max-height: 400px; opacity: 1; visibility: visible; padding-top: 10px; }
+        .search-container.active .results-dropdown { max-height: 400px; opacity: 1; visibility: visible; padding-top: 10px; transform: translateY(0); }
         
-        .result-item { padding: 16px 30px; color: #1e293b; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.05); transition: all 0.2s ease; font-size: 16px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; background: #ffffff; }
+        .result-item { padding: 16px 30px; color: #1e293b; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.05); transition: all 0.2s ease; font-size: 16px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; background: #ffffff; animation: resultFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
         .result-item:last-child { border-bottom: none; }
         .result-item:hover { background: #f8fafc; } 
         .result-item:hover .res-arrow { transform: translateX(5px); color: #0f172a !important; }
@@ -391,7 +399,7 @@
         </div>
 
         <button type="button" class="auth-trigger-btn" onclick="openAuth()">
-            <span> Signup / Login </span>
+            <span> Sign up </span>
         </button>
     </nav>
 
@@ -873,9 +881,11 @@
                     if(error || !matches || matches.length === 0) {
                         resultsBox.innerHTML = `<div class="no-results-item"><span>No results found</span></div>`;
                     } else {
-                        matches.forEach(co => {
+                        matches.forEach((co, index) => {
                             const div = document.createElement('div');
                             div.className = 'result-item';
+                            // Add staggering delay to results fading in
+                            div.style.animationDelay = `${index * 0.04}s`;
                             const subtitle = co.is_product ? `Product by ${co.parent_company || 'Unknown'}` : (co.category || 'Business');
                             div.innerHTML = `
                                 <div style="display: flex; align-items: center; gap: 14px;">
