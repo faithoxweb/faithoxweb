@@ -285,6 +285,7 @@
             background: #242424; color: #f2f2f2; 
             display: flex; align-items: center; justify-content: center; 
             font-size: 11px; font-weight: 800; flex-shrink: 0;
+            overflow: hidden;
         }
         .author-name { font-size: 15px; font-weight: 700; color: #242424; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -657,10 +658,17 @@
                     // 1. Extract their initials from their email/name
                     const name = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
                     const initials = name.substring(0, 2).toUpperCase();
+                    const avatarUrl = currentUser.user_metadata?.avatar_url;
 
                     // 2. Grab the Login button and turn it into a perfect circle
                     const authBtn = document.querySelector('.auth-trigger-btn');
-                    authBtn.innerHTML = initials;
+                    
+                    if (avatarUrl) {
+                        authBtn.innerHTML = `<img src="${avatarUrl}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                    } else {
+                        authBtn.innerHTML = initials;
+                    }
+                    
                     authBtn.style.width = '40px';
                     authBtn.style.height = '40px';
                     authBtn.style.borderRadius = '50%';
@@ -815,6 +823,12 @@
                     </div>`;
                 }
 
+                // AVATAR LOGIC FOR REVIEWS
+                const avatarUrl = r.avatar_url;
+                const authorAvatarHtml = avatarUrl 
+                    ? `<img src="${escapeHTML(avatarUrl)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` 
+                    : initials;
+
                 const isLong = (r.comment && r.comment.length > 130);
                 const seeMoreHtml = isLong ? `<span class="see-more-text">See more</span>` : '';
 
@@ -824,7 +838,7 @@
                         <div style="width: 42%; display: flex; flex-direction: column; gap: 10px; border-right: 1px solid #e8ecf0; padding-right: 16px; flex-shrink: 0;">
                             
                             <div class="review-author" style="margin: 0; margin-top: 16px; align-items: center;">
-                                <div class="author-avatar">${initials}</div>
+                                <div class="author-avatar">${authorAvatarHtml}</div>
                                 <div style="display: flex; flex-direction: column; justify-content: center; transform: translateY(-2px);">
                                     <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
                                     <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px; cursor: pointer;">

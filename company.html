@@ -1003,6 +1003,8 @@
             }
 
             const reviewerName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
+            const userAvatar = currentUser.user_metadata?.avatar_url || null; // Grab the avatar URL
+
             const { error } = await db.from('reviews').insert({
                 user_id: currentUser.id,
                 company_id: companyId,
@@ -1010,9 +1012,10 @@
                 comment: text,
                 status: 'approved',
                 reviewer_name: reviewerName,
-                photos: uploadedUrls
+                photos: uploadedUrls,
+                avatar_url: userAvatar // Add it to the database!
             });
-
+            
             btn.disabled = false;
             btn.innerText = 'Submit Review';
 
