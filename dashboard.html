@@ -33,7 +33,8 @@
 
         /* Products Section */
         .section-title { font-size: 18px; font-weight: 800; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .add-btn { background: #0f172a; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }
+        .add-btn { background: #0f172a; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; transition: 0.2s; }
+        .add-btn:hover { background: #1e293b; transform: translateY(-2px); }
         
         .product-list { display: flex; flex-direction: column; gap: 12px; }
         .product-item { background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
@@ -43,13 +44,22 @@
         .widget-btn { background: #3fa3dd; color: #242424; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.2s; }
         .widget-btn:hover { background: #81bbeb; }
 
-        /* Modal for Widget Code */
-        #code-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        #code-modal.open { display: flex; }
-        .modal-content { background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 600px; position: relative; }
-        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; font-weight: bold; color: #64748b; }
-        .code-block { background: #1e293b; color: #38bdf8; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 13px; margin: 15px 0; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;}
-        .copy-btn { width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; }
+        /* --- SHARED MODAL STYLES --- */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-overlay.open { display: flex; }
+        .modal-content { background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; font-weight: bold; color: #64748b; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f1f5f9; transition: 0.2s; }
+        .close-modal:hover { background: #e2e8f0; color: #0f172a; }
+        
+        /* Modal Form Inputs */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .modal-input { width: 100%; padding: 12px 16px; border-radius: 8px; border: 2px solid #e2e8f0; font-size: 14px; transition: 0.2s; background: #f8fafc; outline: none; }
+        .modal-input:focus { border-color: #0f172a; background: #fff; }
+        
+        .code-block { background: #1e293b; color: #38bdf8; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 13px; margin: 15px 0; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; }
+        .primary-modal-btn { width: 100%; background: #0f172a; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.2s; margin-top: 10px; }
+        .primary-modal-btn:hover { background: #1e293b; }
     </style>
 </head>
 <body>
@@ -82,7 +92,7 @@
 
         <div class="section-title">
             Your Products
-            <button class="add-btn">+ Register New Product</button>
+            <button class="add-btn" onclick="openRegisterModal()">+ Register New Product</button>
         </div>
 
         <div class="product-list" id="products-container">
@@ -90,15 +100,40 @@
         </div>
     </div>
 
-    <div id="code-modal">
+    <div id="register-modal" class="modal-overlay">
         <div class="modal-content">
-            <div class="close-modal" onclick="closeModal()">✕</div>
+            <div class="close-modal" onclick="closeRegisterModal()">✕</div>
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">Register New Product</h2>
+            <p style="font-size: 14px; color: #64748b; margin-bottom: 24px;">Upload your product details to the Faithox global registry.</p>
+            
+            <div class="form-group">
+                <label>Product Name <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="reg-name" class="modal-input" placeholder="e.g. Strude Running Shoes">
+            </div>
+            
+            <div class="form-group">
+                <label>Upload Product Image <span style="color: #ef4444;">*</span></label>
+                <input type="file" id="reg-image-file" class="modal-input" accept="image/*" style="background: #fff; padding: 9px; cursor: pointer;">
+            </div>
+            
+            <div class="form-group">
+                <label>Official Product Link <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="reg-website" class="modal-input" placeholder="https://yourwebsite.com/product">
+            </div>
+            
+            <button class="primary-modal-btn" id="submit-reg-btn" onclick="submitNewProduct()">Register Product</button>
+        </div>
+    </div>
+
+    <div id="code-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="close-modal" onclick="closeCodeModal()">✕</div>
             <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">Your Embed Code</h2>
             <p style="font-size: 14px; color: #64748b;">Copy and paste this exact code into your website's HTML where you want the reviews widget to appear.</p>
             
             <div class="code-block" id="embed-code-text"></div>
             
-            <button class="copy-btn" onclick="copyCode()">Copy to Clipboard</button>
+            <button class="primary-modal-btn copy-btn" onclick="copyCode()">Copy to Clipboard</button>
         </div>
     </div>
 
@@ -113,7 +148,6 @@
             // 1. Check Authentication
             const { data: { session } } = await db.auth.getSession();
             if (!session) {
-                // Tell the auth page exactly where to send us back!
                 const currentUrl = encodeURIComponent(window.location.href);
                 window.location.href = `auth.html?returnTo=${currentUrl}`;
                 return;
@@ -132,15 +166,21 @@
             document.getElementById('welcome-text').innerText = `Welcome, ${businessName}`;
 
             // 2. Fetch the products THIS business owns.
-            // *CRUCIAL NOTE*: You need a column called 'owner_id' in your 'companies' table to link products to business users!
-            // For now, I am fetching ALL companies just so you can see how the UI looks. 
+            // NOTE: The .eq('owner_id') is now ACTIVATED! It will only show products registered by this exact user.
             const { data: companies, error: compErr } = await db
                 .from('companies')
-                .select('*'); 
-                // .eq('owner_id', currentUser.id) <--- You will uncomment this once you add 'owner_id' to your database!
+                .select('*')
+                .eq('owner_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            if (compErr) {
+                console.error("Fetch Error:", compErr);
+                document.getElementById('products-container').innerHTML = `<p style="text-align:center; padding: 40px; color:#ef4444;">Error loading products. Check console for details.</p>`;
+                return;
+            }
 
             if (!companies || companies.length === 0) {
-                document.getElementById('products-container').innerHTML = `<p style="text-align:center; padding: 40px; color:#64748b; background: #fff; border-radius: 12px; border: 1px dashed #cbd5e1;">You haven't registered any products yet.</p>`;
+                document.getElementById('products-container').innerHTML = `<p style="text-align:center; padding: 40px; color:#64748b; background: #fff; border-radius: 12px; border: 1px dashed #cbd5e1;">You haven't registered any products yet. Click the button above to start!</p>`;
                 document.getElementById('stat-products').innerText = '0';
                 document.getElementById('stat-reviews').innerText = '0';
                 document.getElementById('stat-rating').innerText = '0.0';
@@ -156,7 +196,6 @@
             let ratingCount = 0;
 
             for (const company of companies) {
-                // Fetch reviews for this specific product to get exact stats
                 const { data: reviews } = await db.from('reviews').select('rating').eq('company_id', company.id);
                 
                 let prodReviewsCount = 0;
@@ -175,11 +214,11 @@
                 html += `
                     <div class="product-item">
                         <div class="product-info">
-                            <h3>${company.name}</h3>
+                            <h3>${escapeHTML(company.name)}</h3>
                             <p>ID: ${company.id} • ${prodReviewsCount} Reviews • ★ ${prodAvgRating}</p>
                         </div>
                         <div class="product-actions">
-                            <button class="widget-btn" onclick="openModal('${company.id}')">&lt;/&gt; Get Widget</button>
+                            <button class="widget-btn" onclick="openCodeModal('${company.id}')">&lt;/&gt; Get Widget</button>
                         </div>
                     </div>
                 `;
@@ -196,10 +235,86 @@
             }
         }
 
+        // --- NEW: Registration Form Logic ---
+        function openRegisterModal() {
+            document.getElementById('register-modal').classList.add('open');
+        }
+
+        function closeRegisterModal() {
+            document.getElementById('register-modal').classList.remove('open');
+            document.getElementById('reg-name').value = '';
+            document.getElementById('reg-image-file').value = '';
+            document.getElementById('reg-website').value = '';
+        }
+
+        async function submitNewProduct() {
+            const name = document.getElementById('reg-name').value.trim();
+            const website = document.getElementById('reg-website').value.trim();
+            const fileInput = document.getElementById('reg-image-file');
+
+            // 1. Validation
+            if (!name || !website) {
+                alert("Please fill in both the Product Name and the Product Link.");
+                return;
+            }
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert("Please upload an image of your product.");
+                return;
+            }
+
+            const btn = document.getElementById('submit-reg-btn');
+            btn.innerText = "Uploading Image & Registering...";
+            btn.disabled = true;
+
+            // 2. Prepare the image file for upload
+            const file = fileInput.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${currentUser.id}-${Date.now()}.${fileExt}`;
+
+            // 3. Upload the image to Supabase Storage
+            const { error: uploadError } = await db.storage
+                .from('product-images')
+                .upload(fileName, file);
+
+            if (uploadError) {
+                alert("Image upload failed: " + uploadError.message + "\n\nEnsure your Supabase bucket is named 'product-images' and is set to Public.");
+                btn.innerText = "Register Product";
+                btn.disabled = false;
+                return;
+            }
+
+            // 4. Get the secure, public URL for the image
+            const { data: urlData } = db.storage
+                .from('product-images')
+                .getPublicUrl(fileName);
+            
+            const finalImageUrl = urlData.publicUrl;
+
+            // 5. Save everything to the Companies Database
+            const { data, error } = await db.from('companies').insert([{
+                name: name,
+                image_url: finalImageUrl,
+                website: website,
+                owner_id: currentUser.id, // Links this product to THIS specific business
+                is_product: true,
+                rating: 0,
+                reviews_count: 0
+            }]);
+
+            btn.innerText = "Register Product";
+            btn.disabled = false;
+
+            if (error) {
+                alert("Database Error: " + error.message);
+            } else {
+                closeRegisterModal();
+                initDashboard(); // Instantly refresh the screen to show the new product
+            }
+        }
+
         // --- Widget Modal Logic ---
-        function openModal(companyId) {
-            // CHANGE THIS TO YOUR LIVE VERCEL LINK:
-            const liveUrl = `https://YOUR-LIVE-LINK.vercel.app/embed.html?id=${companyId}`;
+        function openCodeModal(companyId) {
+            const liveUrl = `https://YOUR-LIVE-LINK.vercel.app/company.html?id=${companyId}`;
             
             const code = `\n<iframe \n  src="${liveUrl}" \n  width="100%" \n  height="350px" \n  style="border: none; background: transparent; overflow: hidden;">\n</iframe>`;
             
@@ -207,10 +322,11 @@
             document.getElementById('code-modal').classList.add('open');
         }
 
-        function closeModal() {
+        function closeCodeModal() {
             document.getElementById('code-modal').classList.remove('open');
-            document.querySelector('.copy-btn').innerText = 'Copy to Clipboard';
-            document.querySelector('.copy-btn').style.background = '#0f172a';
+            const copyBtn = document.querySelector('.copy-btn');
+            copyBtn.innerText = 'Copy to Clipboard';
+            copyBtn.style.background = '#0f172a';
         }
 
         function copyCode() {
@@ -218,8 +334,16 @@
             navigator.clipboard.writeText(codeText).then(() => {
                 const btn = document.querySelector('.copy-btn');
                 btn.innerText = '✓ Copied!';
-                btn.style.background = '#10B981'; // Turn green on success
+                btn.style.background = '#10B981';
             });
+        }
+
+        // --- XSS Protection Function ---
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag]));
         }
 
         // Logout
