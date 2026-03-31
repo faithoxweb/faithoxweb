@@ -681,57 +681,55 @@
             } catch (e) { console.error(e); }
         }
 
-        async function loadCompaniesGrid() {
+    async function loadCompaniesGrid() {
             if (!db) return;
             const grid = document.getElementById('top-companies-grid');
             if (!grid) return; 
 
-            // Find the real DB IDs for Strude Shoes 1 & 2 by querying them specifically
-            const { data: specificCompanies } = await db.from('companies')
+            // 1. Fetch the 4 newest products actually registered in your database
+            const { data: companies, error } = await db.from('companies')
                 .select('*')
-                .or('name.ilike.%strude shoes 1%,name.ilike.%strude shoes 2%');
+                .order('created_at', { ascending: false })
+                .limit(4);
 
-            let realId1 = 'strude-shoes-1';
-            let realId2 = 'strude-shoes-2'; 
-            
-            let img1 = 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/pumashoes1.avif'; 
-            let img2 = 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/pumashoes2.avif'; 
-
-            if (specificCompanies && specificCompanies.length > 0) {
-                const s1 = specificCompanies.find(c => c.name.toLowerCase().includes('strude shoes 1'));
-                if (s1) realId1 = s1.id;
-
-                const s2 = specificCompanies.find(c => c.name.toLowerCase().includes('strude shoes 2'));
-                if (s2) realId2 = s2.id;
+            if (error || !companies || companies.length === 0) {
+                grid.innerHTML = `<p style="padding:20px; color:#64748b; width: 100%; grid-column: span 4;">No products available yet. Register your first product!</p>`;
+                return;
             }
 
-            grid.innerHTML = `
-                <a href="company.html?id=${realId1}" onclick="event.preventDefault(); navigateTo('company.html?id=${realId1}');" class="lr-card" style="text-decoration: none; width: 100%; display: flex; flex-direction: column; box-sizing: border-box;">
-                    <img src="${img1}" alt="Strude Shoes 1" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; flex-shrink: 0;">
+            // 2. Clear the "Loading..." text
+            grid.innerHTML = '';
+
+            // 3. Loop through the real database products and create their cards
+            let html = '';
+            companies.forEach(co => {
+                // Get the first two letters of the company for the avatar circle
+                const initials = co.name ? co.name.substring(0, 2).toUpperCase() : 'FX';
+                
+                // Use the uploaded image, or a gray placeholder if they didn't upload one
+                const imgUrl = co.image_url || co.logo_url || co.image || 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/Grade%20Grey.jpg';
+                
+                // Use the website or category, fallback to 'Faithox Verified'
+                const subText = co.website || co.category || 'Faithox Verified';
+
+                html += `
+                <a href="company.html?id=${co.id}" onclick="event.preventDefault(); navigateTo('company.html?id=${co.id}');" class="lr-card" style="text-decoration: none; width: 100%; display: flex; flex-direction: column; box-sizing: border-box;">
+                    <img src="${imgUrl}" alt="${escapeHTML(co.name)}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; flex-shrink: 0;">
                     <div class="lr-header">
-                        <div class="lr-avatar">S1</div>
+                        <div class="lr-avatar">${initials}</div>
                         <div class="lr-meta">
-                            <div class="lr-name">Strude Shoes 1</div>
-                            <div class="lr-company">Faithox Verified</div>
+                            <div class="lr-name">${escapeHTML(co.name)}</div>
+                            <div class="lr-company">${escapeHTML(subText)}</div>
                         </div>
                     </div>
                     <div class="lr-stars">★★★★★</div>
-                    <div class="lr-comment" style="margin-top: auto;">Premium quality and unmatched durability. Highly recommended to everyone!</div>
+                    <div class="lr-comment" style="margin-top: auto;">Click to view official details and community reviews for ${escapeHTML(co.name)}.</div>
                 </a>
+                `;
+            });
 
-                <a href="company.html?id=${realId2}" onclick="event.preventDefault(); navigateTo('company.html?id=${realId2}');" class="lr-card" style="text-decoration: none; width: 100%; display: flex; flex-direction: column; box-sizing: border-box;">
-                    <img src="${img2}" alt="Strude Shoes 2" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; flex-shrink: 0;">
-                    <div class="lr-header">
-                        <div class="lr-avatar">S2</div>
-                        <div class="lr-meta">
-                            <div class="lr-name">Strude Shoes 2</div>
-                            <div class="lr-company">Faithox Verified</div>
-                        </div>
-                    </div>
-                    <div class="lr-stars">★★★★☆</div>
-                    <div class="lr-comment" style="margin-top: auto;">Incredible comfort for daily wear. A fantastic upgrade to the lineup!</div>
-                </a>
-            `; 
+            // 4. Inject the real products into the page
+            grid.innerHTML = html;
         }
 
         // --- UPDATED LATEST REVIEWS FUNCTION ---
