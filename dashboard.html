@@ -170,8 +170,7 @@
             const { data: companies, error: compErr } = await db
                 .from('companies')
                 .select('*')
-                .eq('owner_id', currentUser.id)
-                .order('created_at', { ascending: false });
+                .eq('owner_id', currentUser.id);
 
             if (compErr) {
                 console.error("Fetch Error:", compErr);
