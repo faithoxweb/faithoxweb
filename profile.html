@@ -11,120 +11,235 @@
     <style>
         /* --- BASE STYLES --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; outline: none; }
-        body { background-color: #f2f2f2; color: #0f172a; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-
-        /* --- TOP NAVIGATION --- */
-        .main-nav { width: 100%; height: 65px; display: flex; align-items: center; padding: 0 40px; background: #242424; position: sticky; top: 0; z-index: 2000; }
-        .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: #f2f2f2; } 
-        .logout-btn { margin-left: auto; background: #3fa3dd; color: #242424; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.2s; }
-        .logout-btn:hover { background: #81bbeb; }
+        body { background-color: #242424; color: #0f172a; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
         /* --- PROFILE LAYOUT --- */
-        .profile-container { display: flex; max-width: 1200px; margin: 40px auto; width: 100%; padding: 0 20px; gap: 40px; align-items: flex-start; }
+        .profile-container { display: flex; width: 100%; padding: 0; gap: 40px; align-items: stretch; min-height: 100vh; }
         
         /* --- SIDEBAR MENU --- */
-        .sidebar { width: 250px; background: #fff; border-radius: 16px; padding: 20px 10px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); flex-shrink: 0; position: sticky; top: 100px; }
-        .user-info { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9; }
-        .user-avatar { width: 60px; height: 60px; border-radius: 50%; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; margin: 0 auto 10px; }
-        .user-name { font-size: 16px; font-weight: 700; color: #0f172a; }
+        .sidebar { width: 320px; background: #f2f2f2; padding: 40px 15px; border-right: 1px solid grey; flex-shrink: 0; display: flex; flex-direction: column; }
+        .brand-text { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: #0f172a; text-align: center; display: block; margin-bottom: 30px; cursor: pointer; } 
+        
+        /* UPDATED PROFILE CARD */
+        .user-info-card { display: flex; align-items: center; gap: 12px; background: #242424; padding: 16px; border-radius: 12px; border: 1px solid #475569; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .user-avatar { width: 48px; height: 48px; border-radius: 50%; background: #f2f2f2; color: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; flex-shrink: 0; overflow: hidden; }
+        .user-details { display: flex; flex-direction: column; overflow: hidden; }
+        .user-name { font-size: 15px; font-weight: 700; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-email { font-size: 12px; color: #94a3b8; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
         
         .menu-btn { width: 100%; text-align: left; background: transparent; border: none; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #64748b; cursor: pointer; transition: all 0.2s; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
-        .menu-btn:hover { background: #f8fafc; color: #0f172a; }
-        .menu-btn.active { background: #242424; color: #f8f8f8; }
+        .menu-btn:hover { background: #e2e8f0; color: #0f172a; }
+        .menu-btn.active { background: #242424; color: #f2f2f2; }
+
+        .logout-btn { margin-top: auto; background: #3fa3dd; color: #242424; border: none; padding: 12px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.2s; width: 100%; }
+        .logout-btn:hover { background: #81bbeb; }
 
         /* --- MAIN CONTENT AREA --- */
-        .content-area { flex: 1; min-width: 0; }
+        .content-area { flex: 1; min-width: 0; max-width: 1000px; padding: 40px 40px 40px 0; }
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .section-header { margin-bottom: 25px; }
-        .section-title { font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; }
-        .section-desc { font-size: 14px; color: #64748b; margin-top: 5px; }
+        .section-title { font-size: 24px; font-weight: 800; color: #f2f2f2; letter-spacing: -0.5px; }
+        .section-desc { font-size: 14px; color: #94a3b8; margin-top: 5px; }
 
-        /* --- 1. DASHBOARD TAB --- */
-        .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .dash-card { background: #fff; padding: 24px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); display: flex; flex-direction: column; }
-        .dash-card.highlight { background: #242424; color: #f8f8f8; border: none; }
-        .dash-card.highlight .dash-title { color: #94a3b8; }
-        .dash-card.highlight .dash-value { color: #10B981; } /* Green money text */
-        .dash-title { font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
-        .dash-value { font-size: 38px; font-weight: 800; line-height: 1; }
-
-        /* --- 2. MY PURCHASES TAB --- */
-        .purchase-card { background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .purchase-info h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-        .purchase-date { font-size: 13px; color: #64748b; font-weight: 500; }
+        /* --- 1. PROFILE TAB (UPDATED) --- */
+        .profile-settings-card { background: #f2f2f2; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); margin-bottom: 20px; }
         
+        .avatar-section { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid #cbd5e1; }
+        .avatar-display { width: 80px; height: 80px; border-radius: 50%; background: #e2e8f0; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; color: #64748b; }
+        .avatar-display img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-display svg { width: 40px; height: 40px; }
+        .avatar-actions { display: flex; flex-direction: column; gap: 8px; }
+        .btn-outline { background: transparent; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; color: #0f172a; cursor: pointer; transition: 0.2s; }
+        .btn-outline:hover { background: #e2e8f0; }
+        .avatar-hint { font-size: 12px; color: #64748b; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group.full-width { grid-column: span 2; }
+        .form-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-row { display: flex; gap: 15px; }
+        
+        .form-input { width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; color: #0f172a; font-size: 14px; font-weight: 500; transition: border 0.2s; }
+        .form-input:focus { border-color: #3fa3dd; }
+        .form-input:disabled { background: #e2e8f0; color: #64748b; cursor: not-allowed; border-color: #cbd5e1; }
+        textarea.form-input { resize: vertical; min-height: 100px; }
+
+        .btn-primary { background: #0f172a; color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-primary:hover { background: #334155; }
+        
+        .form-actions { display: flex; justify-content: flex-end; padding-top: 20px; border-top: 1px solid #cbd5e1; margin-top: 10px; }
+
+        .status-msg { margin-top: 15px; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; display: none; }
+        .status-msg.success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; display: block; }
+        .status-msg.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; display: block; }
+
+        /* --- 2. DASHBOARD TAB --- */
+        .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .dash-card { background: #f2f2f2; padding: 24px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); display: flex; flex-direction: column; }
+        .dash-card.highlight { background: #000000; color: #f8f8f8; border: 1px solid grey; }
+        .dash-card.highlight .dash-title { color: #94a3b8; }
+        .dash-card.highlight .dash-value { color: #10B981; } 
+        .dash-title { font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+        .dash-value { font-size: 38px; font-weight: 800; line-height: 1; color: #0f172a; }
+
+        /* --- 3. MY PURCHASES TAB --- */
+        .purchase-card { background: #f2f2f2; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .purchase-info h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: #0f172a;}
+        .purchase-date { font-size: 13px; color: #64748b; font-weight: 500; }
         .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 6px; }
-        .status-not-reviewed { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .status-not-reviewed { background: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; }
         .status-scanning { background: #fef9c3; color: #ca8a04; border: 1px solid #fde047; }
         .status-approved { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
 
-        /* --- 3. MY REVIEWS TAB --- */
-        .review-card { background: #fff; padding: 24px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
+        /* --- 4. MY REVIEWS TAB --- */
+        .review-card { background: #f2f2f2; padding: 24px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
         .review-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
         .review-product-name { font-size: 16px; font-weight: 800; color: #0f172a; }
-        .review-views { background: #f1f5f9; color: #0f172a; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+        .review-views { background: #e2e8f0; color: #0f172a; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
         .review-stars { color: #fbbf24; font-size: 16px; letter-spacing: 2px; margin-bottom: 10px; }
         .review-text { font-size: 14px; color: #475569; line-height: 1.5; }
 
-        /* --- 4. REWARDS TAB --- */
-        .rewards-balance-box { background: #242424; border-radius: 16px; padding: 30px; text-align: center; color: #fff; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        /* --- 5. REWARDS TAB --- */
+        .rewards-balance-box { background: #000000; border-radius: 16px; padding: 30px; text-align: center; color: #fff; margin-bottom: 30px; border: 1px solid grey; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
         .rb-title { font-size: 14px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
         .rb-amount { font-size: 48px; font-weight: 800; color: #10B981; line-height: 1; margin-bottom: 25px; }
-        
         .upi-withdraw-box { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; display: flex; gap: 10px; max-width: 400px; margin: 0 auto; }
-        .upi-input { flex: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #fff; color: #0f172a; font-size: 14px; font-weight: 500; }
+        .upi-input { flex: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #f2f2f2; color: #0f172a; font-size: 14px; font-weight: 500; }
         .withdraw-btn { background: #10B981; color: #fff; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .withdraw-btn:hover { background: #059669; }
 
-        .history-table { width: 100%; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; border-collapse: collapse; }
-        .history-table th { background: #f8fafc; padding: 14px 20px; text-align: left; font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
-        .history-table td { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #0f172a; font-weight: 500; }
+        .history-table { width: 100%; background: #f2f2f2; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; border-collapse: collapse; }
+        .history-table th { background: #e2e8f0; padding: 14px 20px; text-align: left; font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; border-bottom: 1px solid #cbd5e1; }
+        .history-table td { padding: 16px 20px; border-bottom: 1px solid #e2e8f0; font-size: 14px; color: #0f172a; font-weight: 500; }
         .history-table tr:last-child td { border-bottom: none; }
         .credit-text { color: #16a34a; font-weight: 700; }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .profile-container { flex-direction: column; gap: 20px; margin: 20px auto; }
-            .sidebar { width: 100%; position: relative; top: 0; display: flex; flex-direction: column; }
+            .profile-container { flex-direction: column; gap: 20px; padding: 0; align-items: stretch; }
+            .sidebar { width: 100%; display: flex; flex-direction: column; padding: 20px; border-right: none; border-bottom: 1px solid grey; }
+            .content-area { padding: 20px; }
             .menu-wrapper { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; }
             .menu-btn { white-space: nowrap; text-align: center; justify-content: center; }
+            .logout-btn { margin-top: 20px; }
             .dash-grid { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; gap: 15px; }
+            .form-group.full-width { grid-column: span 1; }
             .purchase-card { flex-direction: column; align-items: flex-start; gap: 12px; }
             .upi-withdraw-box { flex-direction: column; }
+            .input-row { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="main-nav">
-        <div class="logo-container" onclick="window.location.href='index.html'">
-            <span class="brand-text">faithox</span>
-        </div>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-    </nav>
-
     <div class="profile-container">
         
         <div class="sidebar">
-            <div class="user-info">
-                <div class="user-avatar" id="user-initials">--</div>
-                <div class="user-name" id="user-fullname">Loading...</div>
+            <div class="sidebar-top">
+                <div class="user-info-card">
+                    <div class="user-avatar" id="sidebar-avatar">--</div>
+                    <div class="user-details">
+                        <div class="user-name" id="user-fullname">Loading...</div>
+                        <div class="user-email" id="user-email">loading...</div>
+                    </div>
+                </div>
+                
+                <div class="menu-wrapper">
+                    <button class="menu-btn active" onclick="switchTab('profile')" id="btn-profile">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Profile
+                    </button>
+                    <button class="menu-btn" onclick="switchTab('dashboard')" id="btn-dashboard">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                        Dashboard
+                    </button>
+                    <button class="menu-btn" onclick="switchTab('purchases')" id="btn-purchases">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                        My Purchases
+                    </button>
+                    <button class="menu-btn" onclick="switchTab('reviews')" id="btn-reviews">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        My Reviews
+                    </button>
+                    <button class="menu-btn" onclick="switchTab('rewards')" id="btn-rewards">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                        Rewards
+                    </button>
+                </div>
             </div>
-            <div class="menu-wrapper">
-                <button class="menu-btn active" onclick="switchTab('dashboard')" id="btn-dashboard">📊 Dashboard</button>
-                <button class="menu-btn" onclick="switchTab('purchases')" id="btn-purchases">🛍️ My Purchases</button>
-                <button class="menu-btn" onclick="switchTab('reviews')" id="btn-reviews">⭐ My Reviews</button>
-                <button class="menu-btn" onclick="switchTab('rewards')" id="btn-rewards">💰 Rewards</button>
-            </div>
+
+            <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
 
         <div class="content-area">
+            
+            <div id="tab-profile" class="tab-content active">
+                <div class="section-header">
+                    <h2 class="section-title">My Profile</h2>
+                    <p class="section-desc">Manage your personal information and account settings.</p>
+                </div>
+                
+                <div class="profile-settings-card">
+                    <div class="avatar-section">
+                        <div class="avatar-display">
+                            <img id="main-avatar-img" src="" style="display: none;">
+                            <svg id="main-avatar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <div class="avatar-actions">
+                            <input type="file" id="avatar-input" accept="image/*" style="display: none;" onchange="uploadAvatar(event)">
+                            <button class="btn-outline" onclick="document.getElementById('avatar-input').click()" id="avatar-btn">Change Photo</button>
+                            <span class="avatar-hint">Recommended: Square JPG, PNG. Max 2MB.</span>
+                        </div>
+                    </div>
 
-            <div id="tab-dashboard" class="tab-content active">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="profile-name" class="form-input" placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label>Account Email</label>
+                            <input type="email" id="profile-email" class="form-input" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="profile-phone" class="form-input" placeholder="+91 0000000000">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="profile-location" class="form-input" placeholder="City, Country">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Bio / About Me</label>
+                            <textarea id="profile-bio" class="form-input" placeholder="Write a short bio about yourself..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn-primary" onclick="updateProfileInfo()" id="save-info-btn">Save Changes</button>
+                    </div>
+                </div>
+
+                <div class="profile-settings-card">
+                    <h3 style="margin-bottom: 20px; font-size: 16px; font-weight: 800; color: #0f172a;">Security Settings</h3>
+                    <div class="form-group">
+                        <label>Update Password</label>
+                        <div class="input-row">
+                            <input type="password" id="profile-password" class="form-input" placeholder="Enter new password (min. 6 characters)">
+                            <button class="btn-primary" onclick="updatePassword()" id="pass-btn">Reset Password</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="profile-status" class="status-msg"></div>
+
+            </div>
+
+            <div id="tab-dashboard" class="tab-content">
                 <div class="section-header">
                     <h2 class="section-title">Overview</h2>
                     <p class="section-desc">Your overall statistics and progress on Faithox.</p>
@@ -206,7 +321,7 @@
                     <p style="font-size: 12px; color: #94a3b8; margin-top: 15px;">Transfers to Indian UPI accounts usually process within 10 minutes.</p>
                 </div>
 
-                <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">Reward History</h3>
+                <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 15px; color: #f2f2f2;">Reward History</h3>
                 <table class="history-table">
                     <tr>
                         <th>Date</th>
@@ -241,16 +356,11 @@
 
         let currentUser = null;
 
-        // --- TAB SWITCHING LOGIC (NO PAGE RELOADS!) ---
+        // --- TAB SWITCHING LOGIC ---
         function switchTab(tabId) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            // Deselect all buttons
             document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-            
-            // Show selected tab
             document.getElementById('tab-' + tabId).classList.add('active');
-            // Highlight selected button
             document.getElementById('btn-' + tabId).classList.add('active');
         }
 
@@ -263,17 +373,150 @@
             }
             currentUser = session.user;
 
-            // Set Avatar Name
-            const fullName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
-            document.getElementById('user-fullname').innerText = fullName;
-            document.getElementById('user-initials').innerText = fullName.substring(0, 2).toUpperCase();
-
-            // Load Dynamic Data
+            updateProfileUI();
             fetchUserReviews();
-            // Note: Since you haven't built the 'Purchases' or 'Cashback' databases yet, 
-            // the UI shows realistic dummy data for tabs 2 and 4.
         }
 
+        // --- UPDATE UI WITH CURRENT DATA ---
+        function updateProfileUI() {
+            const metadata = currentUser.user_metadata || {};
+            const fullName = metadata.full_name || currentUser.email.split('@')[0];
+            const avatarUrl = metadata.avatar_url;
+            
+            // Extended profile details
+            const phone = metadata.phone || '';
+            const location = metadata.location || '';
+            const bio = metadata.bio || '';
+
+            // Set Texts in Sidebar
+            document.getElementById('user-fullname').innerText = fullName;
+            document.getElementById('user-email').innerText = currentUser.email;
+            
+            // Set Inputs in Form
+            document.getElementById('profile-name').value = fullName;
+            document.getElementById('profile-email').value = currentUser.email;
+            document.getElementById('profile-phone').value = phone;
+            document.getElementById('profile-location').value = location;
+            document.getElementById('profile-bio').value = bio;
+
+            // Set Avatars
+            const sidebarAvatar = document.getElementById('sidebar-avatar');
+            const mainImg = document.getElementById('main-avatar-img');
+            const mainSvg = document.getElementById('main-avatar-svg');
+
+            if (avatarUrl) {
+                sidebarAvatar.innerHTML = `<img src="${avatarUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+                mainImg.src = avatarUrl;
+                mainImg.style.display = 'block';
+                mainSvg.style.display = 'none';
+            } else {
+                sidebarAvatar.innerHTML = fullName.substring(0, 2).toUpperCase();
+                mainImg.style.display = 'none';
+                mainSvg.style.display = 'block';
+            }
+        }
+
+        // --- HELPER TO SHOW STATUS MESSAGES ---
+        function showStatus(message, isError = false) {
+            const statusBox = document.getElementById('profile-status');
+            statusBox.innerText = message;
+            statusBox.className = 'status-msg ' + (isError ? 'error' : 'success');
+            setTimeout(() => { statusBox.style.display = 'none'; }, 4000);
+        }
+
+        // --- UPDATE PROFILE INFO (Extended) ---
+        async function updateProfileInfo() {
+            const newName = document.getElementById('profile-name').value.trim();
+            const newPhone = document.getElementById('profile-phone').value.trim();
+            const newLocation = document.getElementById('profile-location').value.trim();
+            const newBio = document.getElementById('profile-bio').value.trim();
+            const btn = document.getElementById('save-info-btn');
+            
+            if (!newName) return showStatus("Name cannot be empty.", true);
+            
+            btn.innerText = "Saving...";
+            
+            const { data, error } = await db.auth.updateUser({
+                data: { 
+                    full_name: newName,
+                    phone: newPhone,
+                    location: newLocation,
+                    bio: newBio
+                }
+            });
+
+            btn.innerText = "Save Changes";
+            if (error) {
+                showStatus(error.message, true);
+            } else {
+                currentUser = data.user;
+                updateProfileUI();
+                showStatus("Profile details updated successfully!");
+            }
+        }
+
+        // --- UPDATE PASSWORD ---
+        async function updatePassword() {
+            const newPassword = document.getElementById('profile-password').value;
+            const btn = document.getElementById('pass-btn');
+
+            if (newPassword.length < 6) return showStatus("Password must be at least 6 characters.", true);
+
+            btn.innerText = "Updating...";
+            const { error } = await db.auth.updateUser({
+                password: newPassword
+            });
+
+            btn.innerText = "Reset Password";
+            if (error) {
+                showStatus(error.message, true);
+            } else {
+                document.getElementById('profile-password').value = '';
+                showStatus("Password updated successfully!");
+            }
+        }
+
+        // --- UPLOAD AVATAR ---
+        async function uploadAvatar(event) {
+            const file = event.target.files[0];
+            const btn = document.getElementById('avatar-btn');
+            if (!file) return;
+
+            btn.innerText = "Uploading...";
+            
+            // 1. Upload file to Supabase Storage 'avatars' bucket
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${currentUser.id}-${Math.random()}.${fileExt}`; 
+            
+            const { data: uploadData, error: uploadError } = await db.storage
+                .from('avatars')
+                .upload(fileName, file, { upsert: true });
+
+            if (uploadError) {
+                btn.innerText = "Change Photo";
+                return showStatus("Error uploading image: " + uploadError.message, true);
+            }
+
+            // 2. Get Public URL
+            const { data: publicUrlData } = db.storage.from('avatars').getPublicUrl(fileName);
+            const avatarUrl = publicUrlData.publicUrl;
+
+            // 3. Update User Metadata
+            const { data, error: updateError } = await db.auth.updateUser({
+                data: { avatar_url: avatarUrl }
+            });
+
+            btn.innerText = "Change Photo";
+            if (updateError) {
+                showStatus(updateError.message, true);
+            } else {
+                currentUser = data.user;
+                updateProfileUI();
+                showStatus("Profile photo updated!");
+            }
+        }
+
+        // --- LOAD REVIEWS (Existing Logic) ---
         async function fetchUserReviews() {
             const { data: reviews, error } = await db
                 .from('reviews')
@@ -284,30 +527,24 @@
             const listEl = document.getElementById('reviews-list');
 
             if (error || !reviews || reviews.length === 0) {
-                listEl.innerHTML = "<p style='color:#64748b;'>You haven't written any reviews yet.</p>";
+                listEl.innerHTML = "<p style='color:#94a3b8;'>You haven't written any reviews yet.</p>";
                 return;
             }
 
-            // Update Dashboard Counters
             document.getElementById('dash-reviews').innerText = reviews.length;
-            // Assuming they bought everything they reviewed + 1 pending
             document.getElementById('dash-purchases').innerText = reviews.length + 1; 
             document.getElementById('dash-pending').innerText = '1';
 
-            // Get Company Names
             const companyIds = [...new Set(reviews.map(r => r.company_id))];
             const { data: companies } = await db.from('companies').select('id, name').in('id', companyIds);
             const compMap = {};
             if (companies) companies.forEach(c => compMap[c.id] = c.name);
 
-            // Draw Review Cards
             let html = '';
             reviews.forEach(r => {
                 const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
                 const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
                 const prodName = compMap[r.company_id] || 'Verified Product';
-                
-                // Randomizing views for realism until you add a 'views' column
                 const randomViews = Math.floor(Math.random() * 500) + 15; 
 
                 html += `
@@ -315,7 +552,7 @@
                         <div class="review-card-header">
                             <div>
                                 <div class="review-product-name">${prodName}</div>
-                                <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;">Posted on ${date}</div>
+                                <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Posted on ${date}</div>
                             </div>
                             <div class="review-views">👁️ ${randomViews} Views</div>
                         </div>
