@@ -697,6 +697,7 @@
             // 1. Fetch the 4 newest products actually registered in your database
             const { data: companies, error } = await db.from('companies')
                 .select('*')
+                .eq('is_featured',true)//magic new line
                 .order('created_at', { ascending: false })
                 .limit(4);
 
