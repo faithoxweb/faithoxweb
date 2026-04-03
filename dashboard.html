@@ -114,16 +114,83 @@
         .close-modal:hover { background: #e2e8f0; color: #0f172a; }
         .code-block { background: #1e293b; color: #38bdf8; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 13px; margin: 15px 0; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; }
 
-        /* RESPONSIVE */
+        /* --- MOBILE RESPONSIVENESS FIXES FOR BUSINESS DASHBOARD --- */
         @media (max-width: 768px) {
-            .sidebar { position: relative; width: 100%; height: auto; display: flex; flex-direction: column; padding: 20px; border-right: none; border-bottom: 1px solid #e2e8f0; }
-            .content-area { margin-left: 0; padding: 20px; }
-            .menu-wrapper { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; }
-            .menu-btn { white-space: nowrap; text-align: center; justify-content: center; }
-            .logout-btn { margin-top: 20px; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .section-title { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .product-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+            /* 1. Stack the Sidebar and Content vertically */
+            .profile-container { 
+                flex-direction: column; 
+            }
+
+            /* 2. Unlock the sidebar from the left wall and put it at the top */
+            .sidebar { 
+                position: relative; 
+                width: 100%; 
+                height: auto; 
+                padding: 20px; 
+                border-right: none; 
+                border-bottom: 2px solid #0f172a; 
+            }
+
+            /* 3. Turn the sidebar menu into a swipeable horizontal row */
+            .menu-wrapper { 
+                display: flex; 
+                flex-direction: row; 
+                overflow-x: auto; 
+                gap: 10px; 
+                padding-bottom: 10px; 
+            }
+            .menu-btn { 
+                white-space: nowrap; 
+                justify-content: center; 
+                margin-bottom: 0;
+            }
+
+            /* 4. Fix the main content area so it uses 100% of the phone screen */
+            .content-area { 
+                margin-left: 0; /* Removes the empty laptop space */
+                padding: 20px; 
+                width: 100%;
+                max-width: 100%;
+            }
+
+            /* 5. Stack the Dashboard 3-column stats into 1 neat column */
+            .stats-grid { 
+                grid-template-columns: 1fr; 
+                gap: 15px; 
+            }
+
+            /* 6. Make the Add Product button stretch nicely */
+            .section-title { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 15px; 
+            }
+            .add-btn {
+                width: 100%;
+            }
+
+            /* 7. Stack the Product Cards */
+            .product-item { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 15px; 
+            }
+            .product-actions, .widget-btn {
+                width: 100%;
+            }
+            
+            /* 8. Fix the Profile Tab Upload section */
+            .avatar-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .profile-settings-card {
+                padding: 20px; /* Shrinks the giant white box padding for small screens */
+            }
+            .logout-btn { 
+                margin-top: 20px; 
+            }
         }
     </style>
 </head>
