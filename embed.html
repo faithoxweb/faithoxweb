@@ -16,13 +16,20 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .widget-wrapper {
+       .widget-wrapper {
             display: flex;
             flex-direction: column;
             width: 100%;
             height: 100vh;
             max-height: 100vh;
-            padding: 10px;
+            padding: 16px;
+            
+            /* --- NEW BORDER STYLES --- */
+            background: #ffffff; /* Gives it a solid background */
+            border: 2px solid #3fa3dd; /* The Faithox Blue Border */
+            border-radius: 16px; /* Smooth rounded corners */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Soft drop shadow */
+            overflow: hidden; /* Keeps everything cleanly inside the border */
         }
         .reviews-scroll-container {
             flex: 1;
