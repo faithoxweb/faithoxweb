@@ -512,7 +512,7 @@
         // --- WIDGET MODAL LOGIC ---
         function openCodeModal(companyId) {
             const liveUrl = `https://faithoxweb.vercel.app/embed.html?id=${companyId}`;
-            const code = `\n<iframe \n  src="${liveUrl}" \n  width="100%" \n  height="350px" \n  style="border: none; background: transparent; overflow: hidden;">\n</iframe>`;
+           const code = `\n<iframe \n  src="${liveUrl}" \n  width="100%" \n  height="350px" \n  style="border: none; background: transparent; overflow: hidden; display: block; margin: 0 auto;">\n</iframe>`;
             document.getElementById('embed-code-text').innerText = code;
             document.getElementById('code-modal').classList.add('open');
         }
