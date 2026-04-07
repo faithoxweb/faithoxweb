@@ -22,6 +22,34 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* --- SKELETON LOADER STYLES --- */
+        .skeleton {
+            position: relative;
+            overflow: hidden;
+            background-color: #cbd5e1 !important;
+            color: transparent !important;
+            border-color: #cbd5e1 !important;
+            pointer-events: none;
+        }
+        .skeleton::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 1.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+        .skeleton > * { visibility: hidden !important; opacity: 0 !important; }
+        
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+
+        .sk-banner { width: 180px; }
+        .sk-title { width: 350px; height: 42px; margin: -75px 0 0 -60px; border-radius: 0 8px 8px 0; }
+        .sk-rating-row { width: 140px; height: 44px; margin-left: -40px; border-radius: 0 8px 8px 0; }
+
         /* --- TOP BAR --- */
         .top-bar {
             background: #f8f8f8;
@@ -52,7 +80,7 @@
         .shared-product-wrapper {
             display: flex;
             align-items: stretch;
-            border: 3px solid #cbd5e1; /* Shared bold border */
+            border: 3px solid #cbd5e1; 
             border-radius: 16px;
             background: #f8f8f8;
             margin-top: 27px;
@@ -63,7 +91,6 @@
             margin-right: 20px;
         }
 
-        /* NEW CSS CLASS FOR THE IMAGE CONTAINER WITH RIGHT BORDER */
         .product-img-frame {
             position: relative;
             height: 100%;
@@ -71,14 +98,14 @@
             align-items: center;
             justify-content: center;
             z-index: 2;
-            border-right: 3px solid #cbd5e1; /* Vertical border line added here */
+            border-right: 3px solid #cbd5e1; 
         }
 
         .top-bar-img {
             height: 100%;
             max-height: 230px;
             width: auto;
-            border-radius: 13px 0 0 13px; /* Matches inner radius so it fits perfectly */
+            border-radius: 13px 0 0 13px; 
             object-fit: cover;
         }
 
@@ -96,29 +123,27 @@
             z-index: 1; 
         }
 
-        /* BANNER STYLES ADDED HERE */
         #dynamic-company-name {
             font-size: 28px;
             font-weight: 800;
             color: #f8f8f8;
-            background: #242424; /* Matches the top banner color */
+            background: #242424; 
             letter-spacing: -0.5px;
-            margin: -75px 0 0 -60px; /* Pulls text left and up to attach to the image */
+            margin: -75px 0 0 -60px; 
             padding: 5px 35px;
-            border-radius: 0 8px 8px 0; /* Ribbon/banner rounded right side */
+            border-radius: 0 8px 8px 0; 
             align-self: flex-start;
             position: relative;
             z-index: 10;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
-        /* Ribbon fold effect */
         #dynamic-company-name::after {
             content: '';
             position: absolute;
             left: 0;
             bottom: -10px;
-            border-top: 10px solid #0287a1; /* Darker blue for the shadow fold */
+            border-top: 10px solid #0287a1; 
             border-left: 10px solid transparent;
         }
 
@@ -126,10 +151,10 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: #242424; /* Make it like the review card rating pill */
+            background: #242424; 
             padding: 8px 24px 8px 16px;
-            margin-left: -40px; /* Attach to the image border */
-            border-radius: 0 8px 8px 0; /* Banner shape */
+            margin-left: -40px; 
+            border-radius: 0 8px 8px 0; 
             width: fit-content;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
@@ -141,7 +166,7 @@
         #exact-rating-text {
             font-size: 22px;
             font-weight: 800;
-            color: #f8f8f8; /* White text for dark banner */
+            color: #f8f8f8; 
             line-height: 1;
             margin-top: 2px;
         }
@@ -480,14 +505,12 @@
         @media (max-width: 768px) {
             .page-shell { padding: 24px 16px 0; }
             .footer-wrapper { flex-direction: column; text-align: center; justify-content: center; }
-            .top-bar { flex-direction: column; height: auto; padding: 60px 20px 40px; gap: 20px; } /* Increased bottom padding for mobile */
+            .top-bar { flex-direction: column; height: auto; padding: 60px 20px 40px; gap: 20px; } 
             
-            /* Responsive Updates for the Merged Container */
             .shared-product-wrapper { flex-direction: column; height: auto; min-width: 100%; margin-top: 0; }
             .top-bar-img { border-radius: 13px 13px 0 0; width: 100%; max-height: 250px; }
             .product-exact-box { min-width: 100%; text-align: center; border-radius: 0 0 13px 13px; padding: 32px 20px; }
 
-            /* Mobile adjustment for image frame: remove vertical border, add horizontal */
             .product-img-frame {
                 border-right: none;
                 border-bottom: 3px solid #cbd5e1;
@@ -495,7 +518,9 @@
                 width: 100%;
             }
 
-            /* Mobile styling for the banner to pull it up over the image bottom edge */
+            .sk-title { margin: -45px auto 10px auto; border-radius: 8px; width: 250px; }
+            .sk-rating-row { margin-left: auto; margin-right: auto; border-radius: 8px; }
+
             #dynamic-company-name {
                 margin: -45px auto 10px auto; 
                 border-radius: 8px;
@@ -521,22 +546,23 @@
     <div id="pro-progress-bar" style="position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: #0f172a; z-index: 999999; transition: width 0.3s ease-out, opacity 0.3s ease; opacity: 0; box-shadow: 0 0 10px rgba(15,23,42,0.5);"></div>
 
     <div class="top-bar">
-        <div class="top-banner">Product from strude.com</div>
+        <div class="top-banner skeleton sk-banner" id="top-banner-el">Loading...</div>
         
         <div class="shared-product-wrapper">
-            <div class="product-img-frame">
-                <img id="dynamic-company-img" src="https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/pumashoes1.avif" alt="Product Image" class="top-bar-img">
+            <div class="product-img-frame skeleton" id="img-frame">
+                <img id="dynamic-company-img" src="" alt="Product Image" class="top-bar-img" style="opacity: 0; transition: opacity 0.3s ease-in-out;">
             </div>
 
             <div class="product-exact-box">
-                <h1 id="dynamic-company-name">strude shoes 1</h1>
-                <div class="product-exact-rating-row">
+                <h1 id="dynamic-company-name" class="skeleton sk-title"></h1>
+                <div class="product-exact-rating-row skeleton sk-rating-row" id="exact-rating-box">
                     <div id="exact-stars-container"></div>
-                    <span id="exact-rating-text">0.0</span>
+                    <span id="exact-rating-text" style="opacity: 0;">0.0</span>
                 </div>
             </div>
         </div>
-        <div class="top-rating-square">
+        
+        <div class="top-rating-square skeleton" id="rating-square-box">
             <div class="top-rating-square-header">Rating Breakdown</div>
             <div class="rating-overview">
                 <div class="big-rating">
@@ -545,7 +571,7 @@
                     <div class="big-rating-count" id="big-rating-count">0 reviews</div>
                 </div>
                 <div class="rating-bars" id="rating-bars">
-                    </div>
+                </div>
             </div>
         </div>
 
@@ -582,7 +608,11 @@
                         <span class="reviews-section-title">Customer Reviews</span>
                         <span class="reviews-count-badge" id="reviews-count-badge">0 reviews</span>
                     </div>
-                    <div id="reviews-list"></div>
+                    <div id="reviews-list">
+                        <div class="review-item skeleton" style="width: 480px; height: 280px; border-radius: 14px; flex-shrink: 0;"></div>
+                        <div class="review-item skeleton" style="width: 480px; height: 280px; border-radius: 14px; flex-shrink: 0;"></div>
+                        <div class="review-item skeleton" style="width: 480px; height: 280px; border-radius: 14px; flex-shrink: 0;"></div>
+                    </div>
                 </div>
                 
             </div>
@@ -735,7 +765,7 @@
             // Update new product exact rating box
             const exactTextEl = document.getElementById('exact-rating-text');
             if (exactTextEl) exactTextEl.innerText = formatted;
-            renderExactStars(ratingValue, 'exact-stars-container', 24); // Size adjusted to fit inside banner perfectly
+            renderExactStars(ratingValue, 'exact-stars-container', 24); 
         }
 
         function renderExactStars(rating, containerId, size = 20) {
@@ -747,14 +777,12 @@
             container.style.justifyContent = 'center';
             container.style.alignItems = 'center';
 
-            // Determine filled color based on rating value just like review cards
             let fillColor = "#10B981"; // 4-5 stars
             if (rating < 4 && rating >= 3) fillColor = "#F59E0B"; // 3 stars
             if (rating < 3 && rating >= 2) fillColor = "#F97316"; // 2 stars
             if (rating < 2 && rating > 0) fillColor = "#EF4444";  // 1 star
             if (rating === 0) fillColor = "#88e788"; 
 
-            // If it's the product exact container, apply dark theme un-filled stars like review pills
             let useFill = containerId === 'exact-stars-container' ? fillColor : "#88e788";
             let useEmpty = containerId === 'exact-stars-container' ? "#334155" : "#e2e8f0";
 
@@ -763,7 +791,7 @@
                 if (rating >= i) {
                     fillPercent = 100;
                 } else if (rating > i - 1) {
-                    fillPercent = (rating - (i - 1)) * 100; // Calculates exactly down to decimal percent
+                    fillPercent = (rating - (i - 1)) * 100; 
                 }
 
                 const starId = `grad-${containerId}-${i}-${Math.random().toString(36).substr(2,5)}`;
@@ -797,7 +825,6 @@
                 currentUser = data.session.user;
                 const userRole = currentUser.user_metadata?.role || 'customer';
 
-                // --- BUSINESS LOCKDOWN FIX ---
                 if (userRole === 'business') {
                     window.location.replace('dashboard.html');
                     return;
@@ -810,17 +837,31 @@
             const { data: co, error } = await db.from('companies').select('*').eq('id', companyId).single();
             if (error || !co) { return; }
 
-            document.title = escapeHTML(co.name) + ' | Faithox';
+            // --- REMOVE SKELETONS ONCE DATA IS FETCHED ---
+            document.getElementById('top-banner-el').classList.remove('skeleton', 'sk-banner');
+            document.getElementById('img-frame').classList.remove('skeleton');
+            document.getElementById('dynamic-company-img').style.opacity = '1';
             
             const titleEl = document.getElementById('dynamic-company-name');
-            if (titleEl) titleEl.innerText = co.name;
+            titleEl.classList.remove('skeleton', 'sk-title');
+            
+            const exactRatingBox = document.getElementById('exact-rating-box');
+            exactRatingBox.classList.remove('skeleton', 'sk-rating-row');
+            document.getElementById('exact-rating-text').style.opacity = '1';
+            
+            document.getElementById('rating-square-box').classList.remove('skeleton');
 
-            if (co.name && co.name.toLowerCase().includes('strude shoes 1')) {
-                document.getElementById('dynamic-company-img').src = 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/pumashoes1.avif';
-            } else if (co.name && co.name.toLowerCase().includes('strude shoes 2')) {
-                document.getElementById('dynamic-company-img').src = 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/pumashoes2.avif';
-            } else if (co.image_url) {
-                document.getElementById('dynamic-company-img').src = co.image_url;
+            // --- POPULATE REAL DATA ---
+            document.title = escapeHTML(co.name) + ' | Faithox';
+            titleEl.innerText = co.name;
+
+            const topBanner = document.querySelector('.top-banner');
+            if (topBanner) {
+                topBanner.innerText = co.parent_company ? `Product by ${co.parent_company}` : (co.category || 'Verified Product');
+            }
+
+            if (co.image_url || co.logo_url || co.image) {
+                document.getElementById('dynamic-company-img').src = co.image_url || co.logo_url || co.image;
             }
             
             if (co.website) {
@@ -828,13 +869,15 @@
             }
 
             const r = parseFloat(co.rating) || 0;
-            updateVisualRatings(r); // Fallback DB rating visually before exact calculation
+            updateVisualRatings(r); 
             document.getElementById('big-rating-count').innerText = (co.reviews_count || 0) + ' reviews';
         }
 
         async function loadReviews() {
             const { data: reviews } = await db.from('reviews').select('*').eq('company_id', companyId).order('created_at', { ascending: false });
             const list = document.getElementById('reviews-list');
+            
+            // This clears out the skeleton review cards immediately
             list.innerHTML = '';
 
             const count = reviews ? reviews.length : 0;
@@ -846,11 +889,9 @@
                 return;
             }
 
-            // EXACT RATING CALCULATION
             const totalRatingSum = reviews.reduce((sum, rev) => sum + (rev.rating || 0), 0);
             const calculatedExactRating = totalRatingSum / reviews.length;
             
-            // Re-render UI based on calculated exact rating
             updateVisualRatings(calculatedExactRating);
 
             loadedReviews = reviews; 
@@ -883,7 +924,6 @@
                 photoUrls = photoUrls.filter(u => u && typeof u === 'string' && u.startsWith('http'));
                 r.parsedPhotos = photoUrls;
 
-                // --- GENERATE STAR RATING PILL ---
                 const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
 
                 let starsHtml = '';
@@ -892,7 +932,6 @@
                 }
                 let ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
 
-                // --- GENERATE PHOTOS FOR LEFT SIDE ---
                 let photoHtml = '';
                 if (photoUrls.length > 0) {
                     let firstPhoto = photoUrls[0];
@@ -1003,7 +1042,7 @@
             }
 
             const reviewerName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
-            const userAvatar = currentUser.user_metadata?.avatar_url || null; // Grab the avatar URL
+            const userAvatar = currentUser.user_metadata?.avatar_url || null; 
 
             const { error } = await db.from('reviews').insert({
                 user_id: currentUser.id,
@@ -1013,7 +1052,7 @@
                 status: 'approved',
                 reviewer_name: reviewerName,
                 photos: uploadedUrls,
-                avatar_url: userAvatar // Add it to the database!
+                avatar_url: userAvatar 
             });
             
             btn.disabled = false;
