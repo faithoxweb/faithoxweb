@@ -52,7 +52,32 @@
         .nav-search-icon svg { width: 100%; height: 100%; stroke: #242424; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .nav-results-dropdown { position: absolute; top: 50px; left: 0; width: 100%; background: #f2f2f2; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); display: none; max-height: 300px; overflow-y: auto; z-index: 2001; animation: dropdownFade 0.2s ease; }
 
-       /* --- BUTTON --- */
+        /* --- BUTTON & DROPDOWN MENU --- */
+        .user-menu-container { 
+            position: relative; 
+            display: inline-flex; 
+            align-items: center; 
+            z-index: 2002; 
+        }
+        .user-dropdown { 
+            position: absolute; top: 100%; right: 0; margin-top: 8px; 
+            background: #f2f2f2; border: 1px solid rgba(0,0,0,0.05); 
+            border-radius: 8px; flex-direction: column; min-width: 130px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15); overflow: hidden; 
+            z-index: 2005; opacity: 0; visibility: hidden; 
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+            display: none; 
+        }
+        .user-menu-container.logged-in:hover .user-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        .user-dropdown button { 
+            background: transparent; color: #242424; border: none; 
+            padding: 12px 16px; text-align: left; font-size: 14px; 
+            font-weight: 600; cursor: pointer; transition: background 0.2s; 
+            width: 100%; 
+        }
+        .user-dropdown button:hover { background: rgba(0,0,0,0.05); }
+
         .auth-trigger-btn { 
             background-color: #f2f2f2; 
             color: #242424; 
@@ -70,6 +95,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 6px;
             transition: background-color 0.2s ease; 
         }
 
@@ -384,7 +410,7 @@
             body {background-size: 100% 400px;}
             .nav-options { display: none; }
             .top-bar { padding: 0 20px; }
-            .auth-trigger-btn { margin-left: auto; }
+            .user-menu-container { margin-left: auto; }
             .hero-heading { font-size: 32px; margin-bottom: 20px; margin-top: 27px; }
             .company-grid { grid-template-columns: repeat(2, 1fr); }
             
@@ -415,9 +441,15 @@
             <div id="nav-slider"></div>
         </div>
 
-        <button type="button" class="auth-trigger-btn" onclick="openAuth()">
-            <span> Sign up </span>
-        </button>
+        <div class="user-menu-container">
+            <button type="button" class="auth-trigger-btn" onclick="openAuth()">
+                <span> Sign up </span>
+            </button>
+            <div class="user-dropdown" id="user-dropdown">
+                <button class="dropdown-profile-btn">Profile</button>
+                <button onclick="logoutUser()">Logout</button>
+            </div>
+        </div>
     </nav>
 
     <div class="app-card">
@@ -626,7 +658,14 @@
             const currentUrl = encodeURIComponent(window.location.href);
             navigateTo('auth.html?returnTo=' + currentUrl);
         };
+        
         window.goHome = () => navigateTo('index.html');
+
+        window.logoutUser = async () => {
+            if (!db) return;
+            await db.auth.signOut();
+            window.location.reload();
+        };
 
         const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_bLQjs0QMG8COtCALOJz7hw_M9NWKRyl';
@@ -660,24 +699,34 @@
                     const initials = name.substring(0, 2).toUpperCase();
                     const avatarUrl = currentUser.user_metadata?.avatar_url;
 
-                    // 2. Grab the Login button and turn it into a perfect circle
+                    // 2. Grab the Login button and turn it into the Profile button with hover menu
                     const authBtn = document.querySelector('.auth-trigger-btn');
+                    const menuContainer = document.querySelector('.user-menu-container');
+                    const dropdown = document.getElementById('user-dropdown');
                     
+                    let avatarHtml = '';
                     if (avatarUrl) {
-                        authBtn.innerHTML = `<img src="${avatarUrl}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                        avatarHtml = `<img src="${avatarUrl}" style="width: 22px; height: 22px; border-radius: 50%; object-fit: cover; margin-right: 2px;">`;
                     } else {
-                        authBtn.innerHTML = initials;
+                        avatarHtml = `<div style="width: 22px; height: 22px; border-radius: 50%; background: #242424; color: #f2f2f2; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; margin-right: 2px;">${initials}</div>`;
                     }
                     
-                    authBtn.style.width = '40px';
-                    authBtn.style.height = '40px';
-                    authBtn.style.borderRadius = '50%';
-                    authBtn.style.padding = '0';
-                    authBtn.style.fontSize = '15px';
-                    authBtn.style.fontWeight = '800';
+                    authBtn.innerHTML = `${avatarHtml} <span>Profile</span>`;
+                    
+                    authBtn.style.width = 'auto';
+                    authBtn.style.height = '35px';
+                    authBtn.style.borderRadius = '6px';
+                    authBtn.style.padding = '0 12px';
+                    authBtn.style.fontSize = '14px';
+                    authBtn.style.fontWeight = '549';
 
-                    // 3. Change its destination so it opens the Profile page! (or dashboard if business)
-                    authBtn.onclick = () => {
+                    // 3. Remove click action, enable hover menu
+                    authBtn.onclick = null;
+                    menuContainer.classList.add('logged-in');
+                    dropdown.style.display = 'flex'; // Revealed on hover by CSS
+
+                    const profileBtn = dropdown.querySelector('.dropdown-profile-btn');
+                    profileBtn.onclick = () => {
                         if (userRole === 'business') {
                             navigateTo('dashboard.html');
                         } else {
