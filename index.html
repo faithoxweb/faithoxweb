@@ -563,9 +563,19 @@
         .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(15, 23, 42, 0.2); border-top-color: #0f172a; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* TOP PROGRESS BAR */
-        .pro-progress-bar { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: #00c853; z-index: 999999; pointer-events: none; transition: width 0.3s ease-out, opacity 0.3s ease; opacity: 0; }
-        .pro-progress-bar::after { content: ""; display: block; position: absolute; right: 0; width: 100px; height: 100%; box-shadow: 0 0 10px #00c853, 0 0 5px #00c853; transform: rotate(3deg) translate(0px, -4px); opacity: 1; }
+        /* --- REAL PROGRESS BAR (NProgress Style) --- */
+        .nprogress-bar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 0%; 
+            height: 5px; 
+            background: #2a2a2a; 
+            z-index: 9999999; 
+            pointer-events: none; 
+            opacity: 0; 
+        }
+        
 
         @media (max-width: 900px) {
             .business-banner { flex-direction: column; padding: 60px 30px; align-items: center; text-align: center; gap: 40px; }
@@ -682,7 +692,9 @@
     </div>
     <div class="live-banner"> Latest Reviews Live  <span class="live-dot"></span></div>
 
-    <div id="pro-progress-bar" class="pro-progress-bar"></div>
+    <div id="pro-progress-bar" class="nprogress-bar">
+        <div class="nprogress-peg"></div>
+    </div>
     <div id="search-overlay"></div>
 
     <nav class="top-bar">
@@ -886,35 +898,51 @@
             }[tag]));
         }
 
-        // GLOBAL FUNCTIONS
+        // --- NEW NPROGRESS GLOBAL FUNCTION ---
+        let progressInterval;
         window.navigateTo = (url) => {
             const bar = document.getElementById('pro-progress-bar');
-            if(bar) {
-                // Reset the bar to 0% with no transition
-                bar.style.transition = 'none';
-                bar.style.opacity = '1';
-                bar.style.width = '5%';
+            if (!bar) { window.location.href = url; return; }
+
+            clearInterval(progressInterval);
+            
+            // 1. Reset and Show immediately
+            bar.style.transition = 'none';
+            bar.style.opacity = '1';
+            bar.style.width = '0%';
+            void bar.offsetWidth; // Force DOM repaint
+
+            // 2. Initial Fast Jump
+            bar.style.transition = 'width 0.2s ease-out';
+            let currentWidth = Math.random() * 15 + 15; // 15% to 30%
+            bar.style.width = currentWidth + '%';
+
+            // 3. Trickle (simulate network loading)
+            progressInterval = setInterval(() => {
+                currentWidth += Math.random() * 5 + 2; // Add 2% to 7%
+                if (currentWidth > 85) currentWidth = 85; 
+                bar.style.transition = 'width 0.2s ease';
+                bar.style.width = currentWidth + '%';
+            }, 200);
+
+            // 4. Snap to 100% and redirect
+            setTimeout(() => {
+                clearInterval(progressInterval);
+                bar.style.transition = 'width 0.15s ease-out';
+                bar.style.width = '100%';
                 
-                // Force a browser layout reflow
-                void bar.offsetWidth;
-                
-                // Start a slow trickle exactly like YouTube/GitHub
-                bar.style.transition = 'width 2s cubic-bezier(0.1, 0.8, 0.2, 1)';
-                bar.style.width = '85%';
-                
-                // Fast snap to 100% just before redirecting
-                setTimeout(() => { 
-                    bar.style.transition = 'width 0.2s ease-out';
-                    bar.style.width = '100%';
-                }, 200);
-            }
-            setTimeout(() => { window.location.href = url; }, 350);
+                // Wait for the 100% animation to finish before destroying the page
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 150);
+            }, 300); // Fake delay to allow trickle to be seen
         };
 
-        // BFCache reset for progress bar
+        // BFCache reset for progress bar (when user clicks 'back' button)
         window.addEventListener('pageshow', function(event) {
             const bar = document.getElementById('pro-progress-bar');
             if (bar) {
+                clearInterval(progressInterval);
                 bar.style.transition = 'none';
                 bar.style.opacity = '0';
                 bar.style.width = '0%';
