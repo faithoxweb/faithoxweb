@@ -208,9 +208,10 @@
         .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; margin-right: 30px; }
         .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: #2a2a2a; } 
 
-        .nav-options { display: flex; gap: 10px; align-items: center; margin-right: 30px; height: 100%; position: relative; margin-left: auto; }
+        .nav-options { display: flex; gap: 10px; align-items: center; margin-right: 10px; height: 100%; position: relative; margin-left: auto; }
         .nav-link { background-color: #fdfdfd; border-radius: 50px; padding: 0 12px; color: #2a2a2a; text-decoration: none; font-size: 13px; font-weight: 500; cursor: pointer; position: relative; height: 35px; display: flex; align-items: center; transition: all 0.2s; }
-
+        .nav-link:hover{background-color: #dcdcdc;}
+        
         
         /* --- BUTTON & DROPDOWN MENU --- */
         .user-menu-container { 
@@ -563,7 +564,8 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         
         /* TOP PROGRESS BAR */
-        .pro-progress-bar { position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: #f2f2f2; z-index: 999999; transition: width 0.3s ease-out, opacity 0.3s ease; opacity: 0; box-shadow: 0 0 10px rgba(15,23,42,0.5); }
+        .pro-progress-bar { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: #00c853; z-index: 999999; pointer-events: none; transition: width 0.3s ease-out, opacity 0.3s ease; opacity: 0; }
+        .pro-progress-bar::after { content: ""; display: block; position: absolute; right: 0; width: 100px; height: 100%; box-shadow: 0 0 10px #00c853, 0 0 5px #00c853; transform: rotate(3deg) translate(0px, -4px); opacity: 1; }
 
         @media (max-width: 900px) {
             .business-banner { flex-direction: column; padding: 60px 30px; align-items: center; text-align: center; gap: 40px; }
@@ -888,9 +890,23 @@
         window.navigateTo = (url) => {
             const bar = document.getElementById('pro-progress-bar');
             if(bar) {
+                // Reset the bar to 0% with no transition
+                bar.style.transition = 'none';
                 bar.style.opacity = '1';
-                bar.style.width = '60%';
-                setTimeout(() => { bar.style.width = '100%'; }, 200);
+                bar.style.width = '5%';
+                
+                // Force a browser layout reflow
+                void bar.offsetWidth;
+                
+                // Start a slow trickle exactly like YouTube/GitHub
+                bar.style.transition = 'width 2s cubic-bezier(0.1, 0.8, 0.2, 1)';
+                bar.style.width = '85%';
+                
+                // Fast snap to 100% just before redirecting
+                setTimeout(() => { 
+                    bar.style.transition = 'width 0.2s ease-out';
+                    bar.style.width = '100%';
+                }, 200);
             }
             setTimeout(() => { window.location.href = url; }, 350);
         };
@@ -899,6 +915,7 @@
         window.addEventListener('pageshow', function(event) {
             const bar = document.getElementById('pro-progress-bar');
             if (bar) {
+                bar.style.transition = 'none';
                 bar.style.opacity = '0';
                 bar.style.width = '0%';
             }
