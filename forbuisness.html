@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faithox for Business</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        body { background-color: #f0f1f1; font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; flex-direction: column; color: #0f172a; -webkit-font-smoothing: antialiased; }
+        
+        .top-bar { width: 100%; height: 65px; display: flex; align-items: center; padding: 0 40px; background: #f0f1f1; position: absolute; top: 0; left: 0; z-index: 2000; }
+        .logo-container { display: flex; align-items: center; cursor: pointer; }
+        .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: #2a2a2a; } 
+
+        .hero-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 100px 20px 40px 20px; position: relative; }
+        .bb-badge { background: #fdfdfd; color: #2a2a2a; padding: 6px 14px; border-radius: 10px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border: 2px solid #ededed; display: inline-block; margin-bottom: 20px; }
+        
+        .hero-heading { font-size: 55px; font-weight: 800; color: #2a2a2a; margin-bottom: 20px; letter-spacing: -1.5px; max-width: 800px; line-height: 1.1; }
+        .hero-sub { font-size: 17px; color: #64748b; font-weight: 500; max-width: 600px; margin-bottom: 40px; line-height: 1.6; }
+        
+        .bb-btn { background: #2a2a2a; color: #ffffff; padding: 15px 32px; border-radius: 50px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; transition: all 0.2s ease; }
+        .bb-btn:hover { background: #636363; transform: translateY(-2px); }
+
+        .trust-row { display: flex; gap: 20px; margin-top: 30px; justify-content: center; }
+        .trust-item { font-size: 13px; color: #64748b; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .trust-item svg { width: 16px; height: 16px; stroke: #10b981; }
+
+        @media (max-width: 768px) {
+            .top-bar { padding: 0 20px; }
+            .hero-heading { font-size: 38px; }
+            .trust-row { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-bar">
+        <div class="logo-container" onclick="window.location.href='index.html'">
+            <span class="brand-text">faithox</span>
+        </div>
+    </nav>
+
+    <div class="hero-wrapper">
+        <div class="bb-badge">For Businesses</div>
+        <h1 class="hero-heading">Grow your business with authentic reviews.</h1>
+        <p class="hero-sub">Integrate advanced customer review systems and turn feedback into a high-value growth asset. Build trust at scale, boost conversions, and dominate your market.</p>
+        
+        <button class="bb-btn" onclick="window.location.href='buisnessauth.html'">
+            Create Business Account
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+
+        <div class="trust-row">
+            <div class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Upto 50 reviews free
+            </div>
+            <div class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Cancel anytime
+            </div>
+        </div>
+    </div>
+</body>
+</html>

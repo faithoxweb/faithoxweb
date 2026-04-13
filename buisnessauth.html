@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faithox | Authentication</title>
+    <title>Faithox | Business Portal</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -110,16 +110,18 @@
         .primary-btn { 
             width: 100%; 
             padding: 18px; 
-            background: #242424; 
-            color: #f8f8f8; 
+            background: #3fa3dd; 
+            color: #242424; 
             border: none; 
             border-radius: 12px; 
-            font-weight: 700; 
+            font-weight: 800; 
             font-size: 15px; 
             cursor: pointer; 
             margin-top: 10px; 
             transition: all 0.3s ease; 
         }
+
+        .primary-btn:hover { background: #2b8ac1; color: #fff;}
 
         .switch-link { 
             margin-top: 30px; 
@@ -174,13 +176,13 @@
         <div class="auth-side-form">
             <div class="form-container">
 
-                <h2 id="page-title">Welcome Back</h2>
-                <p class="sub-text" id="page-subtext">Sign in to continue reviewing products.</p>
+                <h2 id="page-title">Business Portal</h2>
+                <p class="sub-text" id="page-subtext">Sign in to manage your products and analytics.</p>
 
               <div id="login-view">
                     <div class="input-group">
-                        <label>Email Address</label>
-                        <input type="email" id="email-in" class="auth-input" placeholder="name@domain.com">
+                        <label>Business Email</label>
+                        <input type="email" id="email-in" class="auth-input" placeholder="name@company.com">
                     </div>
                     
                     <div class="input-group">
@@ -188,21 +190,21 @@
                         <input type="password" id="pass-in" class="auth-input" placeholder="••••••••">
                     </div>
                     
-                    <button class="primary-btn" onclick="handleLogin()">Sign In</button>
+                    <button class="primary-btn" onclick="handleLogin()">Sign In to Dashboard</button>
                     
-                    <p class="switch-link" onclick="toggleAuthMode()">New here? <span>Create an account</span></p>
-                    <div class="close-btn" onclick="navigateTo('index.html')">Return to Home</div>
+                    <p class="switch-link" onclick="toggleAuthMode()">Want to partner with us? <span>Create business account</span></p>
+                    <div class="close-btn" onclick="navigateTo('forbuisness.html')">Return</div>
                 </div>
 
                 <div id="signup-view" style="display:none;">
                     <div class="input-group">
-                        <label>Full Name</label>
-                        <input type="text" id="name-up" class="auth-input" placeholder="John Doe">
+                        <label>Company Name</label>
+                        <input type="text" id="name-up" class="auth-input" placeholder="Company Inc.">
                     </div>
 
                     <div class="input-group">
-                        <label>Email Address</label>
-                        <input type="email" id="email-up" class="auth-input" placeholder="name@domain.com">
+                        <label>Business Email</label>
+                        <input type="email" id="email-up" class="auth-input" placeholder="name@company.com">
                     </div>
                     
                     <div class="input-group">
@@ -210,9 +212,9 @@
                         <input type="password" id="pass-up" class="auth-input" placeholder="Create a strong password">
                     </div>
                     
-                    <button class="primary-btn" onclick="handleSignup()">Create Account</button>
-                    <p class="switch-link" onclick="toggleAuthMode()">Already have an account? <span>Sign In</span></p>
-                    <div class="close-btn" onclick="navigateTo('index.html')">Return to Home</div>
+                    <button class="primary-btn" onclick="handleSignup()">Create Business Account</button>
+                    <p class="switch-link" onclick="toggleAuthMode()">Already a partner? <span>Sign In</span></p>
+                    <div class="close-btn" onclick="navigateTo('forbuisness.html')">Return</div>
                 </div>
 
             </div>
@@ -254,14 +256,14 @@
                 login.style.display = 'block'; 
                 signup.style.display = 'none'; 
                 isLoginView = true;
-                title.innerText = "Welcome Back";
-                subtext.innerText = "Sign in to continue reviewing products.";
+                title.innerText = "Business Portal";
+                subtext.innerText = "Sign in to manage your products and analytics.";
             } else { 
                 login.style.display = 'none'; 
                 signup.style.display = 'block'; 
                 isLoginView = false;
-                title.innerText = "Create Account";
-                subtext.innerText = "Join the community and start reviewing.";
+                title.innerText = "Partner With Us";
+                subtext.innerText = "Create a business account to grow your brand.";
             }
         }
 
@@ -274,13 +276,7 @@
                         window.location.replace('dashboard.html');
                         return;
                     } else {
-                        const params = new URLSearchParams(window.location.search);
-                        const returnTo = params.get('returnTo');
-                        if (returnTo) {
-                            window.location.replace(decodeURIComponent(returnTo));
-                        } else {
-                            window.location.replace('index.html');
-                        }
+                        window.location.replace('index.html');
                         return;
                     }
                 }
@@ -299,13 +295,13 @@
             } else if (data.session) {
                 const userRole = data.user.user_metadata?.role || 'customer'; 
                 
-                if (userRole !== 'customer') {
+                if (userRole !== 'business') {
                     await db.auth.signOut();
-                    alert(`Access Denied: This email belongs to a ${userRole} account. Please use the business portal to login.`);
+                    alert(`Access Denied: This email belongs to a customer account. Please use the standard login.`);
                     return;
                 }
                 
-                navigateTo('index.html');
+                navigateTo('dashboard.html');
             }
         }
 
@@ -326,7 +322,7 @@
                 options: {
                     data: {
                         full_name: name,
-                        role: 'customer'
+                        role: 'business'
                     }
                 } 
             });
@@ -334,8 +330,8 @@
             if (error) {
                 alert("Signup Failed: " + error.message); 
             } else { 
-                alert("Account created successfully!"); 
-                navigateTo('index.html');
+                alert("Business Account created successfully!"); 
+                navigateTo('dashboard.html');
             }
         }
     </script>

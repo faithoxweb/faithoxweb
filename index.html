@@ -541,27 +541,27 @@
         .company-card:hover { transform: translateY(-4px); background: rgba(255, 255, 255, 0.8); box-shadow: 0 20px 40px rgba(0,0,0,0.1); border-color: #fff; }
 
         /* --- PROFESSIONAL FOOTER --- */
-        .pro-footer { max-width: 1450px; width: calc(100% - 48px); background-color: #fdfdfd; color: #2a2a2a; font-family: 'Inter', sans-serif; padding: 80px 0 30px; margin: 120px auto 30px auto; border-radius: 32px; border: 1px solid #ededed; position: relative; z-index: 10; }
-        .footer-wrapper { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
-        .footer-top { display: grid; grid-template-columns: repeat(6, 1fr); gap: 40px; padding-bottom: 60px; border-bottom: 1px solid rgba(0, 0, 0, 0.05); margin-bottom: 40px; }
+        .pro-footer { width: 1465px; max-width: calc(100% - 48px); background-color: #fdfdfd; color: #2a2a2a; font-family: 'Inter', sans-serif; padding: 80px 0 30px; margin: 120px auto 30px auto; border-radius: 32px; border: 1px solid #ededed; position: relative; z-index: 10; }
+        .footer-wrapper { max-width: 1300px; margin: 0 auto; padding: 0 10px; }
+        .footer-top { display: grid; grid-template-columns: repeat(6, 1fr); gap: 40px; padding-bottom: 60px; border-bottom: 1px solid rgba(0, 0, 0, 0.15); margin-bottom: 40px; }
         .footer-brand-col { grid-column: span 2; padding-right: 40px; }
         .footer-logo { font-size: 24px; font-weight: 800; color: #2a2a2a; letter-spacing: -1px; margin-bottom: 20px; display: inline-block; text-transform: uppercase; }
         .footer-desc { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 30px; }
         .footer-col h4 { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 24px; letter-spacing: 0.5px; }
         .footer-links { display: flex; flex-direction: column; gap: 16px; }
         .footer-link { font-size: 14px; color: #64748b; text-decoration: none; transition: color 0.2s ease; font-weight: 500; }
-        .footer-link:hover { color: #0f172a; }
-        .footer-badge { background: #f0fdf4; color: #2a2a2a; font-size: 10px; padding: 2px 8px; border-radius: 5px; margin-left: 6px; font-weight: 700; text-transform: uppercase; border: 1px solid #dcfce7; }
+        .footer-link:hover { color: #2a2a2a; }
+        .footer-badge { background: #2a2a2a; color: #fdfdfd; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 6px; font-weight: 700; text-transform: uppercase; }
         .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #64748b; }
         .footer-socials { display: flex; gap: 20px; }
         .social-icon { color: #64748b; font-size: 18px; cursor: pointer; transition: color 0.2s; text-decoration: none; }
-        .social-icon:hover { color: #0f172a; }
+        .social-icon:hover { color: #2a2a2a; }
         
         .newsletter-form { position: relative; margin-top: 10px; display: flex; gap: 10px; }
         .ft-input { background: #f0f1f1; border: 1px solid #e2e8f0; color: #0f172a; padding: 12px 16px; border-radius: 8px; font-size: 14px; width: 100%; outline: none; transition: 0.2s; }
         .ft-input::placeholder { color: #94a3b8; }
-        .ft-input:focus { border-color: #cbd5e1; background: #ffffff; }
-        .ft-btn { background: #2a2a2a; color: #ffffff; border: none; padding: 0 16px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
+        .ft-input:focus { border-color: #ededed; background: #ededed; }
+        .ft-btn { background: #2a2a2a; color: #fdfdfd; border: none; padding: 0 16px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
         .ft-btn:hover { background: #636363; }
 
         /* --- OVERLAYS --- */
@@ -714,7 +714,7 @@
         </div>
         
         <div class="nav-options">
-            <a class="nav-link" style="cursor:pointer;" onclick="navigateTo('auth.html?mode=business')">For Business</a>
+            <a class="nav-link" style="cursor:pointer;" onclick="navigateTo('forbuisness.html')">For Business</a>
             <a class="nav-link">Contact Us</a>
         </div>
 
@@ -763,11 +763,11 @@
                             <p>Integrate advanced customer review systems and turn feedback into a high-value growth asset. Build trust at scale, boost conversions, and dominate your market.</p>
                         </div>
                         <div class="bb-actions">
-                            <button class="bb-btn" onclick="navigateTo('auth.html?mode=business')">
-                                Get Started Free
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                            </button>
-                            <button class="bb-btn-secondary" onclick="navigateTo('auth.html?mode=business')">Book a Demo</button>
+                            <button class="bb-btn" onclick="navigateTo('forbuisness.html')">
+    Get Started Free
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+</button>
+<button class="bb-btn-secondary" onclick="navigateTo('forbuisness.html')">Book a Demo</button>
                         </div>
                         <div class="bb-trust">
                             <span>
