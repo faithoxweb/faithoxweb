@@ -7,18 +7,19 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back" />
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
         html, body { max-width: 100%; overflow-x: hidden; }
         
         body { 
-            background: #242424;
+            background: #f0f1f1;
             font-family: 'Inter', sans-serif; 
             min-height: 100vh; 
             width: 100%;
             overflow: hidden; 
-            color: #1e293b; 
+            color: #2a2a2a; 
             -webkit-font-smoothing: antialiased;
         }
 
@@ -28,21 +29,32 @@
             height: 100vh;
             position: relative;
             z-index: 10;
+            padding: 24px; 
+            gap: 24px;     
         }
 
         .auth-side-anim {
             flex: 1; 
             height: 100%;
-            background: url('https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/Grade%20Grey.jpg') no-repeat center center;
-            background-size: cover;
+            background: #f0f1f1;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .floating-section {
+            width: 100%; 
+            height: 100%; 
+            background: #fdfdfd;
+            border-radius: 32px;
         }
 
         .auth-side-form {
             width: 100%; 
-            max-width: 500px;
+            max-width: 440px; 
             height: 100%;
-            background: #242424;
+            background: #f0f1f1;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -52,37 +64,114 @@
 
         .form-container {
             width: 100%;
-            max-width: 440px;
-            padding: 40px;
-            background: #f2f2f2;
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            height: 100%; 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; 
+            padding: 48px 40px; 
+            background: #fdfdfd;
+            border-radius: 32px;
+        }
+
+        .form-header {
+            text-align: left;
+            width: 100%;
+            position: relative;
         }
 
         .form-container h2 { 
             font-size: 32px; 
             font-weight: 800; 
-            color: #0f172a; 
+            color: #2a2a2a; 
             margin-bottom: 8px; 
             letter-spacing: -0.5px; 
         }
 
         .form-container p.sub-text { 
-            font-size: 16px; 
+            font-size: 15px; 
             color: #64748b; 
-            margin-bottom: 25px; 
             font-weight: 500; 
+            white-space: nowrap; 
         }
 
-        .input-group { margin-bottom: 20px; }
+        /* --- Side-Placed Inline Message Box --- */
+        .message-box {
+            position: absolute;
+            top: -20px; 
+            right: 0;
+            width: 100%;
+            max-width: 160px; 
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.4;
+            display: none;
+            z-index: 20;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            animation: fadeSlideIn 0.3s ease-out forwards;
+        }
+
+        .message-box.show { display: block; }
+        .message-box.error { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+        .message-box.success { background: #f0fdf4; color: #22c55e; border: 1px solid #bbf7d0; }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .view-section {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+            width: 100%;
+            animation: fadeSlideUp 0.4s ease-out forwards;
+        }
+
+        .view-section.active {
+            display: flex;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-fields {
+            margin-top: 32px; 
+            margin-bottom: auto;
+            width: 100%;
+        }
+
+        #login-view .form-fields {
+            padding-top: 108px; 
+        }
+
+        #signup-view .form-fields {
+            padding-top: 0px; 
+        }
+
+        .input-group { margin-bottom: 28px; } 
+
+        .name-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        
+        .name-row .input-group {
+            margin-bottom: 0;
+            flex: 1;
+        }
 
         .input-group label {
             display: block;
             font-size: 13px;
             font-weight: 600;
-            color: #475569;
-            margin-bottom: 8px;
-            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 10px; 
+            text-transform: none;
             letter-spacing: 0.5px;
         }
 
@@ -90,19 +179,19 @@
             width: 100%; 
             padding: 16px 20px; 
             border: 2px solid #cbd5e1;
-            background: #ffffff;
-            border-radius: 12px; 
+            background: #fdfdfd;
+            border-radius: 13px; 
             font-size: 15px; 
             outline: none; 
             transition: all 0.2s ease; 
             font-weight: 500; 
-            color: #242424; 
+            color: #2a2a2a; 
         }
 
         .auth-input:focus { 
-            border-color: #0f172a;
-            background: #e2e8f0; 
-            box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.15); 
+            border: 2px solid #2a2a2a;
+            background: #fdfdfd; 
+            transition: all 0.4s ease;
         }
         
         .auth-input::placeholder { color: #94a3b8; }
@@ -110,19 +199,27 @@
         .primary-btn { 
             width: 100%; 
             padding: 18px; 
-            background: #242424; 
-            color: #f8f8f8; 
+            background: #2a2a2a; 
+            color: #fdfdfd; 
             border: none; 
-            border-radius: 12px; 
+            border-radius: 13px; 
             font-weight: 700; 
-            font-size: 15px; 
+            font-size: 17px; 
             cursor: pointer; 
-            margin-top: 10px; 
+            margin-top: 20px; 
             transition: all 0.3s ease; 
         }
 
+        .primary-btn:hover {
+            background: #636363;
+        }
+
+        .form-footer {
+            margin-top: auto; 
+            width: 100%;
+        }
+
         .switch-link { 
-            margin-top: 30px; 
             font-size: 14px; 
             color: #64748b; 
             cursor: pointer; 
@@ -135,84 +232,138 @@
         .switch-link:hover span { text-decoration: underline; }
 
         .close-btn { 
-            margin-top: 20px; 
+            margin-top: 24px; 
             cursor: pointer; 
             color: #94a3b8; 
-            font-size: 13px; 
+            font-size: 14px; 
             font-weight: 600; 
             transition: 0.2s; 
-            display: block; 
-            text-align: center; 
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            width: max-content;
+            margin-left: auto;
+            margin-right: auto;
+            text-decoration: none; 
         }
-        .close-btn:hover { color: #0f172a; }
-
-        .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(15, 23, 42, 0.2); border-top-color: #0f172a; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
         
-        .pro-progress-bar { 
-            position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: #0f172a; 
-            z-index: 999999; transition: width 0.3s ease-out, opacity 0.3s ease; opacity: 0; 
-            box-shadow: 0 0 10px rgba(15,23,42,0.5); 
+        .close-btn .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        .home-text {
+            text-decoration: none; 
+            text-underline-offset: 4px;
+        }
+        
+        .close-btn:hover { color: #0f172a; }
+        .close-btn:hover .home-text { text-decoration: underline; } 
+        
+        /* --- REAL PROGRESS BAR (NProgress Style) --- */
+        .nprogress-bar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 0%; 
+            height: 5px; 
+            background: #2a2a2a; 
+            z-index: 9999999; 
+            pointer-events: none; 
+            opacity: 0; 
         }
 
         @media (max-width: 768px) {
             body { overflow-y: auto; overflow-x: hidden; }
-            .page-wrapper { flex-direction: column; height: auto; min-height: 100vh; }
+            .page-wrapper { flex-direction: column; height: auto; min-height: 100vh; padding: 16px; gap: 16px; }
             .auth-side-anim { width: 100%; height: 250px; }
-            .auth-side-form { max-width: none; width: 100%; height: auto; padding: 20px; flex-grow: 1; border-radius: 0; }
-            .form-container { padding: 30px 20px; }
+            .auth-side-form { max-width: none; width: 100%; height: auto; padding: 0; flex-grow: 1; border-radius: 0; }
+            .form-container { padding: 40px 24px; height: auto; display: flex; }
+            .form-fields { margin-top: 32px; margin-bottom: auto; } 
+            .form-container p.sub-text { max-width: 100%; }
+            .message-box { position: relative; max-width: 100%; margin-top: 16px; top: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div id="pro-progress-bar" class="pro-progress-bar"></div>
+    <div id="pro-progress-bar" class="nprogress-bar">
+        <div class="nprogress-peg"></div>
+    </div>
 
     <div class="page-wrapper">
-        <div class="auth-side-anim"></div>
+        <div class="auth-side-anim">
+            <div class="floating-section"></div>
+        </div>
 
         <div class="auth-side-form">
             <div class="form-container">
 
-                <h2 id="page-title">Welcome Back</h2>
-                <p class="sub-text" id="page-subtext">Sign in to continue reviewing products.</p>
-
-              <div id="login-view">
-                    <div class="input-group">
-                        <label>Email Address</label>
-                        <input type="email" id="email-in" class="auth-input" placeholder="name@domain.com">
-                    </div>
+                <div class="form-header">
+                    <h2 id="page-title">Log In</h2>
+                    <p class="sub-text" id="page-subtext">Share what matters. Discover what’s trusted.</p>
                     
-                    <div class="input-group">
-                        <label>Password</label>
-                        <input type="password" id="pass-in" class="auth-input" placeholder="••••••••">
-                    </div>
-                    
-                    <button class="primary-btn" onclick="handleLogin()">Sign In</button>
-                    
-                    <p class="switch-link" onclick="toggleAuthMode()">New here? <span>Create an account</span></p>
-                    <div class="close-btn" onclick="navigateTo('index.html')">Return to Home</div>
+                    <div id="form-message" class="message-box"></div>
                 </div>
 
-                <div id="signup-view" style="display:none;">
-                    <div class="input-group">
-                        <label>Full Name</label>
-                        <input type="text" id="name-up" class="auth-input" placeholder="John Doe">
+                <div id="login-view" class="view-section active">
+                    <div class="form-fields">
+                        <div class="input-group">
+                            <label>Email</label>
+                            <input type="email" id="email-in" class="auth-input" placeholder="name@domain.com">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" id="pass-in" class="auth-input" placeholder="••••••••">
+                        </div>
+                        
+                        <button class="primary-btn" onclick="handleLogin()">Log In</button>
                     </div>
 
-                    <div class="input-group">
-                        <label>Email Address</label>
-                        <input type="email" id="email-up" class="auth-input" placeholder="name@domain.com">
+                    <div class="form-footer">
+                        <p class="switch-link" onclick="toggleAuthMode()">New here? <span>Sign Up</span></p>
+                        <div class="close-btn" onclick="navigateTo('index.html')">
+                            <span class="material-symbols-outlined">arrow_back</span> 
+                            <span class="home-text">Home</span>
+                        </div>
                     </div>
-                    
-                    <div class="input-group">
-                        <label>Password</label>
-                        <input type="password" id="pass-up" class="auth-input" placeholder="Create a strong password">
+                </div>
+
+                <div id="signup-view" class="view-section">
+                    <div class="form-fields">
+                        
+                        <div class="name-row">
+                            <div class="input-group">
+                                <label>First Name</label>
+                                <input type="text" id="fname-up" class="auth-input" placeholder="John">
+                            </div>
+                            <div class="input-group">
+                                <label>Last Name</label>
+                                <input type="text" id="lname-up" class="auth-input" placeholder="Doe">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Email</label>
+                            <input type="email" id="email-up" class="auth-input" placeholder="name@domain.com">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" id="pass-up" class="auth-input" placeholder="Create a strong password">
+                        </div>
+                        
+                        <button class="primary-btn" onclick="handleSignup()">Sign Up</button>
                     </div>
-                    
-                    <button class="primary-btn" onclick="handleSignup()">Create Account</button>
-                    <p class="switch-link" onclick="toggleAuthMode()">Already have an account? <span>Sign In</span></p>
-                    <div class="close-btn" onclick="navigateTo('index.html')">Return to Home</div>
+
+                    <div class="form-footer">
+                        <p class="switch-link" onclick="toggleAuthMode()">Already have an account? <span>Log In</span></p>
+                        <div class="close-btn" onclick="navigateTo('index.html')">
+                            <span class="material-symbols-outlined">arrow_back</span> 
+                            <span class="home-text">Home</span>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -220,19 +371,55 @@
     </div>
 
     <script>
+        // --- NEW NPROGRESS GLOBAL FUNCTION ---
+        let progressInterval;
         window.navigateTo = (url) => {
             const bar = document.getElementById('pro-progress-bar');
-            if(bar) {
-                bar.style.opacity = '1';
-                bar.style.width = '60%';
-                setTimeout(() => { bar.style.width = '100%'; }, 200);
-            }
-            setTimeout(() => { window.location.href = url; }, 350);
+            if (!bar) { window.location.href = url; return; }
+
+            clearInterval(progressInterval);
+            
+            // 1. Reset and Show immediately
+            bar.style.transition = 'none';
+            bar.style.opacity = '1';
+            bar.style.width = '0%';
+            void bar.offsetWidth; // Force DOM repaint
+
+            // 2. Initial Fast Jump
+            bar.style.transition = 'width 0.2s ease-out';
+            let currentWidth = Math.random() * 15 + 15; // 15% to 30%
+            bar.style.width = currentWidth + '%';
+
+            // 3. Trickle (simulate network loading)
+            progressInterval = setInterval(() => {
+                currentWidth += Math.random() * 5 + 2; // Add 2% to 7%
+                if (currentWidth > 85) currentWidth = 85; 
+                bar.style.transition = 'width 0.2s ease';
+                bar.style.width = currentWidth + '%';
+            }, 200);
+
+            // 4. Snap to 100% and redirect
+            setTimeout(() => {
+                clearInterval(progressInterval);
+                bar.style.transition = 'width 0.15s ease-out';
+                bar.style.width = '100%';
+                
+                // Wait for the 100% animation to finish before destroying the page
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 150);
+            }, 300); // Fake delay to allow trickle to be seen
         };
 
+        // BFCache reset for progress bar (when user clicks 'back' button)
         window.addEventListener('pageshow', function(event) {
             const bar = document.getElementById('pro-progress-bar');
-            if (bar) { bar.style.opacity = '0'; bar.style.width = '0%'; }
+            if (bar) {
+                clearInterval(progressInterval);
+                bar.style.transition = 'none';
+                bar.style.opacity = '0';
+                bar.style.width = '0%';
+            }
         });
 
         const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
@@ -244,28 +431,57 @@
 
         let isLoginView = true;
 
+        // Message Handling Functions
+        function showMessage(text, type) {
+            const msgBox = document.getElementById('form-message');
+            msgBox.innerText = text;
+            msgBox.className = `message-box ${type} show`;
+        }
+
+        function clearMessage() {
+            const msgBox = document.getElementById('form-message');
+            msgBox.className = 'message-box';
+            msgBox.innerText = '';
+        }
+
         function toggleAuthMode() {
+            clearMessage(); // Clear any existing messages when switching
+            
             const login = document.getElementById('login-view');
             const signup = document.getElementById('signup-view');
             const title = document.getElementById('page-title');
             const subtext = document.getElementById('page-subtext');
 
-            if (login.style.display === 'none') { 
-                login.style.display = 'block'; 
-                signup.style.display = 'none'; 
-                isLoginView = true;
-                title.innerText = "Welcome Back";
-                subtext.innerText = "Sign in to continue reviewing products.";
-            } else { 
-                login.style.display = 'none'; 
-                signup.style.display = 'block'; 
+            if (isLoginView) { 
+                login.classList.remove('active');
+                
+                setTimeout(() => {
+                    signup.classList.add('active');
+                    title.innerText = "Sign Up";
+                    subtext.innerText = "Share what matters. Discover what’s trusted.";
+                }, 10);
+                
                 isLoginView = false;
-                title.innerText = "Create Account";
-                subtext.innerText = "Join the community and start reviewing.";
+            } else { 
+                signup.classList.remove('active');
+                
+                setTimeout(() => {
+                    login.classList.add('active');
+                    title.innerText = "Log In";
+                    subtext.innerText = "Share what matters. Discover what’s trusted.";
+                }, 10);
+                
+                isLoginView = true;
             }
         }
 
         window.onload = async () => {
+            const params = new URLSearchParams(window.location.search);
+            const mode = params.get('mode');
+            if (mode === 'signup' && isLoginView) {
+                toggleAuthMode();
+            }
+
             if (db) {
                 const { data } = await db.auth.getSession();
                 if (data.session) {
@@ -274,7 +490,6 @@
                         window.location.replace('dashboard.html');
                         return;
                     } else {
-                        const params = new URLSearchParams(window.location.search);
                         const returnTo = params.get('returnTo');
                         if (returnTo) {
                             window.location.replace(decodeURIComponent(returnTo));
@@ -289,53 +504,70 @@
 
         async function handleLogin() {
             if (!db) return;
+            clearMessage();
+            
             const email = document.getElementById('email-in').value;
             const password = document.getElementById('pass-in').value;
+            
+            if(!email || !password) {
+                showMessage("Please fill all fields!", "error");
+                return;
+            }
             
             const { data, error } = await db.auth.signInWithPassword({ email, password });
             
             if (error) {
-                alert("Login Failed: " + error.message); 
+                showMessage("Login Failed: " + error.message, "error");
             } else if (data.session) {
                 const userRole = data.user.user_metadata?.role || 'customer'; 
                 
                 if (userRole !== 'customer') {
                     await db.auth.signOut();
-                    alert(`Access Denied: This email belongs to a ${userRole} account. Please use the business portal to login.`);
+                    showMessage(`Access Denied: This email belongs to a ${userRole} account. Please use the business portal to login.`, "error");
                     return;
                 }
                 
-                navigateTo('index.html');
+                showMessage("Login successful! Redirecting...", "success");
+                setTimeout(() => {
+                    navigateTo('index.html');
+                }, 1500);
             }
         }
 
         async function handleSignup() {
             if (!db) return;
-            const name = document.getElementById('name-up').value;
+            clearMessage();
+            
+            const firstName = document.getElementById('fname-up').value.trim();
+            const lastName = document.getElementById('lname-up').value.trim();
             const email = document.getElementById('email-up').value;
             const password = document.getElementById('pass-up').value;
 
-            if(!name || !email || !password) {
-                alert("Please fill all fields!");
+            if(!firstName || !lastName || !email || !password) {
+                showMessage("Please fill all fields!", "error");
                 return;
             }
+
+            const fullName = `${firstName} ${lastName}`;
 
             const { data, error } = await db.auth.signUp({ 
                 email, 
                 password,
                 options: {
                     data: {
-                        full_name: name,
+                        full_name: fullName,
                         role: 'customer'
                     }
                 } 
             });
             
             if (error) {
-                alert("Signup Failed: " + error.message); 
+                showMessage("Signup Failed: " + error.message, "error");
             } else { 
-                alert("Account created successfully!"); 
-                navigateTo('index.html');
+                showMessage("Account created successfully! Redirecting...", "success"); 
+                setTimeout(() => {
+                    navigateTo('index.html');
+                }, 1500); 
             }
         }
     </script>

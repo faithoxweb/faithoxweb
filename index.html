@@ -6,7 +6,9 @@
     <title>Faithox | Worldwide Reviews</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         /* --- 1. BASE STYLES --- */
@@ -14,7 +16,7 @@
             overflow-y: scroll; /* Fixes layout shift by permanently reserving scrollbar space */
         }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; font-family: 'Inter', sans-serif; }
         
         body { 
             background-color: #f0f1f1;
@@ -719,7 +721,8 @@
         </div>
 
         <div class="user-menu-container">
-            <button type="button" class="auth-trigger-btn" onclick="openAuth()">
+            <a id="login-btn" class="nav-link" style="cursor:pointer; margin-right: 8px;" onclick="openAuth('login')">Log In</a>
+            <button type="button" class="auth-trigger-btn" onclick="openAuth('signup')">
                 <span> Sign up </span>
             </button>
             <div class="user-dropdown" id="user-dropdown">
@@ -1018,10 +1021,10 @@
             }
         });
 
-        window.openAuth = () => {
-            // Pass the current URL so auth.html knows where to return us
+        // UPDATED: Now accepts a mode parameter for Login or Signup
+        window.openAuth = (mode = 'signup') => {
             const currentUrl = encodeURIComponent(window.location.href);
-            navigateTo('auth.html?returnTo=' + currentUrl);
+            navigateTo(`auth.html?mode=${mode}&returnTo=` + currentUrl);
         };
         
         window.goHome = () => navigateTo('index.html');
@@ -1064,7 +1067,11 @@
                     const initials = name.substring(0, 2).toUpperCase();
                     const avatarUrl = currentUser.user_metadata?.avatar_url;
 
-                    // 2. Grab the Login button and turn it into the Profile button with hover menu
+                    // Hide the standalone "Log In" button since we are now logged in
+                    const loginBtn = document.getElementById('login-btn');
+                    if (loginBtn) loginBtn.style.display = 'none';
+
+                    // 2. Grab the original auth button and turn it into the Profile button with hover menu
                     const authBtn = document.querySelector('.auth-trigger-btn');
                     const menuContainer = document.querySelector('.user-menu-container');
                     const dropdown = document.getElementById('user-dropdown');
