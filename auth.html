@@ -216,50 +216,30 @@
 
         .form-footer {
             margin-top: auto; 
+            margin-bottom: 16px; 
             width: 100%;
         }
 
         .switch-link { 
-            font-size: 14px; 
-            color: #64748b; 
+            font-size: 13px; 
+            color: #2a2a2a; 
             cursor: pointer; 
-            font-weight: 500; 
+            font-weight: 350; 
             transition: 0.2s; 
             text-align: center; 
         }
 
-        .switch-link span { color: #0f172a; font-weight: 700; }
-        .switch-link:hover span { text-decoration: underline; }
-
-        .close-btn { 
-            margin-top: 24px; 
-            cursor: pointer; 
-            color: #94a3b8; 
-            font-size: 14px; 
-            font-weight: 600; 
-            transition: 0.2s; 
-            display: flex; 
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-            width: max-content;
-            margin-left: auto;
-            margin-right: auto;
-            text-decoration: none; 
+        .switch-link span { 
+            color: #0f172a; 
+            font-size: 13px; 
+            font-weight: 500; 
+            text-decoration: underline; 
         }
         
-        .close-btn .material-symbols-outlined {
-            font-size: 18px;
+        .switch-link:hover span { 
+            color: #2a2a2a; 
         }
 
-        .home-text {
-            text-decoration: none; 
-            text-underline-offset: 4px;
-        }
-        
-        .close-btn:hover { color: #0f172a; }
-        .close-btn:hover .home-text { text-decoration: underline; } 
-        
         /* --- REAL PROGRESS BAR (NProgress Style) --- */
         .nprogress-bar { 
             position: fixed; 
@@ -308,61 +288,79 @@
 
                 <div id="login-view" class="view-section active">
                     <div class="form-fields">
-                        <div class="input-group">
-                            <label>Email</label>
-                            <input type="email" id="email-in" class="auth-input" placeholder="name@domain.com">
-                        </div>
                         
-                        <div class="input-group">
-                            <label>Password</label>
-                            <input type="password" id="pass-in" class="auth-input" placeholder="••••••••">
+                        <div id="login-step-1">
+                            <div class="input-group">
+                                <label>Email</label>
+                                <input type="email" id="email-in" class="auth-input" placeholder="name@domain.com">
+                            </div>
+                            <button class="primary-btn" onclick="sendOtp('login')">Continue</button>
+                            <p style="font-size: 13px; color: #2a2a2a; text-align: center; margin-top: 23px; font-weight: 350;">
+                                By continuing you agree to our <a href="javascript:void(0)" style="color: #0f172a; text-decoration: underline; font-weight: 500; font-size: 13px;">Terms</a> and <a href="javascript:void(0)" style="color: #0f172a; text-decoration: underline; font-weight: 500; font-size: 13px;">Privacy policy</a>
+                            </p>
                         </div>
-                        
-                        <button class="primary-btn" onclick="handleLogin()">Log In</button>
+
+                        <div id="login-step-2" style="display: none;">
+                            <div class="input-group">
+                                <label>Enter OTP</label>
+                                <input type="text" id="otp-in" class="auth-input" placeholder="6-digit code">
+                            </div>
+                            <button class="primary-btn" onclick="verifyOtp('login')">Log In</button>
+                            <p style="font-size: 13px; text-align: center; margin-top: 23px;">
+                                <a href="javascript:void(0)" onclick="resetView('login')" style="color: #0f172a; text-decoration: underline; font-weight: 500; font-size: 13px;">Change Email</a>
+                            </p>
+                        </div>
+
                     </div>
 
                     <div class="form-footer">
                         <p class="switch-link" onclick="toggleAuthMode()">New here? <span>Sign Up</span></p>
-                        <div class="close-btn" onclick="navigateTo('index.html')">
-                            <span class="material-symbols-outlined">arrow_back</span> 
-                            <span class="home-text">Home</span>
-                        </div>
                     </div>
                 </div>
 
                 <div id="signup-view" class="view-section">
                     <div class="form-fields">
                         
-                        <div class="name-row">
+                        <div id="signup-step-1">
                             <div class="input-group">
-                                <label>First Name</label>
-                                <input type="text" id="fname-up" class="auth-input" placeholder="John">
+                                <label>Email</label>
+                                <input type="email" id="email-up" class="auth-input" placeholder="name@domain.com">
                             </div>
-                            <div class="input-group">
-                                <label>Last Name</label>
-                                <input type="text" id="lname-up" class="auth-input" placeholder="Doe">
-                            </div>
+                            <button class="primary-btn" onclick="sendOtp('signup')">Continue</button>
+                            <p style="font-size: 13px; color: #2a2a2a; text-align: center; margin-top: 23px; font-weight: 350;">
+                                By continuing you agree to our <a href="javascript:void(0)" style="color: #0f172a; text-decoration: underline; font-weight: 500; font-size: 13px;">Terms</a> and <a href="javascript:void(0)" style="color: #0f172a; text-decoration: underline; font-weight: 500; font-size: 13px;">Privacy policy</a>
+                            </p>
                         </div>
 
-                        <div class="input-group">
-                            <label>Email</label>
-                            <input type="email" id="email-up" class="auth-input" placeholder="name@domain.com">
+                        <div id="signup-step-2" style="display: none;">
+                            <div class="input-group">
+                                <label>Enter OTP</label>
+                                <input type="text" id="otp-up" class="auth-input" placeholder="6-digit code">
+                            </div>
+                            <button class="primary-btn" onclick="verifyOtp('signup')">Verify Email</button>
+                            <p style="font-size: 13px; text-align: center; margin-top: 23px;">
+                                <a href="javascript:void(0)" onclick="resetView('signup')" style="color: #0f172a; text-decoration: underline; font-weight: 500; font-size: 13px;">Change Email</a>
+                            </p>
                         </div>
-                        
-                        <div class="input-group">
-                            <label>Password</label>
-                            <input type="password" id="pass-up" class="auth-input" placeholder="Create a strong password">
+
+                        <div id="signup-step-3" style="display: none;">
+                            <div class="name-row">
+                                <div class="input-group">
+                                    <label>First Name</label>
+                                    <input type="text" id="fname-up" class="auth-input" placeholder="John">
+                                </div>
+                                <div class="input-group">
+                                    <label>Last Name</label>
+                                    <input type="text" id="lname-up" class="auth-input" placeholder="Doe">
+                                </div>
+                            </div>
+                            <button class="primary-btn" onclick="completeSignup()">Sign Up</button>
                         </div>
-                        
-                        <button class="primary-btn" onclick="handleSignup()">Sign Up</button>
+
                     </div>
 
                     <div class="form-footer">
                         <p class="switch-link" onclick="toggleAuthMode()">Already have an account? <span>Log In</span></p>
-                        <div class="close-btn" onclick="navigateTo('index.html')">
-                            <span class="material-symbols-outlined">arrow_back</span> 
-                            <span class="home-text">Home</span>
-                        </div>
                     </div>
                 </div>
 
@@ -371,47 +369,40 @@
     </div>
 
     <script>
-        // --- NEW NPROGRESS GLOBAL FUNCTION ---
+        // --- NPROGRESS GLOBAL FUNCTION ---
         let progressInterval;
         window.navigateTo = (url) => {
             const bar = document.getElementById('pro-progress-bar');
             if (!bar) { window.location.href = url; return; }
 
             clearInterval(progressInterval);
-            
-            // 1. Reset and Show immediately
             bar.style.transition = 'none';
             bar.style.opacity = '1';
             bar.style.width = '0%';
-            void bar.offsetWidth; // Force DOM repaint
+            void bar.offsetWidth; 
 
-            // 2. Initial Fast Jump
             bar.style.transition = 'width 0.2s ease-out';
-            let currentWidth = Math.random() * 15 + 15; // 15% to 30%
+            let currentWidth = Math.random() * 15 + 15; 
             bar.style.width = currentWidth + '%';
 
-            // 3. Trickle (simulate network loading)
             progressInterval = setInterval(() => {
-                currentWidth += Math.random() * 5 + 2; // Add 2% to 7%
+                currentWidth += Math.random() * 5 + 2; 
                 if (currentWidth > 85) currentWidth = 85; 
                 bar.style.transition = 'width 0.2s ease';
                 bar.style.width = currentWidth + '%';
             }, 200);
 
-            // 4. Snap to 100% and redirect
             setTimeout(() => {
                 clearInterval(progressInterval);
                 bar.style.transition = 'width 0.15s ease-out';
                 bar.style.width = '100%';
                 
-                // Wait for the 100% animation to finish before destroying the page
                 setTimeout(() => {
                     window.location.href = url;
                 }, 150);
-            }, 300); // Fake delay to allow trickle to be seen
+            }, 300); 
         };
 
-        // BFCache reset for progress bar (when user clicks 'back' button)
         window.addEventListener('pageshow', function(event) {
             const bar = document.getElementById('pro-progress-bar');
             if (bar) {
@@ -430,8 +421,8 @@
         catch (e) { console.error("Supabase failed to init:", e); }
 
         let isLoginView = true;
+        let currentEmail = "";
 
-        // Message Handling Functions
         function showMessage(text, type) {
             const msgBox = document.getElementById('form-message');
             msgBox.innerText = text;
@@ -444,8 +435,16 @@
             msgBox.innerText = '';
         }
 
+        function resetView(mode) {
+            document.getElementById(`${mode}-step-1`).style.display = 'block';
+            document.getElementById(`${mode}-step-2`).style.display = 'none';
+            if(mode === 'signup') document.getElementById('signup-step-3').style.display = 'none';
+        }
+
         function toggleAuthMode() {
-            clearMessage(); // Clear any existing messages when switching
+            clearMessage(); 
+            resetView('login');
+            resetView('signup');
             
             const login = document.getElementById('login-view');
             const signup = document.getElementById('signup-view');
@@ -454,23 +453,19 @@
 
             if (isLoginView) { 
                 login.classList.remove('active');
-                
                 setTimeout(() => {
                     signup.classList.add('active');
                     title.innerText = "Sign Up";
                     subtext.innerText = "Share what matters. Discover what’s trusted.";
                 }, 10);
-                
                 isLoginView = false;
             } else { 
                 signup.classList.remove('active');
-                
                 setTimeout(() => {
                     login.classList.add('active');
                     title.innerText = "Log In";
                     subtext.innerText = "Share what matters. Discover what’s trusted.";
                 }, 10);
-                
                 isLoginView = true;
             }
         }
@@ -478,9 +473,7 @@
         window.onload = async () => {
             const params = new URLSearchParams(window.location.search);
             const mode = params.get('mode');
-            if (mode === 'signup' && isLoginView) {
-                toggleAuthMode();
-            }
+            if (mode === 'signup' && isLoginView) toggleAuthMode();
 
             if (db) {
                 const { data } = await db.auth.getSession();
@@ -491,83 +484,107 @@
                         return;
                     } else {
                         const returnTo = params.get('returnTo');
-                        if (returnTo) {
-                            window.location.replace(decodeURIComponent(returnTo));
-                        } else {
-                            window.location.replace('index.html');
-                        }
+                        if (returnTo) window.location.replace(decodeURIComponent(returnTo));
+                        else window.location.replace('index.html');
                         return;
                     }
                 }
             }
         };
 
-        async function handleLogin() {
+        // --- AUTH LOGIC (OTP & MAGIC LINK) --- //
+
+        async function sendOtp(mode) {
             if (!db) return;
             clearMessage();
             
-            const email = document.getElementById('email-in').value;
-            const password = document.getElementById('pass-in').value;
-            
-            if(!email || !password) {
-                showMessage("Please fill all fields!", "error");
+            const emailInput = mode === 'login' ? document.getElementById('email-in') : document.getElementById('email-up');
+            currentEmail = emailInput.value.trim();
+
+            if (!currentEmail) {
+                showMessage("Please enter your email!", "error");
                 return;
             }
-            
-            const { data, error } = await db.auth.signInWithPassword({ email, password });
-            
-            if (error) {
-                showMessage("Login Failed: " + error.message, "error");
-            } else if (data.session) {
-                const userRole = data.user.user_metadata?.role || 'customer'; 
-                
-                if (userRole !== 'customer') {
-                    await db.auth.signOut();
-                    showMessage(`Access Denied: This email belongs to a ${userRole} account. Please use the business portal to login.`, "error");
-                    return;
+
+            const { error } = await db.auth.signInWithOtp({
+                email: currentEmail,
+                options: {
+                    shouldCreateUser: true
                 }
-                
-                showMessage("Login successful! Redirecting...", "success");
-                setTimeout(() => {
-                    navigateTo('index.html');
-                }, 1500);
+            });
+
+            if (error) {
+                showMessage("Failed to send OTP: " + error.message, "error");
+            } else {
+                showMessage("Code sent to your email!", "success");
+                document.getElementById(`${mode}-step-1`).style.display = 'none';
+                document.getElementById(`${mode}-step-2`).style.display = 'block';
             }
         }
 
-        async function handleSignup() {
-            if (!db) return;
+        async function verifyOtp(mode) {
             clearMessage();
-            
+            const otpInput = mode === 'login' ? document.getElementById('otp-in') : document.getElementById('otp-up');
+            const token = otpInput.value.trim();
+
+            if (!token) {
+                showMessage("Please enter the OTP!", "error");
+                return;
+            }
+
+            const { data, error } = await db.auth.verifyOtp({
+                email: currentEmail,
+                token: token,
+                type: 'email'
+            });
+
+            if (error) {
+                showMessage("Invalid OTP: " + error.message, "error");
+            } else if (data.session) {
+                const userRole = data.user.user_metadata?.role || 'customer';
+                const fullName = data.user.user_metadata?.full_name;
+
+                if (userRole !== 'customer') {
+                    await db.auth.signOut();
+                    showMessage(`Access Denied: This email belongs to a ${userRole} account.`, "error");
+                    return;
+                }
+
+                if (mode === 'signup' && !fullName) {
+                    document.getElementById('signup-step-2').style.display = 'none';
+                    document.getElementById('signup-step-3').style.display = 'block';
+                    showMessage("Email verified! Please enter your name.", "success");
+                } else {
+                    showMessage("Login successful! Redirecting...", "success");
+                    setTimeout(() => navigateTo('index.html'), 1500);
+                }
+            }
+        }
+
+        async function completeSignup() {
+            clearMessage();
             const firstName = document.getElementById('fname-up').value.trim();
             const lastName = document.getElementById('lname-up').value.trim();
-            const email = document.getElementById('email-up').value;
-            const password = document.getElementById('pass-up').value;
 
-            if(!firstName || !lastName || !email || !password) {
-                showMessage("Please fill all fields!", "error");
+            if (!firstName || !lastName) {
+                showMessage("Please fill in your full name!", "error");
                 return;
             }
 
             const fullName = `${firstName} ${lastName}`;
 
-            const { data, error } = await db.auth.signUp({ 
-                email, 
-                password,
-                options: {
-                    data: {
-                        full_name: fullName,
-                        role: 'customer'
-                    }
-                } 
+            const { data, error } = await db.auth.updateUser({
+                data: {
+                    full_name: fullName,
+                    role: 'customer'
+                }
             });
-            
+
             if (error) {
-                showMessage("Signup Failed: " + error.message, "error");
-            } else { 
-                showMessage("Account created successfully! Redirecting...", "success"); 
-                setTimeout(() => {
-                    navigateTo('index.html');
-                }, 1500); 
+                showMessage("Failed to update profile: " + error.message, "error");
+            } else {
+                showMessage("Account setup complete! Redirecting...", "success");
+                setTimeout(() => navigateTo('index.html'), 1500);
             }
         }
     </script>

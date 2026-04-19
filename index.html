@@ -91,7 +91,7 @@
         .why-us-item strong {
             font-size: 15px;
             font-weight: 700;
-            color: #0f172a;
+            color: #2a2a2a;
         }
         .why-us-item p {
             font-size: 13px;
@@ -131,7 +131,7 @@
             z-index: 1;
             font-size: 14px;
             font-weight: 800;
-            color: #0f172a;
+            color: #2a2a2a;
         }
         .trust-graphic-text {
             display: flex;
@@ -141,7 +141,7 @@
         .trust-graphic-text h4 {
             font-size: 15px;
             font-weight: 700;
-            color: #0f172a;
+            color: #2a2a2a;
         }
         .trust-graphic-text p {
             font-size: 13px;
@@ -176,7 +176,7 @@
     border-radius: 50px;
     background-color: #fdfdfd;
     border: 2px solid #ededed;
-    color: #0f172a;
+    color: #2a2a2a;
     font-family: 'Inter', sans-serif; 
     font-size: 14px; 
     letter-spacing: 0.1px; 
@@ -218,6 +218,45 @@
         .nav-link { background-color: #fdfdfd; border-radius: 50px; padding: 0 12px; color: #2a2a2a; text-decoration: none; font-size: 13px; font-weight: 500; cursor: pointer; position: relative; height: 35px; display: flex; align-items: center; transition: all 0.2s; }
         .nav-link:hover{background-color: #dcdcdc;}
         
+        /* --- NOTIFICATION BUTTON AND PANEL STYLES --- */
+        .nav-notif-btn {
+            width: 35px; 
+            height: 35px; 
+            border-radius: 50%;
+            background: #fdfdfd; 
+            border: none;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            cursor: pointer; 
+            transition: all 0.2s;
+            margin-right: 10px; 
+            color: #2a2a2a;
+        }
+        .nav-notif-btn:hover { background: #dcdcdc; }
+        .nav-notif-btn svg { width: 18px; height: 18px; }
+
+        .notification-panel {
+            position: fixed; top: 0; right: -30vw; width: 30vw; min-width: 320px; max-width: 450px; height: 100vh;
+            background: #fdfdfd; box-shadow: -5px 0 30px rgba(0,0,0,0.1);
+            z-index: 3000; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; flex-direction: column; color: #2a2a2a;
+        }
+        .notification-panel.open { right: 0; }
+        .notif-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; border-bottom: 1px solid #ededed; }
+        .notif-header h3 { font-size: 18px; font-weight: 700; margin: 0; }
+        .notif-header button { background: none; border: none; font-size: 20px; cursor: pointer; color: #64748b; transition: color 0.2s; }
+        .notif-header button:hover { color: #0f172a; }
+        .notif-content { padding: 25px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        .notif-msg { text-align: center; color: #64748b; font-size: 14px; font-weight: 500; margin-top: 50px; line-height: 1.6; }
+        .notif-msg a { color: #2a2a2a; font-weight: 700; cursor: pointer; text-decoration: underline; }
+
+        #notif-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); z-index: 2999; backdrop-filter: blur(2px);
+            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        #notif-overlay.open { opacity: 1; visibility: visible; }
         
         /* --- BUTTON & DROPDOWN MENU --- */
         .user-menu-container { 
@@ -227,23 +266,24 @@
             z-index: 2002; 
         }
         .user-dropdown { 
-            position: absolute; top: 100%; right: 0; margin-top: 8px; 
-            background: #f2f2f2; border: 1px solid rgba(0,0,0,0.05); 
-            border-radius: 8px; flex-direction: column; min-width: 130px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15); overflow: hidden; 
+            position: absolute; top: 100%; right: 0; margin-top: 10px; 
+            background: #ffffff; border: 1px solid #ededed; 
+            border-radius: 14px; flex-direction: column; min-width: 170px; 
+            box-shadow: 0 12px 35px rgba(0,0,0,0.08); overflow: hidden; 
             z-index: 2005; opacity: 0; visibility: hidden; 
             transform: translateY(-10px);
-            transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
-            display: none; 
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: none; padding: 6px;
         }
         .user-menu-container.logged-in:hover .user-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
         .user-dropdown button { 
-            background: transparent; color: #242424; border: none; 
-            padding: 12px 16px; text-align: left; font-size: 14px; 
-            font-weight: 600; cursor: pointer; transition: background 0.2s; 
-            width: 100%; 
+            background: transparent; color: #475569; border: none; 
+            padding: 10px 12px; text-align: left; font-size: 13.5px; 
+            font-weight: 600; cursor: pointer; transition: all 0.2s ease; 
+            width: 100%; border-radius: 8px; display: flex; align-items: center; gap: 10px;
         }
-        .user-dropdown button:hover { background: rgba(0,0,0,0.05); }
+        .user-dropdown button:hover { background: #f8fafc; color: #0f172a; }
+        .user-dropdown button[onclick="logoutUser()"]:hover { background: #fef2f2; color: #dc2626; }
 
         .auth-trigger-btn { 
             background-color: #2a2a2a; 
@@ -284,10 +324,6 @@
             0% { opacity: 0; }
             100% { opacity: 1; }
         }
-        @keyframes resultFadeIn {
-            0% { opacity: 0; transform: translateY(8px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
 
         .hero-heading { 
             font-family: 'Inter', sans-serif; font-size: 65px; font-weight: 800; color: #2a2a2a; margin: 80px auto 30px auto; line-height: 1; letter-spacing: -2.5px; text-transform: capitalize; text-shadow: none; 
@@ -304,41 +340,65 @@
             animation: fadeFromBackground 0.9s ease-in-out 0.2s forwards;
             opacity: 0;
         }
-        .search-bar { width: 100%; background: #f0f1f1; border: 2px solid #ececec; padding: 22px 70px 22px 30px; border-radius: 50px; color: #0f172a; font-size: 17px; font-weight: 500; outline: none; transition: all 0.2s ease; box-shadow: none; position: relative; z-index: 2; }
+        .search-bar { width: 100%; background: #f0f1f1; border: 3px solid #ececec; padding: 22px 70px 22px 30px; border-radius: 50px; color: #0f172a; font-size: 16px; font-weight: 500; outline: none; transition: all 0.2s ease; box-shadow: none; position: relative; z-index: 2; }
         .search-bar::placeholder { color: rgba(15, 23, 42, 0.5); font-weight: 500; letter-spacing: 0.3px; }
         .search-icon { position: absolute; right: 10px; top: 10px; width: 46px; height: 46px; background: #2a2a2a; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 3; }
         .search-icon svg { width: 20px; height: 20px; stroke: #f1f1f1; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
-        .search-container.active { z-index: 2200; max-width: 780px; }
+        .search-container.active { z-index: 2200; } 
         .search-container.active .search-bar { 
             background: #fdfdfd !important; 
-            color: #242424; 
-            box-shadow: 0 25px 60px rgba(0,0,0,0.15); 
-            border: 1px solid #f2f2f2 !important; 
-            border-bottom: 1px solid #f2f2f2 !important; 
-            border-radius: 20px 20px 0 0 !important; 
+            color: #2a2a2a; 
+            box-shadow: none; 
+            border: 3px solid #cbd5e1 !important; 
+            border-radius: 50px !important; 
         }
         .search-container.active .search-icon { background: #242424; transform: scale(1.05); }
-        .search-container.active .search-icon svg { stroke: #f2f2f2; transform: rotate(90deg); }
+        .search-container.active .search-icon svg { stroke: #fdfdfd; transform: rotate(90deg); }
 
         .results-dropdown { 
-            position: absolute; top: 100%; left: 0; width: 100%; 
-            background: #f2f2f2; 
-            border: 1px solid rgba(0,0,0,0.05); 
-            border-top: none; border-radius: 0 0 20px 20px; 
-            box-shadow: 0 25px 60px rgba(0,0,0,0.15); z-index: 1; 
-            display: block !important; max-height: 0; opacity: 0; visibility: hidden; overflow: hidden; 
-            transform: translateY(-10px);
-            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
-            margin-top: -1.5px; padding-top: 0; 
+            position: absolute; top: calc(100% + 10px); left: 0; width: 100%; 
+            background: #fdfdfd; 
+            border-radius: 8px; 
+            display: none; overflow: hidden; 
+            margin-top: 0; padding: 10px 0; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12); /* Added shadow here */
         }
-        .search-container.active .results-dropdown { max-height: 400px; opacity: 1; visibility: visible; padding-top: 10px; transform: translateY(0); }
+        .search-container.active .results-dropdown { display: block; }
         
-        .result-item { padding: 16px 30px; color: #242424; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.05); transition: all 0.2s ease; font-size: 16px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; background: #ffffff; animation: resultFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        .result-item:last-child { border-bottom: none; }
-        .result-item:hover { background: #f8fafc; } 
-        .result-item:hover .res-arrow { transform: translateX(5px); color: #242424 !important; }
-        .no-results-item { padding: 40px; color: #242424; font-size: 16px; text-align: center; display: flex; flex-direction: column; gap: 15px; font-weight: 600; background: transparent; }
+        /* --- DROPDOWN PROGRESS BAR --- */
+        .dropdown-loader-bar { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: transparent; overflow: hidden; z-index: 10; display: none; }
+        .dropdown-loader-bar.active { display: block; }
+        .dropdown-loader-bar .loader-fill { position: absolute; top: 0; left: -50%; height: 100%; width: 50%; background: #00c853; border-radius: 4px; animation: dropSearchSwipe 1s infinite linear; }
+        @keyframes dropSearchSwipe { 0% { left: -50%; } 100% { left: 100%; } }
+
+        .trending-title {
+            padding: 10px 24px 6px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+        }
+
+        .result-item { 
+            padding: 10px 16px; 
+            margin: 2px 8px;
+            color: #2a2a2a; 
+            cursor: pointer; 
+            border-bottom: none;
+            border-radius: 8px;
+            transition: all 0.1s ease; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: transparent; 
+            opacity: 1; 
+        }
+        .result-item:hover { background: #f0f1f1; } 
+        .result-item:hover .res-arrow { transform: translateX(4px); color: #242424 !important; }
+        .no-results-item { padding: 20px; color: #64748b; font-size: 13px; text-align: center; display: flex; flex-direction: column; gap: 15px; font-weight: 600; background: transparent; }
 
          /* --- LIVE BANNER --- */
         .live-banner {
@@ -404,7 +464,7 @@
         .lr-comment { font-size: 13px; color: #475569; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
         /* --- IMPORTED REVIEW COMPONENT STYLES --- */
-        .review-item { 
+        .review-item-main { 
             background: #fdfdfd;
             border-radius: 32px;
             padding: 24px; 
@@ -421,7 +481,7 @@
             position: relative;
             overflow: hidden;
         }
-        .review-item:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); border-color: #d1d8e0; }
+        .review-item-main:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); border-color: #d1d8e0; }
 
         .date-banner {
             position: absolute;
@@ -567,7 +627,7 @@
         .ft-btn:hover { background: #636363; }
 
         /* --- OVERLAYS --- */
-        #search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 2150; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.4s ease, visibility 0.4s ease; }
+        #search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 2150; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.4s ease, visibility 0.4s ease; }
         #search-overlay.active { opacity: 1; visibility: visible; pointer-events: auto; }
 
         /* --- LOADER STYLES --- */
@@ -618,7 +678,12 @@
             .search-icon {width: 38px; height: 38px; top: 7px; right: 8px; }
             .nav-options { display: none; }
             .top-bar { padding: 0 20px; }
-            .user-menu-container { margin-left: auto; }
+            
+            /* Responsive Notification & User Menu updates */
+            .nav-notif-btn { margin-left: auto; margin-right: 12px; }
+            .user-menu-container { margin-left: 0; }
+            .notification-panel { width: 85vw; right: -85vw; }
+
             .hero-heading { font-size: 32px; margin: 27px auto 20px auto; }
             .company-grid { grid-template-columns: repeat(2, 1fr); }
             
@@ -709,6 +774,15 @@
         <div class="nprogress-peg"></div>
     </div>
     <div id="search-overlay"></div>
+    
+    <div id="notif-overlay" onclick="toggleNotifPanel()"></div>
+    <div class="notification-panel" id="notifPanel">
+        <div class="notif-header">
+            <h3>Notifications</h3>
+            <button onclick="toggleNotifPanel()">✕</button>
+        </div>
+        <div class="notif-content" id="notifContent"></div>
+    </div>
 
     <nav class="top-bar">
         <div class="logo-container" onclick="goHome()">
@@ -720,14 +794,28 @@
             <a class="nav-link">Contact Us</a>
         </div>
 
+        <button class="nav-notif-btn" onclick="toggleNotifPanel()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+        </button>
+
         <div class="user-menu-container">
             <a id="login-btn" class="nav-link" style="cursor:pointer; margin-right: 8px;" onclick="openAuth('login')">Log In</a>
             <button type="button" class="auth-trigger-btn" onclick="openAuth('signup')">
                 <span> Sign up </span>
             </button>
             <div class="user-dropdown" id="user-dropdown">
-                <button class="dropdown-profile-btn">Profile</button>
-                <button onclick="logoutUser()">Logout</button>
+                <button class="dropdown-profile-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Profile
+                </button>
+                <div style="height: 1px; background: #f0f1f1; margin: 4px 8px;"></div>
+                <button onclick="logoutUser()" style="color: #ef4444;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    Logout
+                </button>
             </div>
         </div>
     </nav>
@@ -970,6 +1058,33 @@
             }[tag]));
         }
 
+        // --- NEW NOTIFICATION PANEL LOGIC ---
+        window.toggleNotifPanel = () => {
+            const panel = document.getElementById('notifPanel');
+            const overlay = document.getElementById('notif-overlay');
+            const content = document.getElementById('notifContent');
+            
+            const isOpen = panel.classList.contains('open');
+            if (!isOpen) {
+                panel.classList.add('open');
+                overlay.classList.add('open');
+                
+                if (!currentUser) {
+                    content.innerHTML = `
+                        <div class="notif-msg">
+                            please <a onclick="openAuth('login'); toggleNotifPanel();">log in</a> or <a onclick="openAuth('signup'); toggleNotifPanel();">signup</a> in your account to see notifications
+                        </div>
+                    `;
+                } else {
+                    // Logged in: show nothing for now as requested
+                    content.innerHTML = ``; 
+                }
+            } else {
+                panel.classList.remove('open');
+                overlay.classList.remove('open');
+            }
+        };
+
         // --- NEW NPROGRESS GLOBAL FUNCTION ---
         let progressInterval;
         window.navigateTo = (url) => {
@@ -1078,19 +1193,19 @@
                     
                     let avatarHtml = '';
                     if (avatarUrl) {
-                        avatarHtml = `<img src="${avatarUrl}" style="width: 22px; height: 22px; border-radius: 50%; object-fit: cover; margin-right: 2px;">`;
+                        avatarHtml = `<img src="${avatarUrl}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #fdfdfd; box-sizing: border-box; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">`;
                     } else {
-                        avatarHtml = `<div style="width: 22px; height: 22px; border-radius: 50%; background: #242424; color: #f2f2f2; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; margin-right: 2px;">${initials}</div>`;
+                        avatarHtml = `<div style="width: 38px; height: 38px; border-radius: 50%; background: #242424; color: #f2f2f2; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; border: 2px solid #fdfdfd; box-sizing: border-box; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">${initials}</div>`;
                     }
                     
-                    authBtn.innerHTML = `${avatarHtml} <span>Profile</span>`;
+                    authBtn.innerHTML = avatarHtml;
                     
-                    authBtn.style.width = 'auto';
-                    authBtn.style.height = '35px';
-                    authBtn.style.borderRadius = '50px';
-                    authBtn.style.padding = '0 16px';
-                    authBtn.style.fontSize = '14px';
-                    authBtn.style.fontWeight = '549';
+                    authBtn.style.width = '38px';
+                    authBtn.style.height = '38px';
+                    authBtn.style.borderRadius = '50%';
+                    authBtn.style.padding = '0';
+                    authBtn.style.background = 'transparent';
+                    authBtn.style.border = 'none';
 
                     // 3. Remove click action, enable hover menu
                     authBtn.onclick = null;
@@ -1279,7 +1394,7 @@
                     : initials;
 
                 html += `
-                    <div class="review-item" onclick="navigateTo('company.html?id=${r.company_id}')">
+                    <div class="review-item-main" onclick="navigateTo('company.html?id=${r.company_id}')">
                         <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
                             <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
                                 <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
@@ -1330,62 +1445,133 @@
         const searchLoader = document.querySelector('.search-container .search-loader');
         let searchTimeout;
 
+        const searchIconSVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2a2a2a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`;
+
+        // Convert trending items into an array to dynamically select how many are needed
+        const trendingItems = [
+            `
+            <div class="result-item" onclick="navigateTo('#')">
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+                    ${searchIconSVG}
+                    <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1;">
+                        <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">Software Solutions</span>
+                    </div>
+                </div>
+            </div>
+            `,
+            `
+            <div class="result-item" onclick="navigateTo('#')">
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+                    ${searchIconSVG}
+                    <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1;">
+                        <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">Eco Friendly Products</span>
+                    </div>
+                </div>
+            </div>
+            `,
+            `
+            <div class="result-item" onclick="navigateTo('#')">
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+                    ${searchIconSVG}
+                    <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1;">
+                        <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">Marketing Agencies</span>
+                    </div>
+                </div>
+            </div>
+            `,
+            `
+            <div class="result-item" onclick="navigateTo('#')">
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+                    ${searchIconSVG}
+                    <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1;">
+                        <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">Cloud Services</span>
+                    </div>
+                </div>
+            </div>
+            `
+        ];
+        
+        const trendingHTML = trendingItems.join('');
+
+        function showTrending() {
+            resultsBox.innerHTML = trendingHTML;
+            searchContainer.classList.add('active');
+            overlay.classList.add('active');
+        }
+
         if (searchInput) {
+            // Show trending default state on focus
+            searchInput.addEventListener('focus', () => {
+                if (searchInput.value.trim() === '') {
+                    showTrending();
+                } else {
+                    searchContainer.classList.add('active');
+                    overlay.classList.add('active');
+                }
+            });
+
             searchInput.addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase().trim();
                 clearTimeout(searchTimeout);
 
                 if(term.length === 0) { 
-                    searchContainer.classList.remove('active'); 
-                    overlay.classList.remove('active'); 
-                    searchLoader.style.display = 'none';
+                    showTrending(); 
                     return; 
                 }
                 
-                overlay.classList.remove('active'); 
-                searchLoader.style.display = 'block';
-                searchContainer.classList.remove('active'); 
-                resultsBox.style.opacity = '0'; 
+                // Keep dropdown actively visible while typing
+                searchContainer.classList.add('active');
+                overlay.classList.add('active');
+                
+                // --- PROGRESS BAR INJECTION ---
+                // We inject the loader overlay BEFORE the existing items, keeping the items 
+                // in the DOM so the box height stays perfectly locked while searching.
+                if (!document.getElementById('live-dropdown-loader')) {
+                    resultsBox.insertAdjacentHTML('afterbegin', '<div id="live-dropdown-loader" class="dropdown-loader-bar active"><div class="loader-fill"></div></div>');
+                }
                 
                 searchTimeout = setTimeout(async () => {
                     // LIVE SUPABASE QUERY!
                     const { data: matches, error } = await db.from('companies')
                         .select('id, name, parent_company, is_product, category, rating')
                         .or(`name.ilike.%${term}%,parent_company.ilike.%${term}%`)
-                        .limit(8);
+                        .limit(4); // Limit to exactly 4 maximum
 
-                    resultsBox.innerHTML = "";
+                    let newHTML = "";
+                    let resultsCount = 0;
                     
-                    if(error || !matches || matches.length === 0) {
-                        resultsBox.innerHTML = `<div class="no-results-item"><span>No results found</span></div>`;
-                    } else {
-                        matches.forEach((co, index) => {
-                            const div = document.createElement('div');
-                            div.className = 'result-item';
-                            // Add staggering delay to results fading in
-                            div.style.animationDelay = `${index * 0.04}s`;
-                            const subtitle = co.is_product ? `Product by ${co.parent_company || 'Unknown'}` : (co.category || 'Business');
-                            div.innerHTML = `
-                                <div style="display: flex; align-items: center; gap: 14px;">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                    <div style="display: flex; flex-direction: column; text-align: left; gap: 3px;">
-                                        <span style="font-weight: 700; color: #0f172a; font-size: 15px; line-height: 1;">${escapeHTML(co.name)}</span>
-                                        <span style="font-size: 12px; color: #64748b; font-weight: 500; line-height: 1;">${escapeHTML(subtitle)} <span style="margin: 0 4px;">•</span> <span style="color:#00c853; font-weight: 700;">★ ${co.rating || 'New'}</span></span>
+                    if(!error && matches && matches.length > 0) {
+                        matches.forEach((co) => {
+                            resultsCount++;
+                            // Format the "( product by --- )" or category layout
+                            const parentText = co.is_product ? `( product by ${escapeHTML(co.parent_company || 'Unknown')} )` : (co.category ? `(${escapeHTML(co.category)})` : '');
+                            
+                            newHTML += `
+                            <div class="result-item" onclick="navigateTo('company.html?id=${co.id}')">
+                                <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+                                    ${searchIconSVG}
+                                    <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">${escapeHTML(co.name)}</span>
+                                        ${parentText ? `<span style="font-size: 12px; color: #64748b; font-weight: 500; line-height: 1;">${parentText}</span>` : ''}
                                     </div>
                                 </div>
-                                <span class="res-arrow" style="color: #cbd5e1; font-size: 18px; transition: transform 0.2s, color 0.2s;">→</span>
+                            </div>
                             `;
-                            div.onclick = () => navigateTo(`company.html?id=${co.id}`);
-                            resultsBox.appendChild(div);
                         });
                     }
                     
-                    searchLoader.style.display = 'none';
-                    overlay.classList.add('active');
-                    searchContainer.classList.add('active');
-                    resultsBox.style.opacity = '1';
+                    // Always guarantee exactly 4 results by padding the bottom with trending items
+                    if (resultsCount < 4) {
+                        const needed = 4 - resultsCount;
+                        newHTML += trendingItems.slice(0, needed).join('');
+                    }
+
+                    // Applying the new HTML automatically removes the loader overlay instantly
+                    resultsBox.innerHTML = newHTML;
+                    
                 }, 400); // Wait 400ms after user stops typing before querying DB
             });
+            
             overlay.addEventListener('click', () => { searchContainer.classList.remove('active'); overlay.classList.remove('active'); });
         }
 
