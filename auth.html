@@ -126,16 +126,18 @@
             flex-direction: column;
             flex-grow: 1;
             width: 100%;
-            animation: fadeSlideUp 0.4s ease-out forwards;
+            /* Changed animation to only slide, no fade */
+            animation: slideFromRight 0.3s ease-out forwards;
         }
 
         .view-section.active {
             display: flex;
         }
 
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* New keyframes: purely sliding from right without opacity changes */
+        @keyframes slideFromRight {
+            from { transform: translateX(30px); }
+            to { transform: translateX(0); }
         }
 
         .form-fields {
@@ -145,11 +147,11 @@
         }
 
         #login-view .form-fields {
-            padding-top: 108px; 
+            padding-top: 210px; 
         }
 
         #signup-view .form-fields {
-            padding-top: 0px; 
+            padding-top: 210px; 
         }
 
         .input-group { margin-bottom: 28px; } 
@@ -203,11 +205,10 @@
             color: #fdfdfd; 
             border: none; 
             border-radius: 13px; 
-            font-weight: 700; 
+            font-weight: 300; 
             font-size: 17px; 
             cursor: pointer; 
             margin-top: 20px; 
-            transition: all 0.3s ease; 
         }
 
         .primary-btn:hover {
@@ -290,9 +291,8 @@
                     <div class="form-fields">
                         
                         <div id="login-step-1">
-                            <div class="input-group">
-                                <label>Email</label>
-                                <input type="email" id="email-in" class="auth-input" placeholder="name@domain.com">
+                            <div class="input-group" style="margin-bottom: 12px;">
+                                <input type="email" id="email-in" class="auth-input" placeholder="Enter email address">
                             </div>
                             <button class="primary-btn" onclick="sendOtp('login')">Continue</button>
                             <p style="font-size: 13px; color: #2a2a2a; text-align: center; margin-top: 23px; font-weight: 350;">
@@ -322,9 +322,8 @@
                     <div class="form-fields">
                         
                         <div id="signup-step-1">
-                            <div class="input-group">
-                                <label>Email</label>
-                                <input type="email" id="email-up" class="auth-input" placeholder="name@domain.com">
+                            <div class="input-group" style="margin-bottom: 12px;">
+                                <input type="email" id="email-up" class="auth-input" placeholder="Enter email address">
                             </div>
                             <button class="primary-btn" onclick="sendOtp('signup')">Continue</button>
                             <p style="font-size: 13px; color: #2a2a2a; text-align: center; margin-top: 23px; font-weight: 350;">
@@ -451,23 +450,22 @@
             const title = document.getElementById('page-title');
             const subtext = document.getElementById('page-subtext');
 
-            if (isLoginView) { 
-                login.classList.remove('active');
-                setTimeout(() => {
+            // 150ms delay added BEFORE the DOM updates and animation fires
+            setTimeout(() => {
+                if (isLoginView) { 
+                    login.classList.remove('active');
                     signup.classList.add('active');
                     title.innerText = "Sign Up";
                     subtext.innerText = "Share what matters. Discover what’s trusted.";
-                }, 10);
-                isLoginView = false;
-            } else { 
-                signup.classList.remove('active');
-                setTimeout(() => {
+                    isLoginView = false;
+                } else { 
+                    signup.classList.remove('active');
                     login.classList.add('active');
                     title.innerText = "Log In";
                     subtext.innerText = "Share what matters. Discover what’s trusted.";
-                }, 10);
-                isLoginView = true;
-            }
+                    isLoginView = true;
+                }
+            }, 150);
         }
 
         window.onload = async () => {
