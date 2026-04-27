@@ -147,11 +147,11 @@
         }
 
         #login-view .form-fields {
-            padding-top: 210px; 
+            padding-top: 255px; 
         }
 
         #signup-view .form-fields {
-            padding-top: 210px; 
+            padding-top: 255px; 
         }
 
         .input-group { margin-bottom: 28px; } 
@@ -180,23 +180,31 @@
         .auth-input { 
             width: 100%; 
             padding: 16px 20px; 
-            border: 2px solid #cbd5e1;
+            border: 1px solid #cbd5e1;
             background: #fdfdfd;
             border-radius: 13px; 
             font-size: 15px; 
             outline: none; 
-            transition: all 0.2s ease; 
             font-weight: 500; 
+            transition: 0.1s;
             color: #2a2a2a; 
+            caret-color: #2a2a2a; 
+            cursor: text; 
         }
 
+        .auth-input:hover,
         .auth-input:focus { 
-            border: 2px solid #2a2a2a;
+            border: 1px solid #7d838b;
+            transition: 0.1s;
             background: #fdfdfd; 
-            transition: all 0.4s ease;
         }
         
-        .auth-input::placeholder { color: #94a3b8; }
+        /* Bulletproof cross-browser placeholder weight styling */
+        .auth-input::-webkit-input-placeholder { color: #94a3b8 !important; font-weight: 300 !important; }
+        .auth-input::-moz-placeholder { color: #94a3b8 !important; font-weight: 300 !important; opacity: 1 !important; }
+        .auth-input:-ms-input-placeholder { color: #94a3b8 !important; font-weight: 300 !important; }
+        .auth-input::-ms-input-placeholder { color: #94a3b8 !important; font-weight: 300 !important; }
+        .auth-input::placeholder { color: #94a3b8 !important; font-weight: 300 !important; opacity: 1 !important; }
 
         .primary-btn { 
             width: 100%; 

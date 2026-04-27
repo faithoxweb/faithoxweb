@@ -11,41 +11,32 @@
     <style>
         /* --- BASE STYLES (From Dashboard) --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; outline: none; }
-        body { background-color: #f2f2f2; color: #242424; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        body { background-color: #f0f1f1; color: #2a2a2a; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
         /* --- SPA LAYOUT --- */
         .profile-container { display: flex; width: 100%; padding: 0; align-items: stretch; min-height: 100vh; }
         
         /* --- SIDEBAR MENU (From Dashboard) --- */
         .sidebar { 
-            width: 320px; 
-            background: #242424; 
-            padding: 40px 15px; 
+            width: 245px; 
+            background: transparent; 
+            padding: 40px 20px; 
             display: flex; 
             flex-direction: column;
-            position: fixed; 
+            position: fixed;
             top: 0; 
             left: 0; 
             height: 100vh; 
             overflow-y: auto; 
             z-index: 10;
         }
-        .brand-text { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: #f2f2f2; text-align: center; display: block; margin-bottom: 30px; cursor: pointer; } 
-        
-        /* User Info Card */
-        .user-info-card { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 25px; }
-        .user-avatar { width: 48px; height: 48px; border-radius: 50%; background: #f2f2f2; color: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; flex-shrink: 0; overflow: hidden; }
-        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .user-details { display: flex; flex-direction: column; overflow: hidden; }
-        .user-name { font-size: 15px; font-weight: 700; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-email { font-size: 12px; color: #94a3b8; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: #2a2a2a; text-align: left; display: block; margin-bottom: 6px; cursor: pointer; position: relative; top: -19px; left: 20px; } 
         
         /* Menu Buttons */
-        .menu-btn { width: 100%; text-align: left; background: transparent; border: none; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #94a3b8; cursor: pointer; transition: all 0.2s; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
-        .menu-btn:hover { background: rgba(255,255,255,0.1); color: #f2f2f2; }
-        
-        /* BLUE REPLACED WITH #f2f2f2 HERE */
-        .menu-btn.active { background: #f2f2f2; color: #242424; }
+        .menu-wrapper { margin-top: 29.5px; }
+        .menu-btn { width: 100%; text-align: left; background: transparent; border: none; padding: 13px 14px; border-radius: 13px; font-size: 14px; font-weight: 450; color: #7c838b; cursor: pointer; transition: all 0.05s; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; }
+        .menu-btn:hover { background: #fdfdfd; }
+        .menu-btn.active { background: #fdfdfd; color: #242424; font-weight: 550; }
 
         .logout-btn { margin-top: auto; background: transparent; color: #f2f2f2; border: 1px solid rgba(255,255,255,0.2); padding: 12px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.2s; width: 100%; }
         .logout-btn:hover { background: #ef4444; border-color: #ef4444; }
@@ -55,47 +46,101 @@
             flex: 1; 
             min-width: 0; 
             max-width: 1500px; 
-            padding: 40px; 
-            margin-left: 320px; 
+            padding: 40px 40px 40px 0px; 
+            margin-left: 245px; /* <--- ADJUST THIS VALUE TO MOVE CONTENT CLOSER OR FURTHER */
         }
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .section-header { margin-bottom: 30px; }
-        .section-title { font-size: 28px; font-weight: 800; color: #242424; letter-spacing: -0.5px; display: flex; justify-content: space-between; align-items: center; }
+        .section-title { font-size: 28px; font-weight: 600; color: #2a2a2a; letter-spacing: -1px; display: flex; justify-content: space-between; align-items: center; }
         .section-desc { font-size: 15px; color: #64748b; margin-top: 5px; }
 
-        /* --- 1. PROFILE TAB --- */
-        .profile-settings-card { background: #242424; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); margin-bottom: 25px; }
-        
-        .avatar-section { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid #f2f2f2; }
-        .avatar-display { width: 160px; height: 160px; border-radius: 50%; background: #f2f2f2; border: 4px solid #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; color: #64748b; }
-        .avatar-display img { width: 100%; height: 100%; object-fit: cover; }
-        .avatar-display svg { width: 80px; height: 80px; }
-        .avatar-actions { display: flex; flex-direction: column; gap: 8px; }
-        
-        .btn-outline { background: #f2f2f2; padding: 10px 1px; border-radius: 8px; font-size: 13px; font-weight: 700; color: #242424; cursor: pointer; transition: all 0.2s; }
-        .btn-outline:hover { background: #f2f2f2; border-color: #f2f2f2; }
-        .avatar-hint { font-size: 12px; color: #64748b; margin-top: 4px; display: block; }
+        /* --- 1. PROFILE TAB UPDATES --- */
+        .new-profile-card {
+            background: #fdfdfd;
+            border-radius: 32px;
+            padding: 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            position: relative;
+            margin-top: 40px;
+            margin-bottom: 25px;
+        }
 
-        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 30px;}
-        .form-group.full-width { grid-column: span 2; }
-        .form-group label { display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-row { display: flex; gap: 15px; }
+        .new-avatar-container {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #f2f2f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            color: #64748b;
+            cursor: pointer;
+            position: relative;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .new-avatar-container img { width: 100%; height: 100%; object-fit: cover; }
+        .new-avatar-container svg { width: 50px; height: 50px; }
+        .new-avatar-container::after {
+            content: 'Change';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            text-align: center;
+            padding: 6px 0;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .new-avatar-container:hover::after { opacity: 1; }
+
+        .new-user-info { display: flex; flex-direction: column; gap: 4px; }
+        .new-user-name { font-size: 24px; font-weight: 800; color: #242424; }
+        .new-user-email { font-size: 14px; color: #64748b; font-weight: 500; }
+
+        .edit-btn-top {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: #f2f2f2;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #242424;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .edit-btn-top:hover { background: #e2e8f0; }
+
+        .profile-settings-card { background: #242424; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); margin-bottom: 25px; display: none; }
+        .profile-settings-card.active { display: block; animation: fadeIn 0.3s ease; }
         
+        .form-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 24px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 10px;}
+        .form-group label { display: block; font-size: 13px; font-weight: 700; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         .form-input { width: 100%; padding: 12px 16px; border-radius: 8px; border: 2px solid #e2e8f0; background: #f2f2f2; color: #242424; font-size: 14px; font-weight: 500; transition: all 0.2s; outline: none; }
-        
-        /* BLUE REPLACED WITH #f2f2f2 HERE */
         .form-input:focus { border-color: #f2f2f2; background: #ffffff; box-shadow: 0 0 0 3px rgba(242, 242, 242, 0.3); }
         
-        .form-input:disabled { background: #e2e8f0; color: #64748b; cursor: not-allowed; border-color: #cbd5e1; }
-
-        .btn-primary { background: #242424; color: #fff; border: none; padding: 12px 28px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; }
-        .btn-primary:hover { background: #1a1a1a; transform: translateY(-1px); }
+        .btn-primary { background: #fdfdfd; color: #242424; border: none; padding: 12px 28px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-primary:hover { background: #e2e8f0; transform: translateY(-1px); }
         
-        .form-actions { display: flex; justify-content: flex-end; padding-top: 25px; border-top: 1px solid #e2e8f0; margin-top: 15px; }
+        .form-actions { display: flex; justify-content: flex-end; padding-top: 15px; margin-top: 5px; }
 
         .status-msg { margin-top: 15px; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; display: none; }
         .status-msg.success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; display: block; }
@@ -135,10 +180,7 @@
         .rb-amount { font-size: 48px; font-weight: 800; color: #10B981; line-height: 1; margin-bottom: 25px; }
         .upi-withdraw-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; max-width: 450px; margin: 0 auto; }
         .upi-input { flex: 1; padding: 12px 16px; border-radius: 8px; border: 2px solid transparent; background: #fff; color: #242424; font-size: 14px; font-weight: 500; outline: none; }
-        
-        /* BLUE REPLACED WITH #f2f2f2 HERE */
         .upi-input:focus { border-color: #f2f2f2; box-shadow: 0 0 0 3px rgba(242, 242, 242, 0.5); }
-        
         .withdraw-btn { background: #10B981; color: #fff; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .withdraw-btn:hover { background: #059669; }
 
@@ -149,82 +191,20 @@
         .credit-text { color: #16a34a; font-weight: 700; }
 
         /* RESPONSIVE */
-      /* --- MOBILE RESPONSIVENESS FIXES FOR CUSTOMER PROFILE --- */
         @media (max-width: 768px) {
-            /* 1. Stack the Sidebar and Content vertically */
-            .profile-container { 
-                flex-direction: column; 
-            }
-
-            /* 2. Unlock the sidebar from the left wall and put it at the top */
-            .sidebar { 
-                position: relative; 
-                width: 100%; 
-                height: auto; 
-                padding: 20px; 
-                border-right: none; 
-                border-bottom: 2px solid #cbd5e1; 
-            }
-
-            /* 3. Turn the sidebar menu into a swipeable horizontal row */
-            .menu-wrapper { 
-                display: flex; 
-                flex-direction: row; 
-                overflow-x: auto; 
-                gap: 10px; 
-                padding-bottom: 10px; 
-            }
-            .menu-btn { 
-                white-space: nowrap; 
-                justify-content: center; 
-                margin-bottom: 0;
-            }
-
-            /* 4. Fix the main content area so it doesn't overflow */
-            .content-area { 
-                margin-left: 0; 
-                padding: 20px; 
-                width: 100%;
-                max-width: 100%;
-            }
-
-            /* 5. Stack grids and complex layouts */
+            .profile-container { flex-direction: column; }
+            .sidebar { position: relative; width: 100%; height: auto; padding: 20px; border-right: none; border-bottom: 2px solid #cbd5e1; }
+            .brand-text { top: 1px; left: 0; }
+            .menu-wrapper { display: flex; flex-direction: row; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-top: 15px; }
+            .menu-btn { white-space: nowrap; justify-content: center; margin-bottom: 0; }
+            .content-area { margin-left: 0; padding: 20px; width: 100%; max-width: 100%; }
             .dash-grid { grid-template-columns: 1fr; }
-            .form-grid { grid-template-columns: 1fr; gap: 15px; }
-            .form-group.full-width { grid-column: span 1; }
-            
-            /* 6. Fix the Profile Image Upload section */
-            .avatar-section {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            .profile-settings-card { 
-                padding: 20px; 
-            }
-
-            /* 7. Stack Purchases, Rewards, and Inputs */
-            .purchase-card { 
-                flex-direction: column; 
-                align-items: flex-start; 
-                gap: 12px; 
-            }
-            .upi-withdraw-box { 
-                flex-direction: column; 
-                width: 100%;
-            }
-            .input-row { 
-                flex-direction: column; 
-            }
-            
-            /* 8. Make interactive buttons stretch for easy thumb tapping */
-            .btn-primary, .withdraw-btn, .logout-btn {
-                width: 100%; 
-                justify-content: center;
-            }
-            .logout-btn { 
-                margin-top: 20px; 
-            }
+            .new-profile-card { flex-direction: column; text-align: center; gap: 16px; padding: 24px; margin-top: 20px; }
+            .edit-btn-top { position: relative; top: 0; right: 0; align-self: stretch; justify-content: center; margin-top: 10px; }
+            .purchase-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .upi-withdraw-box { flex-direction: column; width: 100%; }
+            .btn-primary, .withdraw-btn, .logout-btn { width: 100%; justify-content: center; }
+            .logout-btn { margin-top: 20px; }
         }
     </style>
 </head>
@@ -235,34 +215,26 @@
         <div class="sidebar">
             <div class="sidebar-top">
                 <span class="brand-text" onclick="window.location.href='index.html'">FAITHOX</span>
-
-                <div class="user-info-card">
-                    <div class="user-avatar" id="sidebar-avatar">--</div>
-                    <div class="user-details">
-                        <div class="user-name" id="user-fullname">Loading...</div>
-                        <div class="user-email" id="user-email">loading...</div>
-                    </div>
-                </div>
                 
                 <div class="menu-wrapper">
                     <button class="menu-btn active" onclick="switchTab('profile')" id="btn-profile">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         Profile
                     </button>
                     <button class="menu-btn" onclick="switchTab('dashboard')" id="btn-dashboard">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                         Dashboard
                     </button>
                     <button class="menu-btn" onclick="switchTab('purchases')" id="btn-purchases">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                         My Purchases
                     </button>
                     <button class="menu-btn" onclick="switchTab('reviews')" id="btn-reviews">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         My Reviews
                     </button>
                     <button class="menu-btn" onclick="switchTab('rewards')" id="btn-rewards">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
                         Rewards
                     </button>
                 </div>
@@ -274,42 +246,33 @@
         <div class="content-area">
             
             <div id="tab-profile" class="tab-content active">
-                <div class="section-header">
-                    <h2 class="section-title">My Profile</h2>
-                    <p class="section-desc">Manage your personal information and account settings.</p>
+                <div class="section-header" style="margin-top: -20px; margin-bottom: 16px;">
+                    <h2 class="section-title">Profile</h2>
                 </div>
                 
-                <div class="profile-settings-card">
-                    <div class="avatar-section">
-                        <div class="avatar-display">
-                            <img id="main-avatar-img" src="" style="display: none;">
-                            <svg id="main-avatar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        </div>
-                        <div class="avatar-actions">
-                            <input type="file" id="avatar-input" accept="image/*" style="display: none;" onchange="uploadAvatar(event)">
-                            <button class="btn-outline" onclick="document.getElementById('avatar-input').click()" id="avatar-btn">Change Photo</button>
-                            <span class="avatar-hint">Recommended: Square JPG, PNG. Max 2MB.</span>
-                        </div>
+                <div class="new-profile-card">
+                    <button class="edit-btn-top" onclick="triggerEdit()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                        Edit
+                    </button>
+                    <div class="new-avatar-container" onclick="document.getElementById('avatar-input').click()">
+                        <img id="main-avatar-img" src="" style="display: none;">
+                        <svg id="main-avatar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </div>
-
+                    <div class="new-user-info">
+                        <div class="new-user-name" id="display-name">Loading...</div>
+                        <div class="new-user-email" id="display-email">loading...</div>
+                    </div>
+                    <input type="file" id="avatar-input" accept="image/*" style="display: none;" onchange="uploadAvatar(event)">
+                </div>
+                
+                <div class="profile-settings-card" id="edit-details-box">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Full Name</label>
                             <input type="text" id="profile-name" class="form-input" placeholder="Enter your full name">
                         </div>
-                        <div class="form-group">
-                            <label>Account Email</label>
-                            <input type="email" id="profile-email" class="form-input" disabled>
-                        </div>
-                        <div class="form-group full-width">
-                            <label>Update Password</label>
-                            <div class="input-row">
-                                <input type="password" id="profile-password" class="form-input" placeholder="Enter new password (min. 6 characters)">
-                                <button class="btn-primary" onclick="updatePassword()" id="pass-btn">Reset Password</button>
-                            </div>
-                        </div>
                     </div>
-
                     <div class="form-actions">
                         <button class="btn-primary" onclick="updateProfileInfo()" id="save-info-btn">Save Changes</button>
                     </div>
@@ -444,6 +407,17 @@
             document.getElementById('btn-' + tabId).classList.add('active');
         }
 
+        // --- TOGGLE EDIT MODE ---
+        function triggerEdit() {
+            const editBox = document.getElementById('edit-details-box');
+            if (editBox.classList.contains('active')) {
+                editBox.classList.remove('active');
+            } else {
+                editBox.classList.add('active');
+                document.getElementById('profile-name').focus();
+            }
+        }
+
         // --- LOAD USER DATA ---
         async function loadProfile() {
             const { data: { session } } = await db.auth.getSession();
@@ -463,26 +437,22 @@
             const fullName = metadata.full_name || currentUser.email.split('@')[0];
             const avatarUrl = metadata.avatar_url;
             
-            // Set Texts in Sidebar
-            document.getElementById('user-fullname').innerText = fullName;
-            document.getElementById('user-email').innerText = currentUser.email;
+            // Set Texts in New Profile Panel
+            document.getElementById('display-name').innerText = fullName;
+            document.getElementById('display-email').innerText = currentUser.email;
             
             // Set Inputs in Form
             document.getElementById('profile-name').value = fullName;
-            document.getElementById('profile-email').value = currentUser.email;
 
             // Set Avatars
-            const sidebarAvatar = document.getElementById('sidebar-avatar');
             const mainImg = document.getElementById('main-avatar-img');
             const mainSvg = document.getElementById('main-avatar-svg');
 
             if (avatarUrl) {
-                sidebarAvatar.innerHTML = `<img src="${avatarUrl}" style="width:100%; height:100%; object-fit:cover;">`;
                 mainImg.src = avatarUrl;
                 mainImg.style.display = 'block';
                 mainSvg.style.display = 'none';
             } else {
-                sidebarAvatar.innerHTML = fullName.substring(0, 2).toUpperCase();
                 mainImg.style.display = 'none';
                 mainSvg.style.display = 'block';
             }
@@ -518,37 +488,14 @@
                 currentUser = data.user;
                 updateProfileUI();
                 showStatus("Profile details updated successfully!");
-            }
-        }
-
-        // --- UPDATE PASSWORD ---
-        async function updatePassword() {
-            const newPassword = document.getElementById('profile-password').value;
-            const btn = document.getElementById('pass-btn');
-
-            if (newPassword.length < 6) return showStatus("Password must be at least 6 characters.", true);
-
-            btn.innerText = "Updating...";
-            const { error } = await db.auth.updateUser({
-                password: newPassword
-            });
-
-            btn.innerText = "Reset Password";
-            if (error) {
-                showStatus(error.message, true);
-            } else {
-                document.getElementById('profile-password').value = '';
-                showStatus("Password updated successfully!");
+                document.getElementById('edit-details-box').classList.remove('active');
             }
         }
 
         // --- UPLOAD AVATAR ---
         async function uploadAvatar(event) {
             const file = event.target.files[0];
-            const btn = document.getElementById('avatar-btn');
             if (!file) return;
-
-            btn.innerText = "Uploading...";
             
             // 1. Upload file to Supabase Storage 'avatars' bucket
             const fileExt = file.name.split('.').pop();
@@ -559,7 +506,6 @@
                 .upload(fileName, file, { upsert: true });
 
             if (uploadError) {
-                btn.innerText = "Change Photo";
                 return showStatus("Error uploading image: " + uploadError.message, true);
             }
 
@@ -572,7 +518,6 @@
                 data: { avatar_url: avatarUrl }
             });
 
-            btn.innerText = "Change Photo";
             if (updateError) {
                 showStatus(updateError.message, true);
             } else {
