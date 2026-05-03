@@ -90,7 +90,7 @@
         }
 
         .profile-details-hole {
-            background-color: #f9f9f9;
+            background-color: #f0f1f1;
             border-radius: 32px;
             padding: 5px;
             width: 100%;
@@ -102,14 +102,14 @@
         .inner-floating-panel {
             background-color: #fdfdfd;
             border-radius: 24px;
-            padding: 12px; 
+            padding: 8px; 
             display: flex;
             flex-direction: column;
             align-items: stretch;
             gap: 16px;
             width: 100%;
             max-width: 425px; 
-            box-shadow: 0 0 15px rgba(0,0,0,0.015), 0 3px 0 0 #eaeaea; 
+            border: 1px solid #fdfdfd; 
         }
         
         .inner-right-panel {
@@ -123,7 +123,6 @@
             padding: 16px;
             border-radius: 20px;
             border: 1px solid #efefef;
-            box-shadow: 0 0 15px rgba(0,0,0,0.015);
             justify-content: center;
         }
         .inner-right-panel .dash-value { font-size: 26px; }
@@ -988,35 +987,29 @@
                 let ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
 
                 let photoHtml = '';
-                let photoPillHtml = '';
-                const pillStyle = "background: #2a2a2a; color: #ffffff; padding: 6px 4px; border-radius: 5px; font-size: 10px; font-weight: 600; margin: 0; width: 95%; display: flex; justify-content: center; text-align: center; box-sizing: border-box;";
                 
-                if (photoUrls.length === 1) {
-                    photoPillHtml = `
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: auto; gap: 6px; margin-bottom: 25px;">
-                        <div style="${pillStyle}">no more photos</div>
-                        <div style="${pillStyle}; text-transform: uppercase; letter-spacing: 0.5px;">${date}</div>
-                    </div>`;
-                } else if (photoUrls.length > 1) {
-                    photoPillHtml = `
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: auto; gap: 6px; margin-bottom: 25px;">
-                        <div style="${pillStyle}">+${photoUrls.length - 1} photo</div>
-                        <div style="${pillStyle}; text-transform: uppercase; letter-spacing: 0.5px;">${date}</div>
-                    </div>`;
-                } else {
-                    photoPillHtml = `<div style="display: flex; align-items: center; justify-content: center; margin-top: auto;"></div>`;
-                }
-
                 if (photoUrls.length > 0) {
-                    let photosToShow = photoUrls.slice(0, 1);
-                    let imagesHtml = photosToShow.map(url => `
-                        <img src="${url}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">
-                    `).join('');
+                    let imagesHtml = '';
+                    if (photoUrls.length === 1) {
+                        imagesHtml = `<img src="${photoUrls[0]}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">`;
+                    } else if (photoUrls.length === 2) {
+                        imagesHtml = `
+                        <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
+                            <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-6deg); z-index: 1;">
+                            <img src="${photoUrls[1]}" style="position: absolute; bottom: 0; right: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(6deg); z-index: 2; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
+                        </div>`;
+                    } else {
+                        imagesHtml = `
+                        <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
+                            <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-12deg); z-index: 1;">
+                            <img src="${photoUrls[1]}" style="position: absolute; top: 12.5%; left: 12.5%; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(0deg); z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                            <img src="${photoUrls[2]}" style="position: absolute; bottom: 0; right: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(12deg); z-index: 3; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
+                        </div>`;
+                    }
 
                     photoHtml = `
-                    <div style="display: flex; flex-direction: column; gap: 8px; width: 30%; flex-shrink: 0; height: calc(100% - 45px); margin-top: 45px; overflow: hidden;">
+                    <div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 45px;">
                         ${imagesHtml}
-                        ${photoPillHtml}
                     </div>`;
                 }
 
@@ -1042,7 +1035,7 @@
                             </div>
                             ${photoHtml}
                         </div>
-                        ${photoUrls.length > 0 ? '' : `<div class="date-banner">${date}</div>`}
+                        <div class="date-banner">${date}</div>
                     </div>
                 `;
             });
