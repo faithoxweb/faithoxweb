@@ -214,7 +214,7 @@
             padding: 24px; 
             box-shadow: none;
             width: 100%; /* Adjust to fill parent width */
-            height: 250px; 
+            height: 180px; 
             flex-shrink: 0;
             transition: all 0.2s ease;
             display: flex;
@@ -1023,7 +1023,7 @@
                                         <div style="display: flex; flex-direction: column; justify-content: center;">
                                             <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
                                             <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">
-                                                Product: ${escapeHTML(coName)}
+                                                ${date}
                                             </div>
                                         </div>
                                     </div>
@@ -1035,7 +1035,6 @@
                             </div>
                             ${photoHtml}
                         </div>
-                        <div class="date-banner">${date}</div>
                     </div>
                 `;
             });
