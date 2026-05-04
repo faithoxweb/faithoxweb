@@ -116,12 +116,12 @@
             flex: 1;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            padding: 7px;
+            gap: 6px;
+            padding: 6px;
         }
         .inner-right-panel .dash-card {
             padding: 16px;
-            border-radius: 20px;
+            border-radius: 24px;
             border: 1px solid #efefef;
             justify-content: center;
         }
@@ -135,7 +135,7 @@
         }
 
         .inner-panel-stats {
-            background: #f9f9f9;
+            background: #f0f1f1;
             border-radius: 16px;
             padding: 16px;
             display: flex;
@@ -372,7 +372,7 @@
         .status-msg.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; display: block; }
 
         /* --- 2. DASHBOARD TAB --- */
-        .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 6px; }
         .dash-card { background: #fff; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; }
         .dash-card.highlight { background: #242424; color: #f8f8f8; }
         .dash-card.highlight .dash-title { color: #94a3b8; }
@@ -445,7 +445,7 @@
             }
             
             .profile-details-hole { padding: 3px; flex-direction: column; }
-            .inner-right-panel { grid-template-columns: 1fr; padding: 5px; }
+            .inner-right-panel { grid-template-columns: 1fr; padding: 6px; gap: 6px; }
             
             .inner-floating-panel { padding: 12px; max-width: 100%; }
             .inner-panel-top { flex-direction: column; text-align: center; justify-content: center; }
@@ -475,10 +475,6 @@
                     <button class="menu-btn active" onclick="switchTab('profile')" id="btn-profile">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         Profile
-                    </button>
-                    <button class="menu-btn" onclick="switchTab('dashboard')" id="btn-dashboard">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                        Dashboard
                     </button>
                     <button class="menu-btn" onclick="switchTab('purchases')" id="btn-purchases">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -576,31 +572,6 @@
                     <button class="btn-see-all" onclick="switchTab('reviews')">See All Reviews</button>
                 </div>
 
-            </div>
-
-            <div id="tab-dashboard" class="tab-content">
-                <div class="section-header">
-                    <h2 class="section-title">Overview</h2>
-                    <p class="section-desc">Your overall statistics and progress on Faithox.</p>
-                </div>
-                <div class="dash-grid">
-                    <div class="dash-card">
-                        <span class="dash-title">Total Purchases</span>
-                        <span class="dash-value" id="dash-purchases">0</span>
-                    </div>
-                    <div class="dash-card">
-                        <span class="dash-title">Total Reviews</span>
-                        <span class="dash-value" id="dash-reviews">0</span>
-                    </div>
-                    <div class="dash-card">
-                        <span class="dash-title">Pending Reviews</span>
-                        <span class="dash-value" id="dash-pending" style="color: #ca8a04;">0</span>
-                    </div>
-                    <div class="dash-card highlight">
-                        <span class="dash-title">Total Cashback Earned</span>
-                        <span class="dash-value" id="dash-cashback">₹0</span>
-                    </div>
-                </div>
             </div>
 
             <div id="tab-purchases" class="tab-content">
@@ -900,11 +871,6 @@
                 return;
             }
 
-            // Update Dash Stats
-            document.getElementById('dash-reviews').innerText = reviews.length;
-            document.getElementById('dash-purchases').innerText = reviews.length + 1; 
-            document.getElementById('dash-pending').innerText = '1';
-            
             // Update Profile View Stats
             const profRev = document.getElementById('profile-reviews');
             if(profRev) profRev.innerText = reviews.length;
