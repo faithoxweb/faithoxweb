@@ -1476,51 +1476,31 @@
                 }
                 let ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
 
-                // --- NEW BLACK PILL LOGIC ---
-                let photoPillHtml = '';
-                // The shared style with a fixed width of 100px to keep them identical
-                const pillStyle = "background: #2a2a2a; color: #ffffff; padding: 6px 4px; border-radius: 5px; font-size: 10px; font-weight: 600; margin: 0; width: 95%; display: flex; justify-content: center; text-align: center; box-sizing: border-box;";
-
-                if (photoUrls.length === 1) {
-                    photoPillHtml = `
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: auto; gap: 6px; margin-bottom: 25px;">
-                        <div style="${pillStyle}">
-                            no more photos
-                        </div>
-                        <div style="${pillStyle}; text-transform: uppercase; letter-spacing: 0.5px;">
-                            ${date}
-                        </div>
-                    </div>`;
-                } else if (photoUrls.length > 1) {
-                    photoPillHtml = `
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: auto; gap: 6px; margin-bottom: 25px;">
-                        <div style="${pillStyle}">
-                            +${photoUrls.length - 1} photo
-                        </div>
-                        <div style="${pillStyle}; text-transform: uppercase; letter-spacing: 0.5px;">
-                            ${date}
-                        </div>
-                    </div>`;
-                } else {
-                    photoPillHtml = `<div style="display: flex; align-items: center; justify-content: center; margin-top: auto;"></div>`;
-                }
-
-                // Photos Html Builder (Stacked Vertically)
+                // --- ROTATING PHOTO LOGIC (Matches Profile Page) ---
                 let photoHtml = '';
                 if (photoUrls.length > 0) {
-                    // Show only 1 image so it looks clean and doesn't scroll
-                    let photosToShow = photoUrls.slice(0, 1);
-                    
-                    let imagesHtml = photosToShow.map(url => `
-                        <img src="${url}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">
-                    `).join('');
+                    let imagesHtml = '';
+                    if (photoUrls.length === 1) {
+                        imagesHtml = `<img src="${photoUrls[0]}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">`;
+                    } else if (photoUrls.length === 2) {
+                        imagesHtml = `
+                        <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
+                            <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-6deg); z-index: 1;">
+                            <img src="${photoUrls[1]}" style="position: absolute; bottom: 0; right: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(6deg); z-index: 2; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
+                        </div>`;
+                    } else {
+                        imagesHtml = `
+                        <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
+                            <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-12deg); z-index: 1;">
+                            <img src="${photoUrls[1]}" style="position: absolute; top: 12.5%; left: 12.5%; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(0deg); z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                            <img src="${photoUrls[2]}" style="position: absolute; bottom: 0; right: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(12deg); z-index: 3; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
+                        </div>`;
+                    }
 
-                    // --> THIS IS WHERE YOU ADJUST THE HEIGHT <--
-                    // Change the "45px" in both margin-top and calc(100% - 45px) to move the photos up or down.
+                    // Adjusted margin-top to perfectly center with your 220px height
                     photoHtml = `
-                    <div style="display: flex; flex-direction: column; gap: 8px; width: 30%; flex-shrink: 0; height: calc(100% - 45px); margin-top: 45px; overflow: hidden;">
+                    <div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 55px;">
                         ${imagesHtml}
-                        ${photoPillHtml}
                     </div>`;
                 }
 
@@ -1540,23 +1520,18 @@
                                         <div style="display: flex; flex-direction: column; justify-content: center;">
                                             <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
                                             <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">
-                                                Visit Profile
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                                ${date}
                                             </div>
                                         </div>
                                     </div>
                                     ${ratingPill}
                                 </div>
-                                
                                 <div class="review-content-wrapper" style="padding: 0; flex: 1; height: auto; margin-top: 12px;">
                                     <p class="review-body" style="-webkit-line-clamp: 5; margin-bottom: 4px;">${escapeHTML(r.comment || '')}</p>
                                 </div>
                             </div>
-                            
                             ${photoHtml}
                         </div>
-                        
-                        ${photoUrls.length > 0 ? '' : `<div class="date-banner">${date}</div>`}
                     </div>
                 `;
             });
