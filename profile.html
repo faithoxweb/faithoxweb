@@ -34,7 +34,33 @@
         
         /* Menu Buttons */
         .menu-wrapper { margin-top: 6px; }
-        .menu-btn { width: 100%; text-align: left; background: transparent; border: none; padding: 13px 14px; border-radius: 13px; font-size: 14px; font-weight: 450; color: #7c838b; cursor: pointer; transition: all 0.05s; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; }
+        .menu-btn { 
+    width: 100%; 
+    text-align: left; 
+    background: transparent; 
+    border: none; 
+    padding: 13px 14px; 
+    border-radius: 13px; 
+    font-size: 14px; 
+    font-weight: 450; 
+    color: #7c838b; 
+    cursor: pointer; 
+    transition: all 0.05s; 
+    margin-bottom: 5px; 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    
+    /* ADD THESE TWO LINES */
+    -webkit-tap-highlight-color: transparent; 
+    outline: none;
+}
+
+/* Also add this to ensure no browser adds a shadow on click */
+.menu-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
         .menu-btn:hover { background: #fdfdfd; }
         /* Keep the font weight change for all active buttons */
 .menu-btn.active { 
