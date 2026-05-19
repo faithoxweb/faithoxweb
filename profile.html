@@ -30,13 +30,40 @@
             overflow-y: auto; 
             z-index: 10;
         }
-        .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: #2a2a2a; text-align: left; display: block; margin-bottom: 6px; cursor: pointer; position: relative; top: -19px; left: 20px; } 
+        .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: #f0f1f1; text-align: left; display: block; margin-bottom: 6px; cursor: pointer; position: relative; top: -19px; left: 20px; } 
         
         /* Menu Buttons */
         .menu-wrapper { margin-top: 6px; }
         .menu-btn { width: 100%; text-align: left; background: transparent; border: none; padding: 13px 14px; border-radius: 13px; font-size: 14px; font-weight: 450; color: #7c838b; cursor: pointer; transition: all 0.05s; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; }
         .menu-btn:hover { background: #fdfdfd; }
-        .menu-btn.active { background: #fdfdfd; color: #242424; font-weight: 550; }
+        /* Keep the font weight change for all active buttons */
+.menu-btn.active { 
+    font-weight: 600; 
+}
+
+/* 1. Profile - Blue Accent */
+#btn-profile.active { 
+    background: #e0f2fe; 
+    color: #0369a1; 
+}
+
+/* 2. My Purchases - Purple Accent */
+#btn-purchases.active { 
+    background: #f3e8ff; 
+    color: #7e22ce; 
+}
+
+/* 3. My Reviews - Orange Accent */
+#btn-reviews.active { 
+    background: #ffedd5; 
+    color: #c2410c; 
+}
+
+/* 4. Rewards - Green Accent (Matches your current cashback theme) */
+#btn-rewards.active { 
+    background: #dcfce7; 
+    color: #15803d; 
+}
 
         .logout-btn { margin-top: auto; background: transparent; color: #f2f2f2; border: 1px solid rgba(255,255,255,0.2); padding: 12px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.2s; width: 100%; }
         .logout-btn:hover { background: #ef4444; border-color: #ef4444; }
@@ -1012,7 +1039,7 @@
             window.location.href = 'index.html';
         }
 
-        loadProfile();
+    loadProfile();
     </script>
 </body>
 </html>
