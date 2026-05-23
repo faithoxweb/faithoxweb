@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us</title>
+  <style>
+    /* Basic Reset */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* Contact Container */
+    .contact-container {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px; /* Keeps it contained on desktop */
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    /* Contact Cards */
+    .contact-card {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      text-align: left;
+    }
+
+    .contact-card .icon {
+      font-size: 30px;
+      margin-right: 20px;
+    }
+
+    .contact-card h3 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .contact-card a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    /* Back Button */
+    .back-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #333;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .back-btn:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contact-container">
+    <h1>Contact Support</h1>
+    <p>Need help or want to register a complaint? Reach out to us below.</p>
+
+    <!-- Phone Section -->
+    <div class="contact-card">
+      <span class="icon">📱</span>
+      <div>
+        <h3>Phone</h3>
+        <a href="tel:+916354464702">+91 6354464702</a>
+      </div>
+    </div>
+
+    <!-- Email Section -->
+    <div class="contact-card">
+      <span class="icon">✉️</span>
+      <div>
+        <h3>Email</h3>
+        <a href="mailto:faithoxweb@gmail.com?subject=New%20Complaint">faithoxweb@gmail.com</a>
+      </div>
+    </div>
+
+    <!-- Go Back Link -->
+    <a href="index.html" class="back-btn">← Back to Home</a>
+  </div>
+
+</body>
+</html>
