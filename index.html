@@ -730,6 +730,24 @@
             .footer-brand-col { grid-column: span 1; padding-right: 0; }
             .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
         }
+        /* Make the Contact link look like a button */
+a.nav.link {
+  display: inline-block;
+  padding: 10px 20px; /* Adjusts the size of the button */
+  background-color: #ffffff; /* Blue background color */
+  color: rgb(22, 20, 20) !important; /* White text */
+  text-decoration: none; /* Removes the underline */
+  border-radius: 20px; /* Slightly rounded corners */
+  font-weight: normal;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+/* Add a hover effect so it reacts when the mouse is over it */
+a.nav.link:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  text-decoration: none;
+}
     </style>
 </head>
 <body>
@@ -822,10 +840,10 @@
             <span class="brand-text">faithox</span>
         </div>
         
-        <div class="nav-options">
-            <a class="nav-link" style="cursor:pointer;" onclick="navigateTo('forbuisness.html')">For Business</a>
-            <a class="nav-link">Contact Us</a>
-        </div>
+       <div class="nav-options">
+         <a class="nav-link" style="cursor:pointer;" onclick="navigateTo('forbuisness.html')">For Business</a>
+    <a class="nav-link" style="cursor:pointer;" onclick="navigateTo('contact.html')">Contact Us</a>
+</div>
 
         <button class="nav-notif-btn" onclick="toggleNotifPanel()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
