@@ -211,17 +211,7 @@
         /* --- MODALS --- */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(240, 241, 241, 0.7); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; }
         .modal-overlay.open { display: flex; }
-       .modal-content { 
-    background: #fdfdfd; 
-    padding: 40px; 
-    border-radius: 24px; 
-    width: 100%; 
-    max-width: 480px; 
-    position: relative; 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.08); 
-    max-height: 90vh; /* ADD THIS: Keeps it within the screen */
-    overflow-y: auto; /* ADD THIS: Enables scrolling inside the modal */
-}
+        .modal-content { background: #fdfdfd; padding: 40px; border-radius: 24px; width: 100%; max-width: 480px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
         .close-modal { position: absolute; top: 24px; right: 24px; background: #f2f2f2; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; font-weight: 600; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .close-modal:hover { background: #e2e8f0; color: #ef4444; }
         .code-block { background: #1e293b; color: #38bdf8; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 13px; margin: 15px 0; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; }
@@ -231,34 +221,14 @@
             .right-side-box { position: relative; right: auto; width: 100%; margin-top: 20px; display: flex; } 
             .new-profile-card { min-height: auto; }
         }
-@media (max-width: 992px) {
-    .new-profile-card h2 { 
-        position: relative !important; 
-        top: auto !important; 
-        left: auto !important; 
-        margin-bottom: 15px !important; 
-        text-align: center; 
-    }
-    .edit-btn-top { 
-        position: relative; 
-        top: auto; 
-        right: auto; 
-        align-self: center; 
-        margin-bottom: 20px; 
-    }
-}
+
         @media (max-width: 768px) {
             .profile-container { flex-direction: column; }
             body { overflow-y: auto; position: static; height: auto; }
             .sidebar { position: relative; width: 100%; height: auto; padding: 20px; border-right: none; border-bottom: 2px solid #cbd5e1; z-index: 1;}
             .brand-text { top: 1px; left: 0; }
-            .menu-wrapper { display: flex; flex-direction: row; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-top: 15px; scrollbar-width:none;}
-            .menu-btn { 
-    white-space: nowrap; 
-    justify-content: center; 
-    margin-bottom: 0; 
-    flex-shrink: 0; /* ADD THIS: Forces buttons to keep their shape so you can swipe them */
-}
+            .menu-wrapper { display: flex; flex-direction: row; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-top: 15px; }
+            .menu-btn { white-space: nowrap; justify-content: center; margin-bottom: 0; }
             .content-area { margin-left: 0; padding: 20px; width: 100%; max-width: 100%; }
             .new-profile-card { flex-direction: column; align-items: center; text-align: center; gap: 16px; padding: 75px 24px 24px 24px; margin-top: 20px; }
             
@@ -272,12 +242,57 @@
             
             .modal-content { padding: 24px; border-radius: 20px; width: 90%; }
             .logout-btn { margin-top: 20px; }
-           /* OVERRIDE FOR LONG NAMES */
-.new-user-name { 
-    white-space: normal !important; 
-    overflow: visible !important; 
-    word-break: break-word !important; 
-} 
+        }/* --- MASTER FIX FOR ALL CUTTING BOXES --- */
+        
+        /* 1. Allows the main dashboard to scroll vertically so the bottom isn't cut off */
+        .content-area {
+            height: 100vh !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+        }
+
+        /* 2. Overpowers inline HTML styles to stop Name and Email from cutting off with '...' */
+        .new-user-name {
+            white-space: normal !important;
+            overflow: visible !important;
+            word-break: break-word !important;
+        }
+        .email-value {
+            white-space: normal !important;
+            overflow: visible !important;
+            word-break: break-all !important;
+            max-width: 100% !important; /* Overrides your 200px lock */
+        }
+
+        /* 3. Stops the Popup Modals from cutting off at the bottom of short screens */
+        .modal-content {
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+        }
+
+        /* 4. Stops the main layout from squishing horizontally on Laptops */
+        @media (max-width: 1250px) {
+            .new-profile-card {
+                flex-direction: column !important; 
+                width: 100% !important;
+                padding-right: 12px !important;
+            }
+            .right-side-box {
+                position: relative !important;
+                right: auto !important;
+                width: 100% !important;
+                margin-top: 20px !important;
+            }
+        }
+
+        /* 5. Stops the inner Stats boxes from crushing the Avatar box on iPads/Tablets */
+        @media (max-width: 1100px) {
+            .profile-details-hole {
+                flex-direction: column !important; 
+            }
+            .inner-floating-panel {
+                max-width: 100% !important;
+            }
         }
     </style>
 </head>
