@@ -293,6 +293,31 @@
             .inner-floating-panel {
                 max-width: 100% !important;
             }
+        }/* --- ULTIMATE PC OVERLAP FIX --- */
+        #tab-dashboard.active {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 25px !important;
+            align-items: flex-start !important;
+        }
+
+        .new-profile-card {
+            margin: 0 !important;
+            margin-top: 30px !important;
+            flex: 1 1 600px !important; /* Allows the card to safely squeeze on standard PCs */
+            max-width: 850px !important;
+        }
+
+        .right-side-box {
+            position: relative !important; /* Kills the absolute overlap behavior */
+            right: auto !important;
+            top: auto !important;
+            bottom: auto !important;
+            margin: 0 !important;
+            margin-top: 30px !important;
+            flex: 1 1 350px !important; /* Allows it to sit side-by-side naturally */
+            width: 100% !important;
+            max-width: 405px !important;
         }
     </style>
 </head>
