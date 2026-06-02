@@ -177,7 +177,7 @@
             word-wrap: break-word; 
         }
 
-        /* --- PRODUCT EXACT RATING ROW (MATCHES REVIEW PILL) --- */
+        /* --- PRODUCT EXACT RATING ROW --- */
         .product-exact-rating-row {
             display: inline-flex;
             align-items: center;
@@ -269,58 +269,6 @@
         .two-col { display: flex; gap: 24px; align-items: flex-start; }
         .col-left { flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
         .col-right { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
-
-        /* --- CARDS --- */
-        .card {
-            background: #f8f8f8;
-            border-radius: 16px;
-            border: 1px solid #cbd5e1;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
-            overflow: hidden;
-        }
-        .card-header {
-            padding: 20px 24px 0;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .card-title { font-size: 13px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.8px; }
-        .card-body { padding: 20px 24px 24px; }
-
-        /* --- WRITE REVIEW CARD --- */
-        .write-review-card { background: #f8f8f8; border-radius: 16px; border: 1px solid #cbd5e1; box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03); margin-top: -25px; }
-        .wr-header { padding: 20px 24px; border-bottom: 1px solid #f1f5f9; }
-        .wr-title { font-size: 13px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.8px; }
-        .wr-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 12px; }
-
-        .star-rating { display: flex; gap: 6px; cursor: pointer; }
-        .star { font-size: 26px; color: #e2e8f0; transition: color 0.15s; user-select: none; }
-        .star.active { color: #88e788; }
-
-        #review-input { 
-            width: 100%; height: 110px; padding: 14px 16px; border-radius: 10px; 
-            border: 1.5px solid #e2e8f0; font-family: inherit; resize: none; 
-            font-size: 14px; color: #0f172a; background: #fafafa;
-            transition: all 0.2s; line-height: 1.5;
-        }
-        #review-input:focus { border-color: #0f172a; background: #fff; box-shadow: 0 0 0 3px rgba(15,23,42,0.05); }
-        #review-input::placeholder { color: #94a3b8; }
-
-        .photo-upload-label { 
-            display: flex; align-items: center; justify-content: center; gap: 8px; 
-            font-size: 13px; font-weight: 600; color: #64748b; cursor: pointer; 
-            padding: 10px; border: 1.5px dashed #d1d8e0; border-radius: 10px; 
-            transition: all 0.2s; background: #fafafa;
-        }
-        .photo-upload-label:hover { border-color: #0f172a; color: #0f172a; background: #f8fafc; }
-        .photo-upload-label svg { width: 16px; height: 16px; }
-        #file-name-display { font-size: 12px; font-weight: 600; color: #22c55e; text-align: center; min-height: 18px; }
-
-        .post-btn { 
-            width: 100%; background: #0f172a; color: #ffffff; border: none; 
-            padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 700; 
-            font-size: 14px; transition: all 0.2s; letter-spacing: 0.2px;
-        }
-        .post-btn:hover { background: #1e293b; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(15,23,42,0.15); }
-        .post-btn:active { transform: translateY(0); }
 
         /* --- REVIEWS SECTION & CAROUSEL --- */
         .reviews-section { 
@@ -450,15 +398,6 @@
             overflow: hidden; text-overflow: ellipsis;
         }
 
-        .verified-badge { 
-            display: inline-flex; align-items: center; gap: 4px; 
-            background: #f0fdf4; color: #16a34a; 
-            padding: 2px 8px; border-radius: 20px; 
-            font-size: 10px; font-weight: 700; 
-            align-self: flex-start; margin-top: auto;
-        }
-        .verified-badge svg { width: 10px; height: 10px; stroke: #16a34a; }
-
         /* --- BIG REVIEW MODAL --- */
         #review-modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
@@ -510,12 +449,8 @@
         .footer-secured svg { width: 18px; height: 18px; color: #10B981; }
         .footer-copyright { font-size: 13px; color: #f8f8f8; font-weight: 500; }
 
-        /* --- LOADER --- */
-        .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(15,23,42,0.15); border-top-color: #0f172a; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
         /* --- RESPONSIVE --- */
-        @media (max-width: 1024px) { .two-col { flex-direction: column; } .col-right { width: 100%; } .write-review-card { margin-top: 0; } }
+        @media (max-width: 1024px) { .two-col { flex-direction: column; } .col-right { width: 100%; } }
         @media (max-width: 768px) {
             .page-shell { padding: 24px 16px 0; }
             .footer-wrapper { flex-direction: column; text-align: center; justify-content: center; }
@@ -594,79 +529,7 @@
             <div class="reviews-section">
                 <div class="reviews-carousel-wrapper">
                     <div id="reviews-list">
-                        <div class="skeleton-card">
-                            <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                                <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
-                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                                        <div class="review-author" style="margin: 0; align-items: center; gap: 8px;">
-                                            <div class="skel-avatar skeleton-anim"></div>
-                                            <div style="display: flex; flex-direction: column; justify-content: center; gap: 6px;">
-                                                <div class="skel-name skeleton-anim"></div>
-                                                <div class="skel-sub skeleton-anim"></div>
-                                            </div>
-                                        </div>
-                                        <div class="skel-rating skeleton-anim"></div>
-                                    </div>
-                                    <div class="skel-body">
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line short skeleton-anim"></div>
-                                    </div>
-                                </div>
-                                <div class="skel-photo skeleton-anim"></div>
-                            </div>
                         </div>
-                        <div class="skeleton-card">
-                            <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                                <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
-                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                                        <div class="review-author" style="margin: 0; align-items: center; gap: 8px;">
-                                            <div class="skel-avatar skeleton-anim"></div>
-                                            <div style="display: flex; flex-direction: column; justify-content: center; gap: 6px;">
-                                                <div class="skel-name skeleton-anim"></div>
-                                                <div class="skel-sub skeleton-anim"></div>
-                                            </div>
-                                        </div>
-                                        <div class="skel-rating skeleton-anim"></div>
-                                    </div>
-                                    <div class="skel-body">
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line short skeleton-anim"></div>
-                                    </div>
-                                </div>
-                                <div class="skel-photo skeleton-anim"></div>
-                            </div>
-                        </div>
-                        <div class="skeleton-card">
-                            <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                                <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
-                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                                        <div class="review-author" style="margin: 0; align-items: center; gap: 8px;">
-                                            <div class="skel-avatar skeleton-anim"></div>
-                                            <div style="display: flex; flex-direction: column; justify-content: center; gap: 6px;">
-                                                <div class="skel-name skeleton-anim"></div>
-                                                <div class="skel-sub skeleton-anim"></div>
-                                            </div>
-                                        </div>
-                                        <div class="skel-rating skeleton-anim"></div>
-                                    </div>
-                                    <div class="skel-body">
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line short skeleton-anim"></div>
-                                    </div>
-                                </div>
-                                <div class="skel-photo skeleton-anim"></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -700,39 +563,10 @@
 
         <div class="two-col">
             <div class="col-left">
-                
-            </div>
-
-            <div class="col-right">
-
-                <div class="write-review-card">
-                    <div class="wr-header">
-                        <div class="wr-title">Write a Review</div>
-                    </div>
-                    <div class="wr-body">
-                        <div class="star-rating" id="star-input">
-                            <span class="star" data-value="1">★</span>
-                            <span class="star" data-value="2">★</span>
-                            <span class="star" data-value="3">★</span>
-                            <span class="star" data-value="4">★</span>
-                            <span class="star" data-value="5">★</span>
-                        </div>
-                        <textarea id="review-input" placeholder="Share your experience... What did you think?"></textarea>
-                        
-                        <div>
-                            <label for="review-photos-input" class="photo-upload-label">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                                Attach Photos
-                            </label>
-                            <input type="file" id="review-photos-input" multiple accept="image/*" style="display:none;" onchange="updateFileName(this)">
-                            <div id="file-name-display"></div>
-                        </div>
-
-                        <button class="post-btn" onclick="submitReview()">Submit Review</button>
-                    </div>
                 </div>
 
-            </div>
+            <div class="col-right">
+                </div>
         </div>
 
     </div>
@@ -793,11 +627,6 @@
             }
         });
         
-        window.updateFileName = function(input) {
-            const display = document.getElementById('file-name-display');
-            display.innerText = input.files.length > 0 ? `${input.files.length} photo(s) selected` : '';
-        };
-
         window.openLightbox = function(url) {
             document.getElementById('lightbox-img').src = url;
             document.getElementById('lightbox').classList.add('open');
@@ -847,22 +676,17 @@
         function updateVisualRatings(ratingValue) {
             const formatted = ratingValue.toFixed(1);
             
-            // Map rating to matching specific colors
-            let activeColor = "#10B981"; // 5 Stars (Green)
-            if (ratingValue === 0) activeColor = "#cbd5e1"; // Unrated (Gray)
-            else if (ratingValue < 1.5) activeColor = "#EF4444"; // 1 Star (Red)
-            else if (ratingValue < 2.5) activeColor = "#F97316"; // 2 Stars (Orange)
-            else if (ratingValue < 3.5) activeColor = "#F59E0B"; // 3 Stars (Yellow)
-            else if (ratingValue < 4.5) activeColor = "#84CC16"; // 4 Stars (Light Green)
+            let activeColor = "#10B981"; // 5 Stars
+            if (ratingValue === 0) activeColor = "#cbd5e1"; 
+            else if (ratingValue < 1.5) activeColor = "#EF4444"; 
+            else if (ratingValue < 2.5) activeColor = "#F97316"; 
+            else if (ratingValue < 3.5) activeColor = "#F59E0B"; 
+            else if (ratingValue < 4.5) activeColor = "#84CC16"; 
             
-            // 1. Update big top-right rating overview block
             const bigValEl = document.getElementById('big-rating-val');
-            if (bigValEl) {
-                bigValEl.innerText = formatted;
-            }
+            if (bigValEl) bigValEl.innerText = formatted;
             renderExactStars(ratingValue, 'big-rating-stars', 20, activeColor);
 
-            // 2. Update new product exact rating pill (next to company name)
             const exactTextEl = document.getElementById('exact-rating-text');
             const exactBoxEl = document.getElementById('exact-rating-box');
             
@@ -870,12 +694,8 @@
                 exactTextEl.innerText = formatted;
                 exactTextEl.style.color = activeColor;
             }
-            if (exactBoxEl) {
-                exactBoxEl.style.borderColor = activeColor;
-            }
+            if (exactBoxEl) exactBoxEl.style.borderColor = activeColor;
             
-            // Render 10% filled stars precisely matching rating
-            // Gap matches review card (4px spacing mapped inside the function)
             renderExactStars(ratingValue, 'exact-stars-container', 20, activeColor); 
         }
 
@@ -884,7 +704,7 @@
             if(!container) return;
             container.innerHTML = '';
             container.style.display = 'flex';
-            container.style.gap = '4px'; /* EXACT REVIEW CARD GAP */
+            container.style.gap = '4px'; 
             container.style.justifyContent = 'center';
             container.style.alignItems = 'center';
 
@@ -895,7 +715,6 @@
                 if (rating >= i) {
                     fillPercent = 100;
                 } else if (rating > i - 1) {
-                    // Handles the precise 10% for every .1 filling requirement
                     fillPercent = (rating - (i - 1)) * 100; 
                 }
 
@@ -920,21 +739,9 @@
 
         const params = new URLSearchParams(window.location.search);
         const companyId = params.get('id');
-        let currentUser = null;
-        let selectedRating = 0;
         let loadedReviews = []; 
 
         async function init() {
-            const { data } = await db.auth.getSession();
-            if (data.session) {
-                currentUser = data.session.user;
-                const userRole = currentUser.user_metadata?.role || 'customer';
-
-                if (userRole === 'business') {
-                    window.location.replace('dashboard.html');
-                    return;
-                }
-            }
             if (companyId) { loadCompanyDetails(); loadReviews(); }
         }
 
@@ -942,7 +749,6 @@
             const { data: co, error } = await db.from('companies').select('*').eq('id', companyId).single();
             if (error || !co) { return; }
 
-            // Clear skeletons safely
             document.getElementById('img-frame').classList.remove('skeleton-anim');
             document.getElementById('dynamic-company-img').style.opacity = '1';
             
@@ -1110,75 +916,6 @@
                 });
             }, 100);
         }
-
-        async function submitReview() {
-            const text = document.getElementById('review-input').value.trim();
-            const fileInput = document.getElementById('review-photos-input');
-            
-            if (!currentUser) { 
-                const currentUrl = encodeURIComponent(window.location.href);
-                navigateTo('auth.html?returnTo=' + currentUrl); 
-                return; 
-            }
-            if (!text || selectedRating === 0) { alert('Please add a star rating and write a comment.'); return; }
-
-            const btn = document.querySelector('.post-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<div class="spinner" style="margin:0 auto;border-top-color:#fff;"></div>';
-
-            let uploadedUrls = [];
-            if (fileInput.files && fileInput.files.length > 0) {
-                for (const file of Array.from(fileInput.files)) {
-                    const ext = file.name.split('.').pop();
-                    const path = `${currentUser.id}/${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
-                    const { error: upErr } = await db.storage.from('review-photos').upload(path, file);
-                    if (upErr) {
-                        console.error('Upload error:', upErr);
-                        alert('Photo upload failed: ' + upErr.message + '\n\nEnsure your Supabase bucket is named "review-photos" with public access.');
-                        continue;
-                    }
-                    const { data: urlData } = db.storage.from('review-photos').getPublicUrl(path);
-                    if (urlData?.publicUrl) uploadedUrls.push(urlData.publicUrl);
-                }
-            }
-
-            const reviewerName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
-            const userAvatar = currentUser.user_metadata?.avatar_url || null; 
-
-            const { error } = await db.from('reviews').insert({
-                user_id: currentUser.id,
-                company_id: companyId,
-                rating: selectedRating,
-                comment: text,
-                status: 'approved',
-                reviewer_name: reviewerName,
-                photos: uploadedUrls,
-                avatar_url: userAvatar 
-            });
-            
-            btn.disabled = false;
-            btn.innerText = 'Submit Review';
-
-            if (error) {
-                alert(error.message);
-            } else {
-                document.getElementById('review-input').value = '';
-                fileInput.value = '';
-                document.getElementById('file-name-display').innerText = '';
-                selectedRating = 0;
-                document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
-                loadReviews();
-            }
-        }
-
-        document.querySelectorAll('.star').forEach(star => {
-            star.onclick = () => {
-                selectedRating = parseInt(star.dataset.value);
-                document.querySelectorAll('.star').forEach(s => {
-                    s.classList.toggle('active', parseInt(s.dataset.value) <= selectedRating);
-                });
-            };
-        });
 
         init();
     </script>
