@@ -15,12 +15,11 @@
             font-family: 'Inter', sans-serif; 
             min-height: 100vh; 
             width: 100%; 
-            overflow-x: hidden; 
+            overflow: hidden; 
             display: flex; 
             flex-direction: column;
             color: #1e293b;
             -webkit-font-smoothing: antialiased;
-            padding-top: 1000px; 
         }
 
         /* --- NEW RECTANGULAR BOX --- */
@@ -33,6 +32,29 @@
             background: #fdfdfd;
             border-radius: 32px;
             z-index: 1;
+        }
+
+        /* --- OFFICIAL WEBSITE BUTTON --- */
+        #dynamic-company-link {
+            background: #fdfdfd;
+            color: #2a2a2a; 
+            padding: 10px 18px;
+            border-radius: 100px; 
+            border: 2px solid #dcdcdc; 
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: none; 
+            white-space: nowrap;
+            width: fit-content;
+        }
+
+        #dynamic-company-link:hover {
+            border-color: #2a2a2a; 
         }
 
         /* --- UPPER RECTANGULAR HOLE --- */
@@ -146,25 +168,44 @@
             top: 8px;
             bottom: 8px;
             left: 220px; 
-            right: 266px; 
+            right: 8px; 
             background: #fdfdfd;
             border-radius: 24px; 
             display: flex;
-            flex-direction: column;
-            justify-content: flex-start; 
-            padding: 24px 32px; 
-            gap: 12px;
+            flex-direction: row;
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 24px 18px 24px 24px; 
+            gap: 15px;
             z-index: 2;
         }
 
+        .hole-info-text-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+            flex: 1; 
+            min-width: 0; 
+        }
+
+        /* NEW CONTAINER TO LOCK TITLE HEIGHT */
+        .title-container {
+            width: 100%;
+            height: 68px; /* Fixed height for 2 lines */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
         #dynamic-company-name {
-            font-size: 20px;
-            font-weight: 500;
-            color: #000000;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2a2a2a;
             background: transparent; 
             margin: 0; 
             padding: 0;
-            width: 25%; 
+            width: 100%; 
             position: relative;
             z-index: 10;
             line-height: 1.4;
@@ -205,70 +246,60 @@
             transition: color 0.3s ease;
         }
 
-        /* --- RATING SQUARE --- */
+        /* --- RATING SQUARE (HORIZONTAL MODE) --- */
         .top-rating-square {
-            position: absolute;
-            right: 8px;
-            top: 8px;
-            bottom: 8px;
-            width: 250px;
-            background: #f8f8f8;
-            border-radius: 16px;
-            border: 3px solid #cbd5e1;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            width: 470px; 
+            max-height: 200px;
+            background: #f0f1f1;
+            border-radius: 18px;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            justify-content: center;
+            padding: 30px; 
             flex-shrink: 0;
             z-index: 10;
         }
         .top-rating-square-header {
-            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
             font-weight: 800;
             color: #242424;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-align: center;
-            margin-bottom: 0px;
+            letter-spacing: 0.3px;
+            text-align: left;
+            margin-bottom: 16px;
+            transform: translateY(-3px)
         }
-        .rating-overview { display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1; justify-content: center; }
-        .big-rating { text-align: center; flex-shrink: 0; }
-        .big-rating-val { font-size: 42px; font-weight: 800; color: #0f172a; line-height: 1; letter-spacing: -1.5px; transition: color 0.3s ease; }
+        .rating-overview { 
+            display: flex; 
+            flex-direction: row; 
+            align-items: center; 
+            gap: 30px; 
+            flex: 1; 
+            justify-content: flex-start; 
+        }
+        .big-rating { 
+            text-align: center; 
+            flex-shrink: 0; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .big-rating-val { font-size: 42px; font-weight: 800; color: #2a2a2a; line-height: 1; letter-spacing: -1.5px; transition: color 0.3s ease; }
         .big-rating-stars { font-size: 16px; letter-spacing: 2px; margin: 4px 0; display: flex; justify-content: center; gap: 2px; }
         .big-rating-count { font-size: 11px; color: #94a3b8; font-weight: 600; }
-        .rating-bars { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+        .rating-bars { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 6px; 
+        }
         .rating-bar-row { display: flex; align-items: center; gap: 8px; }
         .rating-bar-label { font-size: 11px; font-weight: 700; color: #64748b; width: 12px; text-align: right; flex-shrink: 0; }
-        .rating-bar-track { flex: 1; height: 5px; background: #f1f5f9; border-radius: 10px; overflow: hidden; }
-        .rating-bar-fill { height: 100%; background: #88e788; border-radius: 10px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+        .rating-bar-track { flex: 1; height: 5px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
+        .rating-bar-fill { height: 100%; background: #10B981; border-radius: 10px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
         .rating-bar-pct { font-size: 10px; font-weight: 700; color: #94a3b8; width: 24px; text-align: right; flex-shrink: 0; }
 
-        .glass-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: -1;
-            background: rgba(225, 225, 225, 0.3);
-            backdrop-filter: blur(60px);
-            -webkit-backdrop-filter: blur(60px);
-            pointer-events: none;
-            will-change: transform;
-            transform: translateZ(0);
-        }
-
-        /* --- LAYOUT --- */
-        .page-shell { 
-            width: 100%; 
-            max-width: 100%; 
-            margin: 0; 
-            padding: 40px 24px 0; 
-            flex-grow: 1;
-            z-index: 10;
-        }
-
-        .two-col { display: flex; gap: 24px; align-items: flex-start; }
-        .col-left { flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-        .col-right { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
 
         /* --- REVIEWS SECTION & CAROUSEL --- */
         .reviews-section { 
@@ -448,29 +479,12 @@
         }
         #lightbox-close:hover { opacity: 1; }
 
-        /* --- PROFESSIONAL TWO-TIER FOOTER --- */
-        .pro-footer { width: 100%; background-color: #242424; color: #f8f8f8; font-family: 'Inter', sans-serif; margin-top: 80px; }
-        .footer-top-row { display: flex; justify-content: center; align-items: center; padding: 40px 24px; }
-        .footer-divider { height: 1px; background-color: #f8f8f8; margin: 0 40px; }
-        .footer-bottom-row { padding: 20px 0; }
-        .footer-wrapper { width: 100%; padding: 0 40px; display: flex; justify-content: flex-start; align-items: center; }
-        .footer-secured { display: flex; align-items: center; gap: 8px; color: #e2e8f0; font-size: 14px; font-weight: 600; letter-spacing: 0.2px; }
-        .footer-secured svg { width: 18px; height: 18px; color: #10B981; }
-        .footer-copyright { font-size: 13px; color: #f8f8f8; font-weight: 500; }
-
         /* --- LOADER --- */
         .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(15,23,42,0.15); border-top-color: #0f172a; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* --- RESPONSIVE --- */
-        @media (max-width: 1024px) { 
-            .two-col { flex-direction: column; } 
-            .col-right { width: 100%; } 
-        }
         @media (max-width: 768px) {
-            .page-shell { padding: 24px 16px 0; }
-            .footer-wrapper { flex-direction: column; text-align: center; justify-content: center; }
-            
             .rectangular-hole { overflow-y: auto; overflow-x: hidden; }
 
             .product-img-frame {
@@ -481,7 +495,13 @@
 
             .hole-info-box {
                 left: 8px; right: 8px; top: 250px; bottom: auto;
-                padding: 20px; align-items: flex-start; text-align: left;
+                padding: 20px; align-items: stretch; text-align: left;
+                flex-direction: column;
+            }
+
+            .title-container {
+                height: auto;
+                min-height: 68px; /* Protects height on mobile too */
             }
 
             .sk-title { margin: 0 0 10px 0; border-radius: 8px; width: 100%; }
@@ -492,8 +512,9 @@
             .product-exact-rating-row { justify-content: flex-start; margin: 0 0 10px 0; border-radius: 9px; padding: 6px 14px; }
             
             .top-rating-square { 
-                position: relative; top: auto; right: auto; bottom: auto;
-                margin: 390px 8px 20px 8px; width: calc(100% - 16px); 
+                width: 100%;
+                margin: 0;
+                max-height: none;
             }
         }
     </style>
@@ -506,36 +527,42 @@
         
         <span style="position: absolute; top: 34px; left: 24px; font-size: 14px; font-weight: 600; color: #1e293b; z-index: 20;">product from whatevercompany.com</span>
         
-        <a id="dynamic-company-link" href="#" target="_blank" style="background: #0f172a; color: #ffffff; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; position: absolute; top: 24px; right: 24px; z-index: 20; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.1); white-space: nowrap;">
-            View product on official website
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="7" y1="17" x2="17" y2="7"></line>
-                <polyline points="7 7 17 7 17 17"></polyline>
-            </svg>
-        </a>
-
         <div class="rectangular-hole">
             <div class="product-img-frame skeleton-anim" id="img-frame">
                 <img id="dynamic-company-img" src="" alt="Product Image" class="top-bar-img" style="opacity: 0; transition: opacity 0.3s ease-in-out;">
             </div>
 
             <div class="hole-info-box">
-                <h1 id="dynamic-company-name" class="skeleton-anim sk-title"></h1>
-                <div class="product-exact-rating-row skeleton-anim skel-exact-rating" id="exact-rating-box">
-                    <div id="exact-stars-container"></div>
-                    <span id="exact-rating-text">0.0</span>
-                </div>
-            </div>
-
-            <div class="top-rating-square skeleton-anim skel-rating-square" id="rating-square-box">
-                <div class="top-rating-square-header">Rating Breakdown</div>
-                <div class="rating-overview">
-                    <div class="big-rating">
-                        <div class="big-rating-val" id="big-rating-val">—</div>
-                        <div class="big-rating-stars" id="big-rating-stars">—</div>
-                        <div class="big-rating-count" id="big-rating-count">0 reviews</div>
+                <div class="hole-info-text-col">
+                    
+                    <div class="title-container">
+                        <h1 id="dynamic-company-name" class="skeleton-anim sk-title"></h1>
                     </div>
-                    <div class="rating-bars" id="rating-bars">
+                    
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <div class="product-exact-rating-row skeleton-anim skel-exact-rating" id="exact-rating-box">
+                            <div id="exact-stars-container"></div>
+                            <span id="exact-rating-text">0.0</span>
+                        </div>
+                        <a id="dynamic-company-link" href="#" target="_blank">
+                            View product on official website
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="7" y1="17" x2="17" y2="7"></line>
+                                <polyline points="7 7 17 7 17 17"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="top-rating-square skeleton-anim skel-rating-square" id="rating-square-box">
+                    <div class="top-rating-square-header">Rating Breakdown</div>
+                    <div class="rating-overview">
+                        <div class="big-rating">
+                            <div class="big-rating-val" id="big-rating-val">—</div>
+                            <div class="big-rating-stars" id="big-rating-stars">—</div>
+                            <div class="big-rating-count" id="big-rating-count">0 reviews</div>
+                        </div>
+                        <div class="rating-bars" id="rating-bars"></div>
                     </div>
                 </div>
             </div>
@@ -646,40 +673,6 @@
         <div id="lightbox-close" onclick="closeLightbox()">✕</div>
         <img id="lightbox-img" src="" alt="Review Photo">
     </div>
-
-    <div class="page-shell">
-
-        <div class="two-col">
-            <div class="col-left">
-                
-            </div>
-
-            <div class="col-right">
-                </div>
-        </div>
-
-    </div>
-
-    <footer class="pro-footer">
-        <div class="footer-top-row">
-            <div class="footer-secured">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                </svg>
-                Page secured by Faithox Unbiased Engine
-            </div>
-        </div>
-        
-        <div class="footer-divider"></div>
-
-        <div class="footer-bottom-row">
-            <div class="footer-wrapper">
-                <div class="footer-copyright">
-                    &copy; 2026 Faithox Limited. All rights reserved.
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <script>
         // --- Carousel Navigation Logic ---
