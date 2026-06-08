@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 // 1. Initialize Supabase
 // (You must use your Service Role Key here, not the public Anon Key, to securely write to the database)
   const supabaseUrl = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MDYwMjk4NiwiZXhwIjoyMDg2MTc4OTg2fQ.mwKKNZkpAp1dmBsu4qa12g0Orci8CaHgMXuHeyA1f_0';
+        const supabaseKey = 'SUPABSE_SERVICE_ROLE_KEY';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Tell Vercel to give us the raw text so the security check works
