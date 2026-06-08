@@ -1,0 +1,6 @@
+{
+  "name": "faithox",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0"
+  }
+}
