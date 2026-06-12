@@ -1,10 +1,9 @@
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 
-// 1. Initialize Supabase
-// (You must use your Service Role Key here, not the public Anon Key, to securely write to the database)
-  const supabaseUrl = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-        const supabaseKey = 'SUPABSE_SERVICE_ROLE_KEY';
+// 1. Initialize Supabase correctly by fetching from environment variables
+const supabaseUrl = 'https://fdjcvpsqossuiljuadkk.supabase.co';
+const supabaseKey = process.env.SUPABSE_SERVICE_ROLE_KEY; // Fixed: Removed quotes and added process.env
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Tell Vercel to give us the raw text so the security check works
@@ -50,14 +49,13 @@ export default async function handler(req, res) {
       const reviewToken = crypto.randomBytes(3).toString('hex').toUpperCase(); 
       
       // --- SUPABASE DATABASE INSERTION ---
-      // Make sure 'review_tokens' matches the exact name of your table in Supabase
       const { error } = await supabase
         .from('review_tokens') 
         .insert([
           { 
             email: customerEmail, 
             token: reviewToken, 
-            company_id: "stryde" // Hardcoded for testing; we will make this dynamic later
+            company_id: "stryde"
           }
         ]);
 
