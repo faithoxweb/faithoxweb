@@ -53,7 +53,7 @@ export default async function handler(req, res) {
         .from('review_tokens') 
         .insert([
           { 
-            email: customerEmail, 
+             buyer_email: customerEmail, 
             token: reviewToken, 
             company_id: "stryde"
           }
