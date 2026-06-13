@@ -1,10 +1,14 @@
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
+import { Resend } from 'resend'; // --- ADDED: Import Resend
 
 // 1. Initialize Supabase correctly by fetching from environment variables
 const supabaseUrl = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-const supabaseKey = process.env.SUPABSE_SERVICE_ROLE_KEY; // Fixed: Removed quotes and added process.env
+const supabaseKey = process.env.SUPABSE_SERVICE_ROLE_KEY; 
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// --- ADDED: Initialize Resend ---
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Tell Vercel to give us the raw text so the security check works
 export const config = {
@@ -53,7 +57,7 @@ export default async function handler(req, res) {
         .from('review_tokens') 
         .insert([
           { 
-             buyer_email: customerEmail, 
+            buyer_email: customerEmail, 
             token: reviewToken, 
             company_id: "stryde"
           }
@@ -65,6 +69,31 @@ export default async function handler(req, res) {
       }
 
       console.log(`Success! Token ${reviewToken} saved for ${customerEmail}`);
+
+      // --- ADDED: SEND EMAIL VIA RESEND ---
+      try {
+        await resend.emails.send({
+          from: 'onboarding@resend.dev', // Resend's free test email address
+          to: customerEmail, // Make sure to use your own email address when testing!
+          subject: 'Thanks for your purchase! Leave a review for Stryde',
+          html: `
+            <div style="font-family: sans-serif; padding: 20px; color: #333;">
+              <h2>Thank you for your payment!</h2>
+              <p>We hope you love your experience with Stryde. We would highly appreciate it if you could take a brief moment to leave us a review.</p>
+              <p>Your unique security review token is: <strong>${reviewToken}</strong></p>
+              <p>Click the button below to automatically unlock your review form without any manual entry:</p>
+              <br />
+              <a href="https://faithoxweb.vercel.app/embed.html?token=${reviewToken}" 
+                 style="padding: 12px 24px; background-color: #111111; color: white; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
+                Leave a Review
+              </a>
+            </div>
+          `,
+        });
+        console.log(`Email successfully dispatched via Resend to ${customerEmail}`);
+      } catch (emailError) {
+        console.error("Resend Email Delivery Error:", emailError);
+      }
     }
 
     return res.status(200).send('OK');
