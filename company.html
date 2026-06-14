@@ -62,7 +62,8 @@
             position: absolute;
             top: 75px;
             left: 12px;
-            right: 12px;
+            width: 1176px; 
+            max-width: calc(100% - 24px); 
             height: 225px; 
             background: #f0f1f1;
             border-radius: 32px;
@@ -72,17 +73,36 @@
         .reviews-hole {
             position: absolute;
             top: 324px; 
-            left: 0; 
-            width: 1200px; 
-            max-width: 100%;
-            height: 230px; 
+            left: 12px; 
+            width: 1176px; 
+            max-width: calc(100% - 24px);
+            height: 290px; 
             background: #f0f1f1;
-            border-left: 8px solid #fdfdfd; 
-            border-right: 8px solid #fdfdfd; 
-            border-radius: 0; 
+            border-radius: 40px; 
             display: flex;
+            flex-direction: column; 
             align-items: center;
-            justify-content: flex-start;
+            justify-content: flex-start; 
+            padding-top: 5px; 
+            gap: 14px; 
+            overflow: hidden; 
+        }
+
+        /* --- RIGHT SIDE BOX --- */
+        .right-side-box {
+            position: absolute;
+            top: 75px;
+            left: 1200px; /* 12px (left padding) + 1176px (holes width) + 12px (gap) */
+            right: 12px;
+            height: 539px; /* Matches the combined bottom edge of the reviews hole */
+            background: #f0f1f1;
+            border-radius: 32px;
+        }
+
+        @media (max-width: 1224px) {
+            .right-side-box {
+                display: none;
+            }
         }
 
         /* --- SKELETON LOADER STYLES (UNIFIED) --- */
@@ -128,6 +148,7 @@
             border: 1px solid #ededed; 
             box-shadow: none; 
             scroll-snap-align: start; 
+            margin-right: 10px; 
         }
         .skel-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
         .skel-name { height: 14px; width: 100px; }
@@ -176,7 +197,7 @@
             justify-content: space-between; 
             align-items: center; 
             padding: 24px 18px 24px 24px; 
-            gap: 15px;
+            gap: 20px; 
             z-index: 2;
         }
 
@@ -189,10 +210,9 @@
             min-width: 0; 
         }
 
-        /* NEW CONTAINER TO LOCK TITLE HEIGHT */
         .title-container {
             width: 100%;
-            height: 68px; /* Fixed height for 2 lines */
+            height: 68px; 
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -215,7 +235,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: normal;
-            word-wrap: break-word; 
+            word-break: break-word; 
         }
 
         /* --- PRODUCT EXACT RATING ROW (MATCHES REVIEW PILL) --- */
@@ -248,7 +268,7 @@
 
         /* --- RATING SQUARE (HORIZONTAL MODE) --- */
         .top-rating-square {
-            width: 470px; 
+            width: 440px; 
             max-height: 200px;
             background: #f0f1f1;
             border-radius: 18px;
@@ -314,29 +334,30 @@
             display: flex;
             flex-direction: column; 
             align-items: center;
-            padding: 0 8px; 
+            padding: 0; 
         }
 
         #reviews-list { 
             display: flex;
             overflow-x: auto;
-            width: 100%; 
+            width: calc(100% - 16px); 
+            margin: 0 auto;
+            box-sizing: border-box;
             scrollbar-width: none; 
             -ms-overflow-style: none; 
-            gap: 10px;
-            padding: 4px; 
-            scroll-padding: 4px; 
+            padding: 4px 0; 
+            scroll-padding: 0; 
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
+            border-radius: 40px; /* FIX: Curves the clipping edges to avoid sharp corners */
         }
         
         #reviews-list::-webkit-scrollbar { display: none; }
 
+        #reviews-list > div:first-child { margin-left: 0; }
+        #reviews-list > div:last-child { margin-right: 0; }
+
         .carousel-controls {
-            position: absolute;
-            top: 570px; 
-            left: 0;
-            right: 0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -380,6 +401,7 @@
             overflow: hidden;
             border: 1px solid #ededed;
             scroll-snap-align: start; 
+            margin-right: 10px; 
         }
         
         .review-item-main:hover { 
@@ -497,11 +519,16 @@
                 left: 8px; right: 8px; top: 250px; bottom: auto;
                 padding: 20px; align-items: stretch; text-align: left;
                 flex-direction: column;
+                gap: 15px;
+            }
+
+            .hole-info-text-col {
+                flex: 1; 
             }
 
             .title-container {
                 height: auto;
-                min-height: 68px; /* Protects height on mobile too */
+                min-height: 68px; 
             }
 
             .sk-title { margin: 0 0 10px 0; border-radius: 8px; width: 100%; }
@@ -545,7 +572,7 @@
                             <span id="exact-rating-text">0.0</span>
                         </div>
                         <a id="dynamic-company-link" href="#" target="_blank">
-                            View product on official website
+                            View product on store
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="7" y1="17" x2="17" y2="7"></line>
                                 <polyline points="7 7 17 7 17 17"></polyline>
@@ -647,16 +674,18 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="carousel-controls">
+                <button class="scroll-btn left-btn" onclick="scrollReviews(-1)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button class="scroll-btn right-btn" onclick="scrollReviews(1)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+            </div>
         </div>
 
-        <div class="carousel-controls">
-            <button class="scroll-btn left-btn" onclick="scrollReviews(-1)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            </button>
-            <button class="scroll-btn right-btn" onclick="scrollReviews(1)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </button>
-        </div>
+        <div class="right-side-box"></div>
 
     </div>
 
@@ -786,7 +815,6 @@
             }
             
             // Render 10% filled stars precisely matching rating
-            // Gap matches review card (4px spacing mapped inside the function)
             renderExactStars(ratingValue, 'exact-stars-container', 20, activeColor); 
         }
 
@@ -795,7 +823,7 @@
             if(!container) return;
             container.innerHTML = '';
             container.style.display = 'flex';
-            container.style.gap = '4px'; /* EXACT REVIEW CARD GAP */
+            container.style.gap = '4px'; 
             container.style.justifyContent = 'center';
             container.style.alignItems = 'center';
 
@@ -806,7 +834,6 @@
                 if (rating >= i) {
                     fillPercent = 100;
                 } else if (rating > i - 1) {
-                    // Handles the precise 10% for every .1 filling requirement
                     fillPercent = (rating - (i - 1)) * 100; 
                 }
 
