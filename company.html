@@ -92,20 +92,39 @@
         .right-side-box {
             position: absolute;
             top: 75px;
-            left: 1200px; /* 12px (left padding) + 1176px (holes width) + 12px (gap) */
+            left: 1200px; 
             right: 12px;
-            height: 539px; /* Matches the combined bottom edge of the reviews hole */
+            height: 539px; 
             background: #f0f1f1;
             border-radius: 32px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
         }
+
+        .side-comp-btn {
+            width: 100%;
+            padding: 16px;
+            background: #1e293b;
+            color: #fdfdfd;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s ease, transform 0.1s ease;
+            text-align: center;
+        }
+        .side-comp-btn:hover { background: #0f172a; }
+        .side-comp-btn:active { transform: scale(0.98); }
 
         @media (max-width: 1224px) {
-            .right-side-box {
-                display: none;
-            }
+            .right-side-box { display: none; }
         }
 
-        /* --- SKELETON LOADER STYLES (UNIFIED) --- */
+        /* --- SKELETON LOADER STYLES --- */
         .skeleton-anim { 
             background: #e2e8f0; 
             background-image: linear-gradient(90deg, #e2e8f0 0px, #f8fafc 40px, #e2e8f0 80px); 
@@ -117,38 +136,16 @@
         @keyframes shine-lines { 0% { background-position: -300px; } 100% { background-position: 300px; } }
         
         .sk-title { width: 100%; height: 50px; border-radius: 8px; color: transparent !important; }
-        
-        .skel-exact-rating { 
-            width: 140px !important; 
-            height: 36px !important; 
-            border-color: transparent !important; 
-            box-shadow: none !important; 
-            padding: 0 !important;
-        }
+        .skel-exact-rating { width: 140px !important; height: 36px !important; border-color: transparent !important; box-shadow: none !important; padding: 0 !important; }
         .skel-exact-rating > * { opacity: 0 !important; visibility: hidden !important; }
-
-        .skel-rating-square { 
-            border-color: transparent !important; 
-            box-shadow: none !important; 
-        }
+        .skel-rating-square { border-color: transparent !important; box-shadow: none !important; }
         .skel-rating-square > * { opacity: 0 !important; visibility: hidden !important; }
 
         /* --- REVIEW CARD SKELETONS --- */
         .skeleton-card { 
-            background: #fdfdfd; 
-            border-radius: 32px; 
-            padding: 24px; 
-            width: 380px; 
-            height: 200px; 
-            flex-shrink: 0; 
-            display: flex; 
-            flex-direction: column; 
-            position: relative; 
-            overflow: hidden; 
-            border: 1px solid #ededed; 
-            box-shadow: none; 
-            scroll-snap-align: start; 
-            margin-right: 10px; 
+            background: #fdfdfd; border-radius: 32px; padding: 24px; width: 380px; height: 200px; 
+            flex-shrink: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; 
+            border: 1px solid #ededed; box-shadow: none; scroll-snap-align: start; margin-right: 10px; 
         }
         .skel-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
         .skel-name { height: 14px; width: 100px; }
@@ -158,391 +155,124 @@
         .skel-line { height: 12px; width: 100%; }
         .skel-line.short { width: 70%; }
         .skel-photo { width: 30%; height: calc(100% - 45px); margin-top: 45px; border-radius: 8px; flex-shrink: 0; }
-        .skel-date { width: 80px; height: 22px; position: absolute; bottom: 24px; right: 24px; border-radius: 50px; }
 
         /* --- PRODUCT IMAGE --- */
         .product-img-frame {
-            position: absolute;
-            left: 8px;
-            top: 8px;
-            height: calc(100% - 16px);
-            width: 204px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-            border-radius: 24px;
-            overflow: hidden;
-            box-sizing: border-box;
+            position: absolute; left: 8px; top: 8px; height: calc(100% - 16px); width: 204px;
+            display: flex; align-items: center; justify-content: center; z-index: 2; border-radius: 24px;
+            overflow: hidden; box-sizing: border-box;
         }
-
-        .top-bar-img {
-            width: 100%;
-            height: 100%;
-            border-radius: 24px;
-            object-fit: cover; 
-        }
+        .top-bar-img { width: 100%; height: 100%; border-radius: 24px; object-fit: cover; }
 
         /* --- HOLE INFO BOX --- */
         .hole-info-box {
-            position: absolute;
-            top: 8px;
-            bottom: 8px;
-            left: 220px; 
-            right: 8px; 
-            background: #fdfdfd;
-            border-radius: 24px; 
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 24px 18px 24px 24px; 
-            gap: 20px; 
-            z-index: 2;
+            position: absolute; top: 8px; bottom: 8px; left: 220px; right: 8px; 
+            background: #fdfdfd; border-radius: 24px; display: flex; flex-direction: row;
+            justify-content: space-between; align-items: center; padding: 24px 18px 24px 24px; gap: 20px; z-index: 2;
         }
-
-        .hole-info-text-col {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 12px;
-            flex: 1; 
-            min-width: 0; 
-        }
-
-        .title-container {
-            width: 100%;
-            height: 68px; 
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-
+        .hole-info-text-col { display: flex; flex-direction: column; justify-content: center; gap: 12px; flex: 1; min-width: 0; }
+        .title-container { width: 100%; height: 68px; display: flex; flex-direction: column; justify-content: flex-start; }
+        
         #dynamic-company-name {
-            font-size: 24px;
-            font-weight: 600;
-            color: #2a2a2a;
-            background: transparent; 
-            margin: 0; 
-            padding: 0;
-            width: 100%; 
-            position: relative;
-            z-index: 10;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2; 
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: normal;
-            word-break: break-word; 
+            font-size: 24px; font-weight: 600; color: #2a2a2a; background: transparent; margin: 0; padding: 0;
+            width: 100%; position: relative; z-index: 10; line-height: 1.4; display: -webkit-box;
+            -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word; 
         }
 
-        /* --- PRODUCT EXACT RATING ROW (MATCHES REVIEW PILL) --- */
+        /* --- PRODUCT EXACT RATING ROW --- */
         .product-exact-rating-row {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #fdfdfd; 
-            border: 2px solid #e2e8f0; 
-            padding: 4px 12px 4px 10px;
-            margin: 0; 
-            border-radius: 9px; 
-            width: fit-content;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            transition: border-color 0.3s ease;
+            display: inline-flex; align-items: center; gap: 6px; background: #fdfdfd; border: 2px solid #e2e8f0; 
+            padding: 4px 12px 4px 10px; margin: 0; border-radius: 9px; width: fit-content; transition: border-color 0.3s ease;
         }
-        #exact-stars-container {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-        #exact-rating-text {
-            font-size: 16px;
-            font-weight: 800;
-            color: #94a3b8; 
-            line-height: 1;
-            margin-top: 1px;
-            transition: color 0.3s ease;
-        }
+        #exact-stars-container { display: flex; gap: 4px; align-items: center; }
+        #exact-rating-text { font-size: 16px; font-weight: 800; color: #94a3b8; line-height: 1; margin-top: 1px; transition: color 0.3s ease; }
 
-        /* --- RATING SQUARE (HORIZONTAL MODE) --- */
+        /* --- RATING SQUARE --- */
         .top-rating-square {
-            width: 440px; 
-            max-height: 200px;
-            background: #f0f1f1;
-            border-radius: 18px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 30px; 
-            flex-shrink: 0;
-            z-index: 10;
+            width: 440px; max-height: 200px; background: #f0f1f1; border-radius: 18px; display: flex; flex-direction: column;
+            justify-content: center; padding: 30px; flex-shrink: 0; z-index: 10;
         }
         .top-rating-square-header {
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 800;
-            color: #242424;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            text-align: left;
-            margin-bottom: 16px;
-            transform: translateY(-3px)
+            font-size: 13px; font-weight: 800; color: #242424; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 16px; transform: translateY(-3px)
         }
-        .rating-overview { 
-            display: flex; 
-            flex-direction: row; 
-            align-items: center; 
-            gap: 30px; 
-            flex: 1; 
-            justify-content: flex-start; 
-        }
-        .big-rating { 
-            text-align: center; 
-            flex-shrink: 0; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        .rating-overview { display: flex; flex-direction: row; align-items: center; gap: 30px; flex: 1; justify-content: flex-start; }
+        .big-rating { text-align: center; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
         .big-rating-val { font-size: 42px; font-weight: 800; color: #2a2a2a; line-height: 1; letter-spacing: -1.5px; transition: color 0.3s ease; }
         .big-rating-stars { font-size: 16px; letter-spacing: 2px; margin: 4px 0; display: flex; justify-content: center; gap: 2px; }
         .big-rating-count { font-size: 11px; color: #94a3b8; font-weight: 600; }
-        .rating-bars { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 6px; 
-        }
+        .rating-bars { flex: 1; display: flex; flex-direction: column; gap: 6px; }
         .rating-bar-row { display: flex; align-items: center; gap: 8px; }
         .rating-bar-label { font-size: 11px; font-weight: 700; color: #64748b; width: 12px; text-align: right; flex-shrink: 0; }
         .rating-bar-track { flex: 1; height: 5px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
         .rating-bar-fill { height: 100%; background: #10B981; border-radius: 10px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
         .rating-bar-pct { font-size: 10px; font-weight: 700; color: #94a3b8; width: 24px; text-align: right; flex-shrink: 0; }
 
-
         /* --- REVIEWS SECTION & CAROUSEL --- */
-        .reviews-section { 
-            position: relative;
-            width: 100%;
-            z-index: 2;
-        }
-
-        .reviews-carousel-wrapper {
-            position: relative;
-            width: 100%;
-            display: flex;
-            flex-direction: column; 
-            align-items: center;
-            padding: 0; 
-        }
-
+        .reviews-section { position: relative; width: 100%; z-index: 2; }
+        .reviews-carousel-wrapper { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 0; }
         #reviews-list { 
-            display: flex;
-            overflow-x: auto;
-            width: calc(100% - 16px); 
-            margin: 0 auto;
-            box-sizing: border-box;
-            scrollbar-width: none; 
-            -ms-overflow-style: none; 
-            padding: 4px 0; 
-            scroll-padding: 0; 
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 40px; /* FIX: Curves the clipping edges to avoid sharp corners */
+            display: flex; overflow-x: auto; width: calc(100% - 16px); margin: 0 auto; box-sizing: border-box;
+            scrollbar-width: none; -ms-overflow-style: none; padding: 4px 0; scroll-padding: 0; scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch; border-radius: 40px; 
         }
-        
         #reviews-list::-webkit-scrollbar { display: none; }
-
         #reviews-list > div:first-child { margin-left: 0; }
         #reviews-list > div:last-child { margin-right: 0; }
 
-        .carousel-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            width: 100%;
-            z-index: 10;
-        }
-        
-        .scroll-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #fdfdfd;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            color: #2a2a2a;
-            outline: none;
-        }
+        .carousel-controls { display: flex; align-items: center; justify-content: center; gap: 16px; width: 100%; z-index: 10; }
+        .scroll-btn { width: 40px; height: 40px; border-radius: 50%; background: #fdfdfd; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: #2a2a2a; outline: none; }
         .scroll-btn:hover { background: #dcdcdc; }
         .scroll-btn svg { width: 24px; height: 24px; stroke-width: 3; }
 
         .review-item-main { 
-            background: #fdfdfd;
-            border-radius: 32px;
-            padding: 24px; 
-            box-shadow: none;
-            width: 380px;
-            height: 200px;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            cursor: pointer; 
-            text-align: left;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid #ededed;
-            scroll-snap-align: start; 
-            margin-right: 10px; 
+            background: #fdfdfd; border-radius: 32px; padding: 24px; width: 380px; height: 200px; flex-shrink: 0;
+            transition: all 0.2s ease; display: flex; flex-direction: column; gap: 12px; cursor: pointer; text-align: left;
+            position: relative; overflow: hidden; border: 1px solid #ededed; scroll-snap-align: start; margin-right: 10px; 
         }
-        
-        .review-item-main:hover { 
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.20); 
-        }
+        .review-item-main:hover { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.20); }
 
-        .rating-pill {
-            position: absolute; top: 24px; right: 24px; display: inline-flex; align-items: center; gap: 4px; padding: 0 8px; height: 28px; border-radius: 9px; 
-            background: #fdfdfd;
-            border: 2px solid #19bb42;
-            width: fit-content; margin: 0; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            flex-shrink: 0;
-        }
-        .rating-pill .star { 
-            width: 20px; height: 20px; 
-            color: #e2e8f0;
-            display: inline-flex; align-items: center; justify-content: center; 
-        }
+        .rating-pill { position: absolute; top: 24px; right: 24px; display: inline-flex; align-items: center; gap: 4px; padding: 0 8px; height: 28px; border-radius: 9px; background: #fdfdfd; border: 2px solid #19bb42; width: fit-content; margin: 0; flex-shrink: 0; }
+        .rating-pill .star { width: 20px; height: 20px; color: #e2e8f0; display: inline-flex; align-items: center; justify-content: center; }
         .rating-pill .star svg { width: 100%; height: 100%; fill: currentColor; }
-        .rating-pill.rating-5 { border-color: #10B981; }
-        .rating-pill.rating-5 .filled { color: #10B981; }
-        .rating-pill.rating-4 { border-color: #84CC16; }
-        .rating-pill.rating-4 .filled { color: #84CC16; }
-        .rating-pill.rating-3 { border-color: #F59E0B; }
-        .rating-pill.rating-3 .filled { color: #F59E0B; }
-        .rating-pill.rating-2 { border-color: #F97316; }
-        .rating-pill.rating-2 .filled { color: #F97316; }
-        .rating-pill.rating-1 { border-color: #EF4444; }
-        .rating-pill.rating-1 .filled { color: #EF4444; }
+        .rating-pill.rating-5 { border-color: #10B981; } .rating-pill.rating-5 .filled { color: #10B981; }
+        .rating-pill.rating-4 { border-color: #84CC16; } .rating-pill.rating-4 .filled { color: #84CC16; }
+        .rating-pill.rating-3 { border-color: #F59E0B; } .rating-pill.rating-3 .filled { color: #F59E0B; }
+        .rating-pill.rating-2 { border-color: #F97316; } .rating-pill.rating-2 .filled { color: #F97316; }
+        .rating-pill.rating-1 { border-color: #EF4444; } .rating-pill.rating-1 .filled { color: #EF4444; }
 
         .review-content-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-
         .review-author { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-shrink: 0; }
-        .author-avatar { 
-            width: 32px; height: 32px; border-radius: 50%; 
-            background: #242424; color: #f2f2f2; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 11px; font-weight: 800; flex-shrink: 0;
-            overflow: hidden;
-        }
+        .author-avatar { width: 32px; height: 32px; border-radius: 50%; background: #242424; color: #f2f2f2; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; overflow: hidden; }
         .author-name { font-size: 15px; font-weight: 700; color: #242424; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .review-body { font-size: 14px; color: #242424; line-height: 1.5; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
 
-        .review-body { 
-            font-size: 14px; color: #242424; line-height: 1.5; margin-bottom: 4px;
-            display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;
-            overflow: hidden; text-overflow: ellipsis;
-        }
-
-        .verified-badge { 
-            display: inline-flex; align-items: center; gap: 4px; 
-            background: #f0fdf4; color: #16a34a; 
-            padding: 2px 8px; border-radius: 20px; 
-            font-size: 10px; font-weight: 700; 
-            align-self: flex-start; margin-top: auto;
-        }
-        .verified-badge svg { width: 10px; height: 10px; stroke: #16a34a; }
-
-        /* --- BIG REVIEW MODAL --- */
-        #review-modal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-            z-index: 99990; align-items: center; justify-content: center; backdrop-filter: blur(4px);
-            padding: 20px;
-        }
+        /* --- MODALS --- */
+        #review-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99990; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 20px; }
         #review-modal.open { display: flex; }
-        .rm-content {
-            background: #fff; border-radius: 16px; width: 100%; max-width: 650px;
-            max-height: 90vh; overflow-y: auto; padding: 30px; position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        .rm-content::-webkit-scrollbar { width: 6px; }
-        .rm-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        
-        .rm-close {
-            position: absolute; top: 20px; right: 20px; font-size: 18px; color: #64748b;
-            cursor: pointer; transition: 0.2s; width: 34px; height: 34px;
-            display: flex; align-items: center; justify-content: center; border-radius: 50%;
-            background: #f1f5f9; font-weight: bold;
-        }
+        .rm-content { background: #fff; border-radius: 16px; width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .rm-content::-webkit-scrollbar { width: 6px; } .rm-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .rm-close { position: absolute; top: 20px; right: 20px; font-size: 18px; color: #64748b; cursor: pointer; transition: 0.2s; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f1f5f9; font-weight: bold; }
         .rm-close:hover { background: #e2e8f0; color: #0f172a; transform: scale(1.05); }
         .rm-text { font-size: 16px; color: #334155; line-height: 1.7; white-space: pre-wrap; margin-bottom: 24px; }
         .rm-photos { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 10px;}
-        .rm-photos img { width: 100%; border-radius: 8px; cursor: pointer; border: 1px solid #e2e8f0; max-height: 250px; object-fit: cover;}
-        .rm-photos img:hover { opacity: 0.85; }
-
-        /* --- PHOTO LIGHTBOX --- */
-        #lightbox { 
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); 
-            z-index: 99999; align-items: center; justify-content: center; 
-            backdrop-filter: blur(10px);
-        }
+        .rm-photos img { width: 100%; border-radius: 8px; cursor: pointer; border: 1px solid #e2e8f0; max-height: 250px; object-fit: cover;} .rm-photos img:hover { opacity: 0.85; }
+        #lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99999; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         #lightbox.open { display: flex; }
         #lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 12px; object-fit: contain; }
-        #lightbox-close { 
-            position: absolute; top: 24px; right: 24px; color: #fff; cursor: pointer;
-            font-size: 28px; font-weight: 300; line-height: 1; opacity: 0.7; transition: 0.2s;
-        }
+        #lightbox-close { position: absolute; top: 24px; right: 24px; color: #fff; cursor: pointer; font-size: 28px; font-weight: 300; line-height: 1; opacity: 0.7; transition: 0.2s; }
         #lightbox-close:hover { opacity: 1; }
 
-        /* --- LOADER --- */
-        .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(15,23,42,0.15); border-top-color: #0f172a; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
             .rectangular-hole { overflow-y: auto; overflow-x: hidden; }
-
-            .product-img-frame {
-                border-right: none; border-bottom: 3px solid #cbd5e1;
-                height: 234px; width: calc(100% - 16px); box-sizing: border-box;
-            }
-            .top-bar-img { width: 100%; height: 100%; border-radius: 24px; object-fit: cover; }
-
-            .hole-info-box {
-                left: 8px; right: 8px; top: 250px; bottom: auto;
-                padding: 20px; align-items: stretch; text-align: left;
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .hole-info-text-col {
-                flex: 1; 
-            }
-
-            .title-container {
-                height: auto;
-                min-height: 68px; 
-            }
-
+            .product-img-frame { border-right: none; border-bottom: 3px solid #cbd5e1; height: 234px; width: calc(100% - 16px); box-sizing: border-box; }
+            .hole-info-box { left: 8px; right: 8px; top: 250px; bottom: auto; padding: 20px; align-items: stretch; text-align: left; flex-direction: column; gap: 15px; }
+            .hole-info-text-col { flex: 1; }
+            .title-container { height: auto; min-height: 68px; }
             .sk-title { margin: 0 0 10px 0; border-radius: 8px; width: 100%; }
             .skel-exact-rating { margin: 0 0 10px 0 !important; }
-
             #dynamic-company-name { margin: 0 0 10px 0; border-radius: 8px; align-self: flex-start; max-width: 100%; width: 100%; }
-            
             .product-exact-rating-row { justify-content: flex-start; margin: 0 0 10px 0; border-radius: 9px; padding: 6px 14px; }
-            
-            .top-rating-square { 
-                width: 100%;
-                margin: 0;
-                max-height: none;
-            }
+            .top-rating-square { width: 100%; margin: 0; max-height: none; }
         }
     </style>
 </head>
@@ -551,36 +281,24 @@
     <div id="pro-progress-bar" style="position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: #0f172a; z-index: 999999; transition: width 0.3s ease-out, opacity 0.3s ease; opacity: 0; box-shadow: 0 0 10px rgba(15,23,42,0.5);"></div>
 
     <div class="top-rectangular-box">
-        
-        <span style="position: absolute; top: 34px; left: 24px; font-size: 14px; font-weight: 600; color: #1e293b; z-index: 20;">product from whatevercompany.com</span>
-        
+        <span style="position: absolute; top: 34px; left: 24px; font-size: 14px; font-weight: 600; color: #1e293b; z-index: 20;">Product Details</span>
         <div class="rectangular-hole">
             <div class="product-img-frame skeleton-anim" id="img-frame">
                 <img id="dynamic-company-img" src="" alt="Product Image" class="top-bar-img" style="opacity: 0; transition: opacity 0.3s ease-in-out;">
             </div>
-
             <div class="hole-info-box">
                 <div class="hole-info-text-col">
-                    
-                    <div class="title-container">
-                        <h1 id="dynamic-company-name" class="skeleton-anim sk-title"></h1>
-                    </div>
-                    
+                    <div class="title-container"><h1 id="dynamic-company-name" class="skeleton-anim sk-title"></h1></div>
                     <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                         <div class="product-exact-rating-row skeleton-anim skel-exact-rating" id="exact-rating-box">
-                            <div id="exact-stars-container"></div>
-                            <span id="exact-rating-text">0.0</span>
+                            <div id="exact-stars-container"></div><span id="exact-rating-text">0.0</span>
                         </div>
                         <a id="dynamic-company-link" href="#" target="_blank">
                             View product on store
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="7" y1="17" x2="17" y2="7"></line>
-                                <polyline points="7 7 17 7 17 17"></polyline>
-                            </svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                         </a>
                     </div>
                 </div>
-
                 <div class="top-rating-square skeleton-anim skel-rating-square" id="rating-square-box">
                     <div class="top-rating-square-header">Rating Breakdown</div>
                     <div class="rating-overview">
@@ -599,169 +317,82 @@
             <div class="reviews-section">
                 <div class="reviews-carousel-wrapper">
                     <div id="reviews-list">
-                        <div class="skeleton-card">
-                            <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                                <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
-                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                                        <div class="review-author" style="margin: 0; align-items: center; gap: 8px;">
-                                            <div class="skel-avatar skeleton-anim"></div>
-                                            <div style="display: flex; flex-direction: column; justify-content: center; gap: 6px;">
-                                                <div class="skel-name skeleton-anim"></div>
-                                                <div class="skel-sub skeleton-anim"></div>
-                                            </div>
-                                        </div>
-                                        <div class="skel-rating skeleton-anim"></div>
-                                    </div>
-                                    <div class="skel-body">
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line short skeleton-anim"></div>
-                                    </div>
-                                </div>
-                                <div class="skel-photo skeleton-anim"></div>
-                            </div>
-                        </div>
-                        <div class="skeleton-card">
-                            <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                                <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
-                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                                        <div class="review-author" style="margin: 0; align-items: center; gap: 8px;">
-                                            <div class="skel-avatar skeleton-anim"></div>
-                                            <div style="display: flex; flex-direction: column; justify-content: center; gap: 6px;">
-                                                <div class="skel-name skeleton-anim"></div>
-                                                <div class="skel-sub skeleton-anim"></div>
-                                            </div>
-                                        </div>
-                                        <div class="skel-rating skeleton-anim"></div>
-                                    </div>
-                                    <div class="skel-body">
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line short skeleton-anim"></div>
-                                    </div>
-                                </div>
-                                <div class="skel-photo skeleton-anim"></div>
-                            </div>
-                        </div>
-                        <div class="skeleton-card">
-                            <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                                <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
-                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                                        <div class="review-author" style="margin: 0; align-items: center; gap: 8px;">
-                                            <div class="skel-avatar skeleton-anim"></div>
-                                            <div style="display: flex; flex-direction: column; justify-content: center; gap: 6px;">
-                                                <div class="skel-name skeleton-anim"></div>
-                                                <div class="skel-sub skeleton-anim"></div>
-                                            </div>
-                                        </div>
-                                        <div class="skel-rating skeleton-anim"></div>
-                                    </div>
-                                    <div class="skel-body">
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line skeleton-anim"></div>
-                                        <div class="skel-line short skeleton-anim"></div>
-                                    </div>
-                                </div>
-                                <div class="skel-photo skeleton-anim"></div>
-                            </div>
-                        </div>
+                        <!-- Skeletons... -->
+                        <div class="skeleton-card"><div style="display:flex;width:100%;height:100%;gap:15px;"><div style="display:flex;flex-direction:column;flex:1;min-width:0;height:100%;"><div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;"><div class="review-author" style="margin:0;align-items:center;gap:8px;"><div class="skel-avatar skeleton-anim"></div><div style="display:flex;flex-direction:column;justify-content:center;gap:6px;"><div class="skel-name skeleton-anim"></div><div class="skel-sub skeleton-anim"></div></div></div><div class="skel-rating skeleton-anim"></div></div><div class="skel-body"><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line short skeleton-anim"></div></div></div><div class="skel-photo skeleton-anim"></div></div></div>
+                        <div class="skeleton-card"><div style="display:flex;width:100%;height:100%;gap:15px;"><div style="display:flex;flex-direction:column;flex:1;min-width:0;height:100%;"><div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;"><div class="review-author" style="margin:0;align-items:center;gap:8px;"><div class="skel-avatar skeleton-anim"></div><div style="display:flex;flex-direction:column;justify-content:center;gap:6px;"><div class="skel-name skeleton-anim"></div><div class="skel-sub skeleton-anim"></div></div></div><div class="skel-rating skeleton-anim"></div></div><div class="skel-body"><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line short skeleton-anim"></div></div></div><div class="skel-photo skeleton-anim"></div></div></div>
+                        <div class="skeleton-card"><div style="display:flex;width:100%;height:100%;gap:15px;"><div style="display:flex;flex-direction:column;flex:1;min-width:0;height:100%;"><div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;"><div class="review-author" style="margin:0;align-items:center;gap:8px;"><div class="skel-avatar skeleton-anim"></div><div style="display:flex;flex-direction:column;justify-content:center;gap:6px;"><div class="skel-name skeleton-anim"></div><div class="skel-sub skeleton-anim"></div></div></div><div class="skel-rating skeleton-anim"></div></div><div class="skel-body"><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line short skeleton-anim"></div></div></div><div class="skel-photo skeleton-anim"></div></div></div>
                     </div>
                 </div>
             </div>
             
             <div class="carousel-controls">
-                <button class="scroll-btn left-btn" onclick="scrollReviews(-1)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-                <button class="scroll-btn right-btn" onclick="scrollReviews(1)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </button>
+                <button class="scroll-btn left-btn" onclick="scrollReviews(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                <button class="scroll-btn right-btn" onclick="scrollReviews(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
             </div>
         </div>
 
-        <div class="right-side-box"></div>
+        <!-- --- RIGHT SIDE BOX --- -->
+        <div class="right-side-box">
+            
+            <!-- Skeleton Loader -->
+            <div id="side-box-skel" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <div class="skeleton-anim" style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 20px;"></div>
+                <div class="skeleton-anim" style="width: 80%; height: 20px; border-radius: 8px; margin-bottom: 12px;"></div>
+                <div class="skeleton-anim" style="width: 100%; height: 48px; border-radius: 16px; margin-top: 10px;"></div>
+            </div>
+
+            <!-- Email Content Box (Hidden by default) -->
+            <div id="side-box-content" style="display: none; width: 100%; flex-direction: column; align-items: center; text-align: center;">
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: #475569;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                </div>
+                <span style="font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Registered By</span>
+                <h3 id="side-comp-email" style="font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 24px; word-break: break-all;"></h3>
+                
+                <a id="side-comp-mailto" href="#" class="side-comp-btn">Contact Company</a>
+            </div>
+            
+        </div>
 
     </div>
 
     <div class="glass-overlay"></div>
-
     <div id="review-modal" onclick="closeReviewModal()">
         <div class="rm-content" onclick="event.stopPropagation()">
             <div class="rm-close" onclick="closeReviewModal()">✕</div>
             <div id="rm-body-container"></div>
         </div>
     </div>
-
     <div id="lightbox">
         <div id="lightbox-close" onclick="closeLightbox()">✕</div>
         <img id="lightbox-img" src="" alt="Review Photo">
     </div>
 
     <script>
-        // --- Carousel Navigation Logic ---
         window.scrollReviews = function(direction) {
             const list = document.getElementById('reviews-list');
-            const scrollAmount = 390; 
-            list.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+            list.scrollBy({ left: direction * 390, behavior: 'smooth' });
         };
-
-        // --- XSS Protection Function ---
         function escapeHTML(str) {
             if (!str) return '';
-            return String(str).replace(/[&<>'"]/g, tag => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-            }[tag]));
+            return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
         }
 
-        // --- Standard Navigation Links ---
-        window.navigateTo = (url) => {
-            const bar = document.getElementById('pro-progress-bar');
-            if(bar) {
-                bar.style.opacity = '1';
-                bar.style.width = '60%';
-                setTimeout(() => { bar.style.width = '100%'; }, 200);
-            }
-            setTimeout(() => { window.location.href = url; }, 350);
-        };
-
-        window.addEventListener('pageshow', function(event) {
-            const bar = document.getElementById('pro-progress-bar');
-            if (bar) {
-                bar.style.opacity = '0';
-                bar.style.width = '0%';
-            }
-        });
-        
-        window.openLightbox = function(url) {
-            document.getElementById('lightbox-img').src = url;
-            document.getElementById('lightbox').classList.add('open');
-        };
-        window.closeLightbox = function() {
-            document.getElementById('lightbox').classList.remove('open');
-        };
-        document.getElementById('lightbox').addEventListener('click', function(e) {
-            if (e.target === this) closeLightbox();
-        });
+        window.openLightbox = function(url) { document.getElementById('lightbox-img').src = url; document.getElementById('lightbox').classList.add('open'); };
+        window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
+        document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLightbox(); });
 
         window.openReviewModal = function(id) {
             const r = loadedReviews.find(x => x.id === id);
             if(!r) return;
-            
             const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
             const reviewerName = r.reviewer_name || 'Verified User';
             const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
             const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-            
-            let photosHtml = '';
-            if(r.parsedPhotos && r.parsedPhotos.length > 0) {
-                photosHtml = '<div class="rm-photos">' + r.parsedPhotos.map(url => `<img src="${url}" onclick="openLightbox('${url}')">`).join('') + '</div>';
-            }
+            let photosHtml = r.parsedPhotos && r.parsedPhotos.length > 0 ? '<div class="rm-photos">' + r.parsedPhotos.map(url => `<img src="${url}" onclick="openLightbox('${url}')">`).join('') + '</div>' : '';
             
             document.getElementById('rm-body-container').innerHTML = `
                 <div class="review-author" style="margin-bottom: 24px;">
@@ -775,80 +406,43 @@
                 <div class="rm-text">${escapeHTML(r.comment)}</div>
                 ${photosHtml}
             `;
-            
             document.getElementById('review-modal').classList.add('open');
         };
+        window.closeReviewModal = function() { document.getElementById('review-modal').classList.remove('open'); };
 
-        window.closeReviewModal = function() {
-            document.getElementById('review-modal').classList.remove('open');
-        };
-
-        // --- DYNAMIC EXACT RATING RENDERER ---
         function updateVisualRatings(ratingValue) {
             const formatted = ratingValue.toFixed(1);
+            let activeColor = "#10B981"; 
+            if (ratingValue === 0) activeColor = "#cbd5e1"; 
+            else if (ratingValue < 1.5) activeColor = "#EF4444"; 
+            else if (ratingValue < 2.5) activeColor = "#F97316"; 
+            else if (ratingValue < 3.5) activeColor = "#F59E0B"; 
+            else if (ratingValue < 4.5) activeColor = "#84CC16"; 
             
-            // Map rating to matching specific colors
-            let activeColor = "#10B981"; // 5 Stars (Green)
-            if (ratingValue === 0) activeColor = "#cbd5e1"; // Unrated (Gray)
-            else if (ratingValue < 1.5) activeColor = "#EF4444"; // 1 Star (Red)
-            else if (ratingValue < 2.5) activeColor = "#F97316"; // 2 Stars (Orange)
-            else if (ratingValue < 3.5) activeColor = "#F59E0B"; // 3 Stars (Yellow)
-            else if (ratingValue < 4.5) activeColor = "#84CC16"; // 4 Stars (Light Green)
-            
-            // 1. Update big top-right rating overview block
             const bigValEl = document.getElementById('big-rating-val');
-            if (bigValEl) {
-                bigValEl.innerText = formatted;
-            }
+            if (bigValEl) bigValEl.innerText = formatted;
             renderExactStars(ratingValue, 'big-rating-stars', 20, activeColor);
 
-            // 2. Update new product exact rating pill (next to company name)
             const exactTextEl = document.getElementById('exact-rating-text');
             const exactBoxEl = document.getElementById('exact-rating-box');
-            
-            if (exactTextEl) {
-                exactTextEl.innerText = formatted;
-                exactTextEl.style.color = activeColor;
-            }
-            if (exactBoxEl) {
-                exactBoxEl.style.borderColor = activeColor;
-            }
-            
-            // Render 10% filled stars precisely matching rating
+            if (exactTextEl) { exactTextEl.innerText = formatted; exactTextEl.style.color = activeColor; }
+            if (exactBoxEl) { exactBoxEl.style.borderColor = activeColor; }
             renderExactStars(ratingValue, 'exact-stars-container', 20, activeColor); 
         }
 
         function renderExactStars(rating, containerId, size = 20, fillColor = "#10B981") {
             const container = document.getElementById(containerId);
             if(!container) return;
-            container.innerHTML = '';
-            container.style.display = 'flex';
-            container.style.gap = '4px'; 
-            container.style.justifyContent = 'center';
-            container.style.alignItems = 'center';
-
+            container.innerHTML = ''; container.style.display = 'flex'; container.style.gap = '4px'; container.style.justifyContent = 'center'; container.style.alignItems = 'center';
             let useEmpty = "#e2e8f0";
-
             for (let i = 1; i <= 5; i++) {
-                let fillPercent = 0;
-                if (rating >= i) {
-                    fillPercent = 100;
-                } else if (rating > i - 1) {
-                    fillPercent = (rating - (i - 1)) * 100; 
-                }
-
+                let fillPercent = rating >= i ? 100 : (rating > i - 1 ? (rating - (i - 1)) * 100 : 0);
                 const starId = `grad-${containerId}-${i}-${Math.random().toString(36).substr(2,5)}`;
-                const svg = `
+                container.innerHTML += `
                 <svg width="${size}" height="${size}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="${starId}" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="${fillPercent}%" stop-color="${fillColor}" />
-                            <stop offset="${fillPercent}%" stop-color="${useEmpty}" />
-                        </linearGradient>
-                    </defs>
+                    <defs><linearGradient id="${starId}" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="${fillPercent}%" stop-color="${fillColor}" /><stop offset="${fillPercent}%" stop-color="${useEmpty}" /></linearGradient></defs>
                     <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" fill="url(#${starId})"/>
                 </svg>`;
-                container.innerHTML += svg;
             }
         }
 
@@ -862,33 +456,20 @@
         let loadedReviews = []; 
 
         async function init() {
-            const { data } = await db.auth.getSession();
-            if (data.session) {
-                currentUser = data.session.user;
-                const userRole = currentUser.user_metadata?.role || 'customer';
-
-                if (userRole === 'business') {
-                    window.location.replace('dashboard.html');
-                    return;
-                }
-            }
             if (companyId) { loadCompanyDetails(); loadReviews(); }
         }
 
         async function loadCompanyDetails() {
+            // --- 1. FETCH PRODUCT DETAILS ---
             const { data: co, error } = await db.from('companies').select('*').eq('id', companyId).single();
             if (error || !co) { return; }
 
-            // Clear skeletons safely
             document.getElementById('img-frame').classList.remove('skeleton-anim');
             document.getElementById('dynamic-company-img').style.opacity = '1';
             
             const titleEl = document.getElementById('dynamic-company-name');
             titleEl.classList.remove('skeleton-anim', 'sk-title');
-            
-            const exactRatingBox = document.getElementById('exact-rating-box');
-            exactRatingBox.classList.remove('skeleton-anim', 'skel-exact-rating');
-            
+            document.getElementById('exact-rating-box').classList.remove('skeleton-anim', 'skel-exact-rating');
             document.getElementById('rating-square-box').classList.remove('skeleton-anim', 'skel-rating-square');
 
             document.title = escapeHTML(co.name) + ' | Faithox';
@@ -897,7 +478,6 @@
             if (co.image_url || co.logo_url || co.image) {
                 document.getElementById('dynamic-company-img').src = co.image_url || co.logo_url || co.image;
             }
-            
             if (co.website) {
                 document.getElementById('dynamic-company-link').href = co.website;
             }
@@ -905,12 +485,29 @@
             const r = parseFloat(co.rating) || 0;
             updateVisualRatings(r); 
             document.getElementById('big-rating-count').innerText = (co.reviews_count || 0) + ' reviews';
+
+            // --- 2. FETCH SECURE OWNER EMAIL FROM AUTH ---
+            if (co.owner_id) {
+                // Calls the custom secure RPC function you just created in Supabase
+                const { data: ownerEmail, error: emailError } = await db.rpc('get_owner_email', { owner_uid: co.owner_id });
+
+                if (ownerEmail && !emailError) {
+                    document.getElementById('side-box-skel').style.display = 'none';
+                    document.getElementById('side-box-content').style.display = 'flex';
+                    
+                    document.getElementById('side-comp-email').innerText = ownerEmail;
+                    document.getElementById('side-comp-mailto').href = `mailto:${ownerEmail}`;
+                } else {
+                    document.getElementById('side-box-skel').innerHTML = '<div style="color:#94a3b8; font-size:14px; font-weight:600;">Email Unavailable</div>';
+                }
+            } else {
+                document.getElementById('side-box-skel').style.display = 'none';
+            }
         }
 
         async function loadReviews() {
             const { data: reviews } = await db.from('reviews').select('*').eq('company_id', companyId).order('created_at', { ascending: false });
             const list = document.getElementById('reviews-list');
-            
             list.innerHTML = '';
 
             if (!reviews || reviews.length === 0) {
@@ -920,10 +517,7 @@
             }
 
             const totalRatingSum = reviews.reduce((sum, rev) => sum + (rev.rating || 0), 0);
-            const calculatedExactRating = totalRatingSum / reviews.length;
-            
-            updateVisualRatings(calculatedExactRating);
-
+            updateVisualRatings(totalRatingSum / reviews.length);
             loadedReviews = reviews; 
             buildRatingBars(reviews);
 
@@ -935,91 +529,51 @@
                 let photoUrls = [];
                 try {
                     if (r.photos) {
-                        if (Array.isArray(r.photos)) {
-                            photoUrls = r.photos;
-                        } else if (typeof r.photos === 'string') {
-                            const trimmed = r.photos.trim();
-                            if (trimmed.startsWith('[')) {
-                                photoUrls = JSON.parse(trimmed);
-                            } else if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
-                                photoUrls = trimmed.slice(1, -1).split(',').map(s => s.replace(/^"|"$/g, '').trim());
-                            } else if (trimmed.startsWith('http')) {
-                                photoUrls = [trimmed];
-                            }
-                        }
+                        let parsed = Array.isArray(r.photos) ? r.photos : 
+                                     (r.photos.trim().startsWith('[') ? JSON.parse(r.photos) : 
+                                     (r.photos.trim().startsWith('{') ? r.photos.trim().slice(1, -1).split(',').map(s => s.replace(/^"|"$/g, '').trim()) : 
+                                     (r.photos.trim().startsWith('http') ? [r.photos.trim()] : [])));
+                        photoUrls = parsed.filter(u => typeof u === 'string' && u.startsWith('http'));
                     }
-                } catch (e) {
-                    photoUrls = [];
-                }
-                photoUrls = photoUrls.filter(u => u && typeof u === 'string' && u.startsWith('http'));
+                } catch(e) {}
                 r.parsedPhotos = photoUrls;
 
                 const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
-
-                let starsHtml = '';
-                for(let i=1; i<=5; i++) {
-                    starsHtml += `<span class="star ${i <= r.rating ? 'filled' : ''}">${starSvg}</span>`;
-                }
+                let starsHtml = ''; for(let i=1; i<=5; i++) starsHtml += `<span class="star ${i <= r.rating ? 'filled' : ''}">${starSvg}</span>`;
                 let ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
 
                 let photoHtml = '';
                 if (photoUrls.length > 0) {
-                    let imagesHtml = '';
-                    if (photoUrls.length === 1) {
-                        imagesHtml = `<img src="${photoUrls[0]}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">`;
-                    } else if (photoUrls.length === 2) {
-                        imagesHtml = `
-                        <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
-                            <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-6deg); z-index: 1;">
-                            <img src="${photoUrls[1]}" style="position: absolute; bottom: 0; right: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(6deg); z-index: 2; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
-                        </div>`;
-                    } else {
-                        imagesHtml = `
-                        <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
-                            <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-12deg); z-index: 1;">
-                            <img src="${photoUrls[1]}" style="position: absolute; top: 12.5%; left: 12.5%; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(0deg); z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                            <img src="${photoUrls[2]}" style="position: absolute; bottom: 0; right: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(12deg); z-index: 3; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
-                        </div>`;
-                    }
-
-                    photoHtml = `
-                    <div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 55px;">
-                        ${imagesHtml}
-                    </div>`;
+                    let imagesHtml = photoUrls.length === 1 ? `<img src="${photoUrls[0]}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">` :
+                                     photoUrls.length === 2 ? `<div style="position: relative; width: 100%; aspect-ratio: 1 / 1;"><img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-6deg); z-index: 1;"><img src="${photoUrls[1]}" style="position: absolute; bottom: 0; right: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(6deg); z-index: 2; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);"></div>` :
+                                     `<div style="position: relative; width: 100%; aspect-ratio: 1 / 1;"><img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-12deg); z-index: 1;"><img src="${photoUrls[1]}" style="position: absolute; top: 12.5%; left: 12.5%; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(0deg); z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.1);"><img src="${photoUrls[2]}" style="position: absolute; bottom: 0; right: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(12deg); z-index: 3; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);"></div>`;
+                    photoHtml = `<div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 55px;">${imagesHtml}</div>`;
                 }
 
-                const avatarUrl = r.avatar_url;
-                const authorAvatarHtml = avatarUrl 
-                    ? `<img src="${escapeHTML(avatarUrl)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` 
-                    : initials;
-
+                const authorAvatarHtml = r.avatar_url ? `<img src="${escapeHTML(r.avatar_url)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` : initials;
                 const div = document.createElement('div');
                 div.className = 'review-item-main';
                 div.setAttribute('onclick', `openReviewModal('${r.id}')`);
-                
                 div.innerHTML = `
-                        <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                            <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
-                                <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                                    <div class="review-author" style="margin: 0; align-items: center;">
-                                        <div class="author-avatar">${authorAvatarHtml}</div>
-                                        <div style="display: flex; flex-direction: column; justify-content: center;">
-                                            <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
-                                            <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">
-                                                ${date}
-                                            </div>
-                                        </div>
+                    <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
+                        <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                                <div class="review-author" style="margin: 0; align-items: center;">
+                                    <div class="author-avatar">${authorAvatarHtml}</div>
+                                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                                        <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
+                                        <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">${date}</div>
                                     </div>
-                                    ${ratingPill}
                                 </div>
-                                <div class="review-content-wrapper" style="padding: 0; flex: 1; height: auto; margin-top: 12px;">
-                                    <p class="review-body" style="-webkit-line-clamp: 5; margin-bottom: 4px;">${escapeHTML(r.comment || '')}</p>
-                                </div>
+                                ${ratingPill}
                             </div>
-                            ${photoHtml}
+                            <div class="review-content-wrapper" style="padding: 0; flex: 1; height: auto; margin-top: 12px;">
+                                <p class="review-body" style="-webkit-line-clamp: 5; margin-bottom: 4px;">${escapeHTML(r.comment || '')}</p>
+                            </div>
                         </div>
+                        ${photoHtml}
+                    </div>
                 `;
-                
                 list.appendChild(div);
             });
         }
@@ -1034,18 +588,10 @@
                 const pct = Math.round((counts[star] / total) * 100);
                 const row = document.createElement('div');
                 row.className = 'rating-bar-row';
-                row.innerHTML = `
-                    <span class="rating-bar-label">${star}</span>
-                    <div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-target="${pct}%"></div></div>
-                    <span class="rating-bar-pct">${pct}%</span>
-                `;
+                row.innerHTML = `<span class="rating-bar-label">${star}</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-target="${pct}%"></div></div><span class="rating-bar-pct">${pct}%</span>`;
                 barsEl.appendChild(row);
             });
-            setTimeout(() => {
-                barsEl.querySelectorAll('.rating-bar-fill').forEach(el => {
-                    el.style.width = el.dataset.target;
-                });
-            }, 100);
+            setTimeout(() => { barsEl.querySelectorAll('.rating-bar-fill').forEach(el => { el.style.width = el.dataset.target; }); }, 100);
         }
 
         init();
