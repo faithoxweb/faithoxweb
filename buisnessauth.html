@@ -359,8 +359,8 @@
 
                         <div id="signup-step-3" style="display: none;">
                             <div class="input-group">
-                                <label>Company Name</label>
-                                <input type="text" id="company-name-up" class="auth-input" placeholder="Company Inc.">
+                                <label>Business Domain</label>
+                                <input type="text" id="company-domain-up" class="auth-input" placeholder="e.g., apple.com">
                             </div>
                             <button class="primary-btn" onclick="completeSignup()">Create Business Account</button>
                         </div>
@@ -575,10 +575,10 @@
                         showMessage("Access Denied: Email already registered as a Customer. Please use a different email.", "error");
                         return;
                     } else {
-                        // Brand new user (storedRole is undefined). Proceed to get company name.
+                        // Brand new user (storedRole is undefined). Proceed to get company domain.
                         document.getElementById('signup-step-2').style.display = 'none';
                         document.getElementById('signup-step-3').style.display = 'block';
-                        showMessage("Email verified! Please enter company name.", "success");
+                        showMessage("Email verified! Please enter business domain.", "success");
                     }
                 }
             }
@@ -586,16 +586,30 @@
 
         async function completeSignup() {
             clearMessage();
-            const companyName = document.getElementById('company-name-up').value.trim();
+            
+            // 1. Grab the input and convert it to lowercase (since domains don't use capital letters)
+            let domainValue = document.getElementById('company-domain-up').value.trim().toLowerCase();
 
-            if (!companyName) {
-                showMessage("Please fill in your company name!", "error");
+            // 2. Check if the input is empty
+            if (!domainValue) {
+                showMessage("Please fill in your business domain!", "error");
                 return;
             }
 
+            // 3. Regex validation for standard domain format (e.g., words + dot + letters)
+            // It ensures there is at least one dot, and 2 or more letters after the dot.
+            const domainRegex = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            
+            if (!domainRegex.test(domainValue)) {
+                // If it fails the test, show the exact error you requested
+                showMessage("please type domain of buisness and not the name", "error");
+                return;
+            }
+
+            // 4. If validation passes, save it to full_name exactly as before so the product page reads it!
             const { data, error } = await db.auth.updateUser({
                 data: {
-                    full_name: companyName,
+                    full_name: domainValue, 
                     role: 'business'        // Elevate role to strictly business
                 }
             });
