@@ -1,13 +1,13 @@
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
-import { Resend } from 'resend'; // --- ADDED: Import Resend
+import { Resend } from 'resend';
 
-// 1. Initialize Supabase correctly by fetching from environment variables
+// 1. Initialize Supabase (UPGRADE: Fixed the 'SUPABASE' typo)
 const supabaseUrl = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-const supabaseKey = process.env.SUPABSE_SERVICE_ROLE_KEY; 
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY; 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// --- ADDED: Initialize Resend ---
+// 2. Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Tell Vercel to give us the raw text so the security check works
@@ -30,8 +30,9 @@ export default async function handler(req, res) {
     }
     const rawBody = Buffer.concat(chunks).toString('utf8');
 
-    // Verify the Security Signature
-    const secret = "faithox@123"; 
+    // UPGRADE: Use environment variables for the secret password for better security
+    // (It falls back to "faithox@123" just in case you haven't added it to Vercel yet)
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET || "faithox@123"; 
     const signature = req.headers['x-razorpay-signature'];
 
     const expectedSignature = crypto
@@ -47,7 +48,12 @@ export default async function handler(req, res) {
     const data = JSON.parse(rawBody);
     
     if (data.event === "payment.captured") {
-      const customerEmail = data.payload.payment.entity.email;
+      const paymentEntity = data.payload.payment.entity;
+      const customerEmail = paymentEntity.email;
+      
+      // UPGRADE: Make it universal! Pull the company name from the notes.
+      // If the website didn't provide a note, it defaults to "unknown_store"
+      const dynamicCompanyId = paymentEntity.notes?.store_name || "unknown_store";
       
       // Generate a random 6-character alphanumeric token
       const reviewToken = crypto.randomBytes(3).toString('hex').toUpperCase(); 
@@ -59,7 +65,7 @@ export default async function handler(req, res) {
           { 
             buyer_email: customerEmail, 
             token: reviewToken, 
-            company_id: "stryde"
+            company_id: dynamicCompanyId // Now it adapts to any website!
           }
         ]);
 
@@ -68,18 +74,18 @@ export default async function handler(req, res) {
         return res.status(500).send('Failed to save token to database');
       }
 
-      console.log(`Success! Token ${reviewToken} saved for ${customerEmail}`);
+      console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${dynamicCompanyId}`);
 
-      // --- ADDED: SEND EMAIL VIA RESEND ---
+      // --- SEND EMAIL VIA RESEND ---
       try {
         await resend.emails.send({
-          from: 'onboarding@resend.dev', // Resend's free test email address
-          to: customerEmail, // Make sure to use your own email address when testing!
-          subject: 'Thanks for your purchase! Leave a review for Stryde',
+          from: 'onboarding@resend.dev', 
+          to: customerEmail, 
+          subject: `Thanks for your purchase! Leave a review for ${dynamicCompanyId}`,
           html: `
             <div style="font-family: sans-serif; padding: 20px; color: #333;">
               <h2>Thank you for your payment!</h2>
-              <p>We hope you love your experience with Stryde. We would highly appreciate it if you could take a brief moment to leave us a review.</p>
+              <p>We hope you love your experience. We would highly appreciate it if you could take a brief moment to leave us a review.</p>
               <p>Your unique security review token is: <strong>${reviewToken}</strong></p>
               <p>Click the button below to automatically unlock your review form without any manual entry:</p>
               <br />
