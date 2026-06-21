@@ -30,8 +30,7 @@ export default async function handler(req, res) {
     }
     const rawBody = Buffer.concat(chunks).toString('utf8');
 
-    // UPGRADE: Use environment variables for the secret password for better security
-    // (It falls back to "faithox@123" just in case you haven't added it to Vercel yet)
+    // Use environment variables for the secret password for better security
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET || "faithox@123"; 
     const signature = req.headers['x-razorpay-signature'];
 
@@ -51,34 +50,35 @@ export default async function handler(req, res) {
       const paymentEntity = data.payload.payment.entity;
       const customerEmail = paymentEntity.email;
       
-      // UPGRADE: Make it universal! Pull the company name from the notes.
-      // If the website didn't provide a note, it defaults to "unknown_store"
+      // Make it universal! Pull the company name from the notes.
       const dynamicCompanyId = paymentEntity.notes?.store_name || "unknown_store";
       
       // Generate a random 6-character alphanumeric token
       const reviewToken = crypto.randomBytes(3).toString('hex').toUpperCase(); 
       
       // --- SUPABASE DATABASE INSERTION ---
-      const { error } = await supabase
+      const { error: supabaseError } = await supabase
         .from('review_tokens') 
         .insert([
           { 
             buyer_email: customerEmail, 
             token: reviewToken, 
-            company_id: dynamicCompanyId // Now it adapts to any website!
+            company_id: dynamicCompanyId 
           }
         ]);
 
-      if (error) {
-        console.error("Supabase Error:", error);
+      if (supabaseError) {
+        console.error("Supabase Error:", supabaseError);
         return res.status(500).send('Failed to save token to database');
       }
 
       console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${dynamicCompanyId}`);
 
-      // --- SEND EMAIL VIA RESEND ---
+      // --- SEND EMAIL VIA RESEND (UPDATED ERROR CATCHING) ---
+      console.log(`Attempting to send email to: ${customerEmail}`);
+      
       try {
-        await resend.emails.send({
+        const { data: emailData, error: emailError } = await resend.emails.send({
           from: 'onboarding@resend.dev', 
           to: customerEmail, 
           subject: `Thanks for your purchase! Leave a review for ${dynamicCompanyId}`,
@@ -96,9 +96,16 @@ export default async function handler(req, res) {
             </div>
           `,
         });
-        console.log(`Email successfully dispatched via Resend to ${customerEmail}`);
-      } catch (emailError) {
-        console.error("Resend Email Delivery Error:", emailError);
+
+        // THIS IS THE MAGIC CHECK: Did Resend reject it silently?
+        if (emailError) {
+          console.error("🚨 RESEND BLOCKED THE EMAIL:", emailError);
+        } else {
+          console.log(`✅ Email successfully dispatched! Resend ID:`, emailData);
+        }
+
+      } catch (systemError) {
+        console.error("🚨 CRITICAL SYSTEM ERROR DURING EMAIL:", systemError);
       }
     }
 
