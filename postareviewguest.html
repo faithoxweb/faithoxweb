@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Review | Faithox</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. BASE STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        
+        body { 
+            background: #f0f1f1;
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh; 
+            width: 100%; 
+            display: flex; 
+            flex-direction: column;
+            color: #1e293b;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- NEW RECTANGULAR BOX --- */
+        .top-rectangular-box {
+            position: relative;
+            margin: 24px;
+            background: #fdfdfd;
+            border-radius: 32px;
+            z-index: 1;
+            min-height: calc(100vh - 48px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* --- FORM CONTAINER (Matches the "hole" styling) --- */
+        .form-hole {
+            background: #f0f1f1;
+            border-radius: 40px; 
+            width: 100%;
+            max-width: 650px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .header-text {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .header-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2a2a2a;
+            letter-spacing: -0.5px;
+        }
+
+        .header-text p {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* --- STAR RATING --- */
+        .rating-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            background: #fdfdfd;
+            padding: 24px;
+            border-radius: 24px;
+        }
+
+        .stars-wrapper {
+            display: flex;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .star-icon {
+            width: 40px;
+            height: 40px;
+            color: #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .star-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .star-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+
+        /* Rating Colors */
+        .stars-wrapper[data-hover="1"] .star-icon:nth-child(1), .stars-wrapper[data-rating="1"] .star-icon:nth-child(1) { color: #EF4444; }
+        
+        .stars-wrapper[data-hover="2"] .star-icon:nth-child(-n+2), .stars-wrapper[data-rating="2"] .star-icon:nth-child(-n+2) { color: #F97316; }
+        
+        .stars-wrapper[data-hover="3"] .star-icon:nth-child(-n+3), .stars-wrapper[data-rating="3"] .star-icon:nth-child(-n+3) { color: #F59E0B; }
+        
+        .stars-wrapper[data-hover="4"] .star-icon:nth-child(-n+4), .stars-wrapper[data-rating="4"] .star-icon:nth-child(-n+4) { color: #84CC16; }
+        
+        .stars-wrapper[data-hover="5"] .star-icon:nth-child(-n+5), .stars-wrapper[data-rating="5"] .star-icon:nth-child(-n+5) { color: #10B981; }
+
+        .rating-text {
+            font-size: 13px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            height: 16px;
+        }
+
+        /* --- INPUTS & TEXTAREA --- */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #475569;
+            margin-left: 4px;
+        }
+
+        .custom-input, .custom-textarea {
+            width: 100%;
+            background: #fdfdfd;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 16px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            color: #1e293b;
+            transition: all 0.2s ease;
+            box-shadow: none;
+        }
+
+        .custom-input::placeholder, .custom-textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        .custom-input:focus, .custom-textarea:focus {
+            border-color: #bac5d2;
+        }
+
+        .custom-textarea {
+            resize: none;
+            min-height: 120px;
+            line-height: 1.5;
+        }
+
+        /* --- PHOTO UPLOAD --- */
+        .upload-area {
+            background: #fdfdfd;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-area:hover {
+            border-color: #94a3b8;
+            background: #f8fafc;
+        }
+
+        .upload-icon {
+            color: #64748b;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .upload-subtext {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* Photo Preview */
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .preview-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #e2e8f0;
+        }
+
+        .preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-photo {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 20px;
+            height: 20px;
+            background: rgba(15, 23, 42, 0.7);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(2px);
+            transition: background 0.2s;
+        }
+
+        .remove-photo:hover {
+            background: rgba(239, 68, 68, 0.9);
+        }
+
+        /* --- SUBMIT BUTTON --- */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: #1e293b;
+            color: #fdfdfd;
+            border-radius: 16px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover { background: #0f172a; }
+        .submit-btn:active { transform: scale(0.98); }
+        .submit-btn:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+
+        @media (max-width: 600px) {
+            .form-hole { padding: 24px; border-radius: 28px; }
+            .top-rectangular-box { padding: 20px 12px; margin: 12px; border-radius: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pro-progress-bar" style="position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: #0f172a; z-index: 999999; transition: width 0.3s ease-out, opacity 0.3s ease; opacity: 0; box-shadow: 0 0 10px rgba(15,23,42,0.5);"></div>
+
+    <div class="top-rectangular-box">
+        <div class="form-hole">
+            
+            <div class="header-text">
+                <h1>Write a Review</h1>
+                <p>Share your experience as a guest</p>
+            </div>
+
+            <!-- STAR RATING -->
+            <div class="rating-container">
+                <div class="stars-wrapper" id="stars-wrapper" data-rating="0" data-hover="0">
+                    <!-- Stars generated in JS -->
+                    <div class="star-icon" data-val="1"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></div>
+                    <div class="star-icon" data-val="2"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></div>
+                    <div class="star-icon" data-val="3"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></div>
+                    <div class="star-icon" data-val="4"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></div>
+                    <div class="star-icon" data-val="5"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></div>
+                </div>
+                <div class="rating-text" id="rating-text">Tap to rate</div>
+            </div>
+
+            <!-- GUEST NAME -->
+            <div class="input-group">
+                <label class="input-label">Your Name</label>
+                <input type="text" id="guest-name" class="custom-input" placeholder="e.g. John Doe (Optional)">
+            </div>
+
+            <!-- WRITTEN REVIEW -->
+            <div class="input-group">
+                <label class="input-label">Your Review</label>
+                <textarea id="review-text" class="custom-textarea" placeholder="What did you like or dislike? How was the overall experience?"></textarea>
+            </div>
+
+            <!-- PHOTO UPLOAD -->
+            <div class="input-group">
+                <label class="input-label">Add Photos</label>
+                <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                    <svg class="upload-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    <div>
+                        <div class="upload-text">Click to upload photos</div>
+                        <div class="upload-subtext">JPG, PNG (Max 5MB)</div>
+                    </div>
+                </div>
+                <input type="file" id="file-input" multiple accept="image/png, image/jpeg, image/jpg">
+                <div class="preview-container" id="preview-container"></div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="submitReview()">Post Review</button>
+
+        </div>
+    </div>
+
+    <script>
+        // --- STAR RATING LOGIC ---
+        const starsWrapper = document.getElementById('stars-wrapper');
+        const stars = document.querySelectorAll('.star-icon');
+        const ratingText = document.getElementById('rating-text');
+        
+        const ratingLabels = {
+            1: "Poor",
+            2: "Fair",
+            3: "Good",
+            4: "Very Good",
+            5: "Excellent"
+        };
+
+        let currentRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                const val = this.getAttribute('data-val');
+                starsWrapper.setAttribute('data-hover', val);
+                ratingText.innerText = ratingLabels[val];
+                ratingText.style.color = getRatingColor(val);
+            });
+
+            star.addEventListener('mouseout', function() {
+                starsWrapper.setAttribute('data-hover', '0');
+                if (currentRating === 0) {
+                    ratingText.innerText = "Tap to rate";
+                    ratingText.style.color = "#94a3b8";
+                } else {
+                    ratingText.innerText = ratingLabels[currentRating];
+                    ratingText.style.color = getRatingColor(currentRating);
+                }
+            });
+
+            star.addEventListener('click', function() {
+                currentRating = this.getAttribute('data-val');
+                starsWrapper.setAttribute('data-rating', currentRating);
+            });
+        });
+
+        function getRatingColor(val) {
+            if(val == 1) return "#EF4444";
+            if(val == 2) return "#F97316";
+            if(val == 3) return "#F59E0B";
+            if(val == 4) return "#84CC16";
+            if(val == 5) return "#10B981";
+            return "#94a3b8";
+        }
+
+        // --- PHOTO UPLOAD LOGIC ---
+        const fileInput = document.getElementById('file-input');
+        const previewContainer = document.getElementById('preview-container');
+        let uploadedFiles = [];
+
+        fileInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            
+            files.forEach(file => {
+                if(file.type.startsWith('image/')) {
+                    uploadedFiles.push(file);
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const box = document.createElement('div');
+                        box.className = 'preview-box';
+                        
+                        // Create unique ID for deletion
+                        const fileId = Math.random().toString(36).substring(7);
+                        box.setAttribute('data-id', fileId);
+                        file.tempId = fileId; 
+
+                        box.innerHTML = `
+                            <img src="${e.target.result}" alt="preview">
+                            <div class="remove-photo" onclick="removePhoto('${fileId}', event)">✕</div>
+                        `;
+                        previewContainer.appendChild(box);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+            // Reset input so same file can be selected again if removed
+            fileInput.value = ''; 
+        });
+
+        function removePhoto(id, event) {
+            event.stopPropagation(); // prevent triggering the upload click
+            
+            // Remove from array
+            uploadedFiles = uploadedFiles.filter(f => f.tempId !== id);
+            
+            // Remove from DOM
+            const element = document.querySelector(`.preview-box[data-id="${id}"]`);
+            if (element) {
+                element.remove();
+            }
+        }
+
+        // --- SUBMIT LOGIC ---
+        function submitReview() {
+            if (currentRating === 0) {
+                alert("Please select a star rating before submitting.");
+                return;
+            }
+
+            const reviewText = document.getElementById('review-text').value;
+            const guestName = document.getElementById('guest-name').value || "Guest User";
+            const btn = document.getElementById('submit-btn');
+
+            // UI Loading state
+            btn.disabled = true;
+            btn.innerText = "Submitting...";
+
+            // Simulate network request progress bar
+            const progressBar = document.getElementById('pro-progress-bar');
+            progressBar.style.opacity = "1";
+            progressBar.style.width = "40%";
+
+            setTimeout(() => {
+                progressBar.style.width = "100%";
+                
+                setTimeout(() => {
+                    alert(`Review submitted successfully!\n\nRating: ${currentRating} Stars\nName: ${guestName}\nPhotos attached: ${uploadedFiles.length}\nReview: ${reviewText}`);
+                    
+                    // Reset UI
+                    btn.disabled = false;
+                    btn.innerText = "Post Review";
+                    progressBar.style.opacity = "0";
+                    setTimeout(() => progressBar.style.width = "0%", 300);
+                    
+                    // Clear form
+                    currentRating = 0;
+                    starsWrapper.setAttribute('data-rating', '0');
+                    document.getElementById('review-text').value = '';
+                    document.getElementById('guest-name').value = '';
+                    uploadedFiles = [];
+                    previewContainer.innerHTML = '';
+                    ratingText.innerText = "Tap to rate";
+                    ratingText.style.color = "#94a3b8";
+
+                }, 500);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

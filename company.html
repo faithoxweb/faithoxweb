@@ -253,7 +253,8 @@
             color: #2a2a2a;
             font-size: 14px;
             font-weight: 600;
-            width: 90px;
+            width: auto;
+            min-width: 90px;
             text-align: center;
             letter-spacing: 0.5px;
             font-variant-numeric: tabular-nums;
@@ -441,8 +442,16 @@
             const currentIndex = Math.round(list.scrollLeft / cardWidth) + 1;
             const displayIndex = Math.max(1, Math.min(currentIndex, total));
             
+            // Calculate how many cards are completely or mostly visible based on container width
+            const visibleCards = Math.max(1, Math.round(list.clientWidth / cardWidth));
+            const endIndex = Math.min(displayIndex + visibleCards - 1, total);
+            
             // Update Text
-            indicator.innerText = `${displayIndex} / ${total}`;
+            if (displayIndex === endIndex) {
+                indicator.innerText = `${displayIndex} / ${total}`;
+            } else {
+                indicator.innerText = `${displayIndex}-${endIndex} / ${total}`;
+            }
             
             // Update Button States
             btnLeft.disabled = list.scrollLeft <= 5; // buffer for left edge
