@@ -38,12 +38,13 @@
         #dynamic-company-link {
             background: #fdfdfd;
             color: #2a2a2a; 
-            padding: 10px 18px;
-            border-radius: 100px; 
+            padding: 0 10px;
+            height: 28px;
+            border-radius: 9px; 
             border: 2px solid #dcdcdc; 
             text-decoration: none;
             font-family: 'Inter', sans-serif;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -136,7 +137,7 @@
         @keyframes shine-lines { 0% { background-position: -300px; } 100% { background-position: 300px; } }
         
         .sk-title { width: 100%; height: 50px; border-radius: 8px; color: transparent !important; }
-        .skel-exact-rating { width: 140px !important; height: 36px !important; border-color: transparent !important; box-shadow: none !important; padding: 0 !important; }
+        .skel-exact-rating { width: 140px !important; height: 28px !important; border-color: transparent !important; box-shadow: none !important; padding: 0 !important; }
         .skel-exact-rating > * { opacity: 0 !important; visibility: hidden !important; }
         .skel-rating-square { border-color: transparent !important; box-shadow: none !important; }
         .skel-rating-square > * { opacity: 0 !important; visibility: hidden !important; }
@@ -145,7 +146,7 @@
         .skeleton-card { 
             background: #fdfdfd; border-radius: 32px; padding: 24px; width: 380px; height: 200px; 
             flex-shrink: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; 
-            border: 1px solid #ededed; box-shadow: none; scroll-snap-align: start; margin-right: 10px; 
+            border: 2px solid transparent; box-shadow: none; scroll-snap-align: start; margin-right: 10px; 
         }
         .skel-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
         .skel-name { height: 14px; width: 100px; }
@@ -170,32 +171,47 @@
             background: #fdfdfd; border-radius: 24px; display: flex; flex-direction: row;
             justify-content: space-between; align-items: center; padding: 24px 18px 24px 24px; gap: 20px; z-index: 2;
         }
-        .hole-info-text-col { display: flex; flex-direction: column; justify-content: center; gap: 12px; flex: 1; min-width: 0; }
-        .title-container { width: 100%; height: 68px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .hole-info-text-col { display: flex; flex-direction: column; justify-content: flex-start; gap: 12px; flex: 1; min-width: 0; }
+        .title-container { width: 100%; height: 50px; display: flex; flex-direction: column; justify-content: flex-start; }
         
         #dynamic-company-name {
-            font-size: 24px; font-weight: 600; color: #2a2a2a; background: transparent; margin: 0; padding: 0;
+            font-size: 18px; font-weight: 600; color: #2a2a2a; background: transparent; margin: 0; padding: 0;
             width: 100%; position: relative; z-index: 10; line-height: 1.4; display: -webkit-box;
             -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word; 
         }
 
-        /* --- PRODUCT EXACT RATING ROW --- */
+        /* --- PRODUCT EXACT RATING ROW & REVIEW BADGE --- */
         .product-exact-rating-row {
             display: inline-flex; align-items: center; gap: 6px; background: #fdfdfd; border: 2px solid #e2e8f0; 
-            padding: 4px 12px 4px 10px; margin: 0; border-radius: 9px; width: fit-content; transition: border-color 0.3s ease;
+            padding: 0 8px; height: 28px; margin: 0; border-radius: 9px; width: fit-content; transition: border-color 0.3s ease;
         }
         #exact-stars-container { display: flex; gap: 4px; align-items: center; }
         #exact-rating-text { font-size: 16px; font-weight: 800; color: #94a3b8; line-height: 1; margin-top: 1px; transition: color 0.3s ease; }
 
+        .top-review-count-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 28px;
+            padding: 0 10px;
+            background: #fdfdfd;
+            border-radius: 9px;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 700;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
         /* --- RATING SQUARE --- */
         .top-rating-square {
-            width: 440px; max-height: 200px; background: #f0f1f1; border-radius: 18px; display: flex; flex-direction: column;
-            justify-content: center; padding: 30px; flex-shrink: 0; z-index: 10;
+            width: 350px; max-height: 200px; background: #f0f1f1;  border-radius: 16px; display: flex; flex-direction: column;
+            justify-content: center; padding: 22px; flex-shrink: 0; z-index: 10; 
         }
         .top-rating-square-header {
-            font-size: 13px; font-weight: 800; color: #242424; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 16px; transform: translateY(-3px)
+            font-size: 12px; font-weight: 800; color: #2a2a2a; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 16px;
         }
-        .rating-overview { display: flex; flex-direction: row; align-items: center; gap: 30px; flex: 1; justify-content: flex-start; }
+        .rating-overview { display: flex; flex-direction: row; align-items: center; gap: 24px; flex: 1; justify-content: flex-start; }
         .big-rating { text-align: center; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
         .big-rating-val { font-size: 42px; font-weight: 800; color: #2a2a2a; line-height: 1; letter-spacing: -1.5px; transition: color 0.3s ease; }
         .big-rating-stars { font-size: 16px; letter-spacing: 2px; margin: 4px 0; display: flex; justify-content: center; gap: 2px; }
@@ -219,17 +235,37 @@
         #reviews-list > div:first-child { margin-left: 0; }
         #reviews-list > div:last-child { margin-right: 0; }
 
-        .carousel-controls { display: flex; align-items: center; justify-content: center; gap: 16px; width: 100%; z-index: 10; }
-        .scroll-btn { width: 40px; height: 40px; border-radius: 50%; background: #fdfdfd; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: #2a2a2a; outline: none; }
-        .scroll-btn:hover { background: #dcdcdc; }
+        .carousel-controls { display: none; align-items: center; justify-content: center; gap: 12px; width: 100%; z-index: 10; }
+        .scroll-btn { width: 40px; height: 40px; border-radius: 50%; background: #fdfdfd; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: #2a2a2a; outline: none; transition: all 0.2s ease; }
+        .scroll-btn:hover:not(:disabled) { background: #dcdcdc; }
         .scroll-btn svg { width: 24px; height: 24px; stroke-width: 3; }
+        
+        .scroll-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        
+        .carousel-indicator {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            padding: 0 20px;
+            background: #fdfdfd;
+            border-radius: 25px;
+            color: #2a2a2a;
+            font-size: 14px;
+            font-weight: 600;
+            width: 90px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            font-variant-numeric: tabular-nums;
+        }
 
+        /* --- REVIEW CARDS (UPDATED HOVER EFFECT) --- */
         .review-item-main { 
             background: #fdfdfd; border-radius: 32px; padding: 24px; width: 380px; height: 200px; flex-shrink: 0;
             transition: all 0.2s ease; display: flex; flex-direction: column; gap: 12px; cursor: pointer; text-align: left;
-            position: relative; overflow: hidden; border: 1px solid #ededed; scroll-snap-align: start; margin-right: 10px; 
+            position: relative; overflow: hidden; border: 2px solid transparent; scroll-snap-align: start; margin-right: 10px; 
         }
-        .review-item-main:hover { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.20); }
+        .review-item-main:hover { box-shadow: none; border-color: #bac5d2; }
 
         .rating-pill { position: absolute; top: 24px; right: 24px; display: inline-flex; align-items: center; gap: 4px; padding: 0 8px; height: 28px; border-radius: 9px; background: #fdfdfd; border: 2px solid #19bb42; width: fit-content; margin: 0; flex-shrink: 0; }
         .rating-pill .star { width: 20px; height: 20px; color: #e2e8f0; display: inline-flex; align-items: center; justify-content: center; }
@@ -267,11 +303,11 @@
             .product-img-frame { border-right: none; border-bottom: 3px solid #cbd5e1; height: 234px; width: calc(100% - 16px); box-sizing: border-box; }
             .hole-info-box { left: 8px; right: 8px; top: 250px; bottom: auto; padding: 20px; align-items: stretch; text-align: left; flex-direction: column; gap: 15px; }
             .hole-info-text-col { flex: 1; }
-            .title-container { height: auto; min-height: 68px; }
+            .title-container { height: auto; min-height: 50px; }
             .sk-title { margin: 0 0 10px 0; border-radius: 8px; width: 100%; }
             .skel-exact-rating { margin: 0 0 10px 0 !important; }
             #dynamic-company-name { margin: 0 0 10px 0; border-radius: 8px; align-self: flex-start; max-width: 100%; width: 100%; }
-            .product-exact-rating-row { justify-content: flex-start; margin: 0 0 10px 0; border-radius: 9px; padding: 6px 14px; }
+            .product-exact-rating-row { justify-content: flex-start; margin: 0; border-radius: 9px; padding: 0 8px; height: 28px; }
             .top-rating-square { width: 100%; margin: 0; max-height: none; }
         }
     </style>
@@ -281,21 +317,31 @@
     <div id="pro-progress-bar" style="position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: #0f172a; z-index: 999999; transition: width 0.3s ease-out, opacity 0.3s ease; opacity: 0; box-shadow: 0 0 10px rgba(15,23,42,0.5);"></div>
 
     <div class="top-rectangular-box">
-        <span style="position: absolute; top: 34px; left: 24px; font-size: 14px; font-weight: 600; color: #1e293b; z-index: 20;">Product Details</span>
         <div class="rectangular-hole">
             <div class="product-img-frame skeleton-anim" id="img-frame">
                 <img id="dynamic-company-img" src="" alt="Product Image" class="top-bar-img" style="opacity: 0; transition: opacity 0.3s ease-in-out;">
             </div>
             <div class="hole-info-box">
                 <div class="hole-info-text-col">
+                    <span id="top-left-brand" style="font-size: 14px; font-weight: 600; color: #1e293b; z-index: 20; display: block;"></span>
                     <div class="title-container"><h1 id="dynamic-company-name" class="skeleton-anim sk-title"></h1></div>
-                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                        <div class="product-exact-rating-row skeleton-anim skel-exact-rating" id="exact-rating-box">
-                            <div id="exact-stars-container"></div><span id="exact-rating-text">0.0</span>
+                    
+                    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px;">
+                        
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <div class="product-exact-rating-row skeleton-anim skel-exact-rating" id="exact-rating-box">
+                                <div id="exact-stars-container"></div><span id="exact-rating-text">0.0</span>
+                            </div>
+                            
+                            <div class="top-review-count-badge skeleton-anim skel-exact-rating" id="top-review-count-badge">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                                <span id="top-review-count-text">0 reviews</span>
+                            </div>
                         </div>
+
                         <a id="dynamic-company-link" href="#" target="_blank">
                             View product on store
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                         </a>
                     </div>
                 </div>
@@ -317,7 +363,6 @@
             <div class="reviews-section">
                 <div class="reviews-carousel-wrapper">
                     <div id="reviews-list">
-                        <!-- Skeletons... -->
                         <div class="skeleton-card"><div style="display:flex;width:100%;height:100%;gap:15px;"><div style="display:flex;flex-direction:column;flex:1;min-width:0;height:100%;"><div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;"><div class="review-author" style="margin:0;align-items:center;gap:8px;"><div class="skel-avatar skeleton-anim"></div><div style="display:flex;flex-direction:column;justify-content:center;gap:6px;"><div class="skel-name skeleton-anim"></div><div class="skel-sub skeleton-anim"></div></div></div><div class="skel-rating skeleton-anim"></div></div><div class="skel-body"><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line short skeleton-anim"></div></div></div><div class="skel-photo skeleton-anim"></div></div></div>
                         <div class="skeleton-card"><div style="display:flex;width:100%;height:100%;gap:15px;"><div style="display:flex;flex-direction:column;flex:1;min-width:0;height:100%;"><div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;"><div class="review-author" style="margin:0;align-items:center;gap:8px;"><div class="skel-avatar skeleton-anim"></div><div style="display:flex;flex-direction:column;justify-content:center;gap:6px;"><div class="skel-name skeleton-anim"></div><div class="skel-sub skeleton-anim"></div></div></div><div class="skel-rating skeleton-anim"></div></div><div class="skel-body"><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line short skeleton-anim"></div></div></div><div class="skel-photo skeleton-anim"></div></div></div>
                         <div class="skeleton-card"><div style="display:flex;width:100%;height:100%;gap:15px;"><div style="display:flex;flex-direction:column;flex:1;min-width:0;height:100%;"><div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;"><div class="review-author" style="margin:0;align-items:center;gap:8px;"><div class="skel-avatar skeleton-anim"></div><div style="display:flex;flex-direction:column;justify-content:center;gap:6px;"><div class="skel-name skeleton-anim"></div><div class="skel-sub skeleton-anim"></div></div></div><div class="skel-rating skeleton-anim"></div></div><div class="skel-body"><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line skeleton-anim"></div><div class="skel-line short skeleton-anim"></div></div></div><div class="skel-photo skeleton-anim"></div></div></div>
@@ -325,26 +370,28 @@
                 </div>
             </div>
             
-            <div class="carousel-controls">
-                <button class="scroll-btn left-btn" onclick="scrollReviews(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
-                <button class="scroll-btn right-btn" onclick="scrollReviews(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+            <div class="carousel-controls" id="carousel-controls">
+                <button class="scroll-btn left-btn" id="btn-left" onclick="scrollReviews(-1)" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <div class="carousel-indicator" id="carousel-indicator">1 / 1</div>
+                <button class="scroll-btn right-btn" id="btn-right" onclick="scrollReviews(1)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
             </div>
+
         </div>
 
-        <!-- --- RIGHT SIDE BOX --- -->
         <div class="right-side-box">
             
-            <!-- Skeleton Loader -->
             <div id="side-box-skel" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
                 <div class="skeleton-anim" style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 20px;"></div>
                 <div class="skeleton-anim" style="width: 80%; height: 20px; border-radius: 8px; margin-bottom: 12px;"></div>
                 <div class="skeleton-anim" style="width: 100%; height: 48px; border-radius: 16px; margin-top: 10px;"></div>
             </div>
 
-            <!-- Company Content Box (Hidden by default) -->
             <div id="side-box-content" style="display: none; width: 100%; flex-direction: column; align-items: center; text-align: center;">
                 <div style="width: 60px; height: 60px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: #475569;">
-                    <!-- New Company Building Icon -->
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path>
                     </svg>
@@ -373,10 +420,41 @@
     </div>
 
     <script>
+        // --- SCROLLING & CAROUSEL LOGIC ---
         window.scrollReviews = function(direction) {
             const list = document.getElementById('reviews-list');
             list.scrollBy({ left: direction * 390, behavior: 'smooth' });
         };
+
+        function updateCarouselUI() {
+            if (!loadedReviews || loadedReviews.length <= 1) return;
+            
+            const list = document.getElementById('reviews-list');
+            const btnLeft = document.getElementById('btn-left');
+            const btnRight = document.getElementById('btn-right');
+            const indicator = document.getElementById('carousel-indicator');
+            
+            const cardWidth = 390; 
+            const total = loadedReviews.length;
+            
+            // Calculate which card is currently taking up the leftmost view
+            const currentIndex = Math.round(list.scrollLeft / cardWidth) + 1;
+            const displayIndex = Math.max(1, Math.min(currentIndex, total));
+            
+            // Update Text
+            indicator.innerText = `${displayIndex} / ${total}`;
+            
+            // Update Button States
+            btnLeft.disabled = list.scrollLeft <= 5; // buffer for left edge
+            btnRight.disabled = Math.ceil(list.scrollLeft + list.clientWidth) >= list.scrollWidth - 5; // buffer for right edge
+        }
+
+        // Attach listener for smooth UI updates while scrolling
+        document.getElementById('reviews-list').addEventListener('scroll', () => {
+            requestAnimationFrame(updateCarouselUI);
+        });
+        
+        // --- UTILS & MODALS ---
         function escapeHTML(str) {
             if (!str) return '';
             return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
@@ -471,6 +549,9 @@
             const titleEl = document.getElementById('dynamic-company-name');
             titleEl.classList.remove('skeleton-anim', 'sk-title');
             document.getElementById('exact-rating-box').classList.remove('skeleton-anim', 'skel-exact-rating');
+            document.getElementById('top-review-count-badge').classList.remove('skeleton-anim', 'skel-exact-rating');
+            
+            // THIS LINE WAS MISSING AND IS NOW RESTORED
             document.getElementById('rating-square-box').classList.remove('skeleton-anim', 'skel-rating-square');
 
             document.title = escapeHTML(co.name) + ' | Faithox';
@@ -485,21 +566,22 @@
 
             const r = parseFloat(co.rating) || 0;
             updateVisualRatings(r); 
-            document.getElementById('big-rating-count').innerText = (co.reviews_count || 0) + ' reviews';
+            
+            // Populate temporary numbers until loadReviews finishes fetching the full array
+            const tempCount = co.reviews_count || 0;
+            const tempCountStr = tempCount + (tempCount === 1 ? ' review' : ' reviews');
+            document.getElementById('big-rating-count').innerText = tempCountStr;
+            document.getElementById('top-review-count-text').innerText = tempCountStr;
 
             // --- 2. FETCH SECURE OWNER NAME FROM AUTH ---
             if (co.owner_id) {
-                // Call the new RPC function that only gets the name
                 const { data: ownerName, error: nameError } = await db.rpc('get_owner_name', { owner_uid: co.owner_id });
 
-                if (!nameError) {
+                if (!nameError && ownerName) {
                     document.getElementById('side-box-skel').style.display = 'none';
                     document.getElementById('side-box-content').style.display = 'flex';
-                    
-                    // Display the name. If the user didn't set a name, fallback to a generic title
-                    document.getElementById('side-comp-name-display').innerText = ownerName || 'Registered Business';
-                    
-                    // The button currently points nowhere ("#"), ready for you to add profile URLs later
+                    document.getElementById('side-comp-name-display').innerText = ownerName;
+                    document.getElementById('top-left-brand').innerText = `product from ${ownerName}`;
                     document.getElementById('side-comp-profile').href = '#';
                 } else {
                     document.getElementById('side-box-skel').innerHTML = '<div style="color:#94a3b8; font-size:14px; font-weight:600;">Details Unavailable</div>';
@@ -514,11 +596,23 @@
             const list = document.getElementById('reviews-list');
             list.innerHTML = '';
 
+            const controlsContainer = document.getElementById('carousel-controls');
+
             if (!reviews || reviews.length === 0) {
                 list.innerHTML = "<p style='color:#94a3b8; font-size:14px; text-align:center; padding:30px; width:100%;'>No reviews yet. Be the first to review!</p>";
                 buildRatingBars([]);
+                
+                // Set accurate count if 0
+                document.getElementById('big-rating-count').innerText = '0 reviews';
+                document.getElementById('top-review-count-text').innerText = '0 reviews';
+                controlsContainer.style.display = 'none'; // Hide scroll controls completely
                 return;
             }
+
+            // SET THE REAL, ACCURATE REVIEW COUNT
+            const countStr = reviews.length + (reviews.length === 1 ? ' review' : ' reviews');
+            document.getElementById('big-rating-count').innerText = countStr;
+            document.getElementById('top-review-count-text').innerText = countStr;
 
             const totalRatingSum = reviews.reduce((sum, rev) => sum + (rev.rating || 0), 0);
             updateVisualRatings(totalRatingSum / reviews.length);
@@ -580,6 +674,15 @@
                 `;
                 list.appendChild(div);
             });
+
+            // Initialize Controls Display
+            if (reviews.length <= 1) {
+                controlsContainer.style.display = 'none'; // Don't show controls for 1 review
+            } else {
+                controlsContainer.style.display = 'flex';
+                // Small timeout allows DOM to paint the new items so widths calculate correctly
+                setTimeout(updateCarouselUI, 100); 
+            }
         }
 
         function buildRatingBars(reviews) {
