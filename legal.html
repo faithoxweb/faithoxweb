@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal & Privacy | Faithox</title>
+    <style>
+        /* --- Clean SaaS Styling --- */
+        :root {
+            --primary: #2563eb;
+            --text-main: #1f2937;
+            --text-light: #6b7280;
+            --bg-color: #f9fafb;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Layout Container */
+        .legal-container {
+            display: flex;
+            max-width: 1100px;
+            margin: 40px auto;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        /* Sidebar Menu */
+        .sidebar {
+            width: 250px;
+            background: #fdfdfd;
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+        }
+
+        .sidebar h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            letter-spacing: 0.05em;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            padding: 12px 16px;
+            font-size: 16px;
+            color: var(--text-main);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
+
+        .tab-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            flex-grow: 1;
+            padding: 40px 60px;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .document {
+            display: none; /* Hidden by default */
+        }
+
+        .document.active {
+            display: block; /* Shows when active */
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Typography inside documents */
+        .document h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .last-updated {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 40px;
+            display: inline-block;
+        }
+
+        .document h2 {
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .document p, .document ul {
+            color: #4b5563;
+            margin-bottom: 16px;
+        }
+
+        .document li {
+            margin-bottom: 8px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .legal-container {
+                flex-direction: column;
+                margin: 0;
+                border-radius: 0;
+                border: none;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 20px;
+            }
+            .content-area {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="legal-container">
+        
+        <div class="sidebar">
+            <h3>Faithox Legal</h3>
+            <button class="tab-btn active" onclick="switchTab('tos')">Terms of Service</button>
+            <button class="tab-btn" onclick="switchTab('privacy')">Privacy Policy</button>
+            <button class="tab-btn" onclick="switchTab('moderation')">Review Moderation</button>
+        </div>
+
+        <div class="content-area">
+
+            <div id="tos" class="document active">
+                <h1>Terms of Service</h1>
+                <span class="last-updated">Last Updated: June 25, 2026</span>
+                
+                <h2>1. Acceptance of Terms</h2>
+                <p>By registering for an account and embedding the Faithox widget ("Service"), you agree to be bound by these Terms of Service. If you do not agree, you may not use the Service.</p>
+
+                <h2>2. The Service</h2>
+                <p>Faithox provides a trust infrastructure and review management widget for online stores. We reserve the right to update, modify, or discontinue features of the widget at any time to improve performance or security.</p>
+
+                <h2>3. Intellectual Property</h2>
+                <p>Faithox retains all ownership, copyright, and intellectual property rights to the widget, backend code, and platform design. You are granted a limited, non-exclusive license to embed the widget on your website. You retain complete ownership of your store's data and your customers' information.</p>
+
+                <h2>4. Acceptable Use</h2>
+                <p>You agree not to:</p>
+                <ul>
+                    <li>Reverse-engineer or attempt to extract the source code of the Faithox widget.</li>
+                    <li>Manipulate, fabricate, or incentivize fake reviews through our platform.</li>
+                    <li>Use the widget on websites containing illegal, explicit, or harmful content.</li>
+                </ul>
+
+                <h2>5. Limitation of Liability</h2>
+                <p>Faithox is provided on an "as is" and "as available" basis. While we strive for maximum uptime, we do not guarantee uninterrupted service. Faithox shall not be held liable for any lost revenue, profits, or data resulting from widget downtime, integration errors, or third-party interference.</p>
+
+                <h2>6. Account Termination</h2>
+                <p>We reserve the right to suspend or terminate your account if you violate these terms, attempt to manipulate consumer trust, or fail to pay applicable subscription fees.</p>
+                
+                <p><strong>Contact:</strong> For legal inquiries, contact us at legal@faithox.com.</p>
+            </div>
+
+            <div id="privacy" class="document">
+                <h1>Privacy Policy</h1>
+                <span class="last-updated">Last Updated: June 25, 2026</span>
+
+                <h2>1. Introduction</h2>
+                <p>Faithox ("we", "our") respects your privacy. This policy explains how we collect, use, and protect data when store owners ("Clients") use our platform, and when consumers ("Shoppers") interact with our embedded review widgets.</p>
+
+                <h2>2. Information We Collect</h2>
+                <ul>
+                    <li><strong>From Clients (Store Owners):</strong> We collect your name, email, website URL, and billing information to provide our SaaS services.</li>
+                    <li><strong>From Shoppers (Widget Users):</strong> When you leave a review via a Faithox widget, we collect the name you provide, your email address (for verification purposes only), the content of your review, and your IP address (to detect and prevent spam).</li>
+                </ul>
+
+                <h2>3. How We Use Your Information</h2>
+                <p>We act as a Data Processor for our Clients. We use Shopper data strictly to verify the authenticity of reviews, display those reviews on the Client's website, and maintain the security of our infrastructure. <strong>We do not sell Shopper data to advertisers or third-party data brokers.</strong></p>
+
+                <h2>4. Data Security and Storage</h2>
+                <p>We utilize industry-standard cloud database infrastructure to secure your data against unauthorized access. Store Owners are responsible for maintaining the confidentiality of their Faithox login credentials.</p>
+
+                <h2>5. Cookies and Tracking</h2>
+                <p>The Faithox widget uses essential cookies or session tokens solely to ensure the functionality of the review submission process and to prevent fraudulent, duplicate reviews. We do not use cross-site tracking cookies for advertising.</p>
+
+                <h2>6. Your Rights</h2>
+                <p>Shoppers wishing to delete or modify a review can do so by contacting the store owner directly, or by reaching out to Faithox support.</p>
+                
+                <p><strong>Contact:</strong> For privacy concerns, contact us at privacy@faithox.com.</p>
+            </div>
+
+            <div id="moderation" class="document">
+                <h1>Review Moderation Policy</h1>
+                <span class="last-updated">Last Updated: June 25, 2026</span>
+
+                <h2>1. Our Commitment to Trust</h2>
+                <p>Faithox provides infrastructure to ensure online reviews are authentic, transparent, and helpful. To maintain the integrity of our platform, all submitted reviews must adhere to the following guidelines.</p>
+
+                <h2>2. Authenticity Requirement</h2>
+                <p>Reviews must reflect a genuine, firsthand experience with the product or service. Generating fake reviews, whether positive or negative, is strictly prohibited and violates consumer trust standards.</p>
+
+                <h2>3. Prohibited Content</h2>
+                <p>Faithox and the host store reserve the right to flag, hide, or remove reviews that contain:</p>
+                <ul>
+                    <li><strong>Hate Speech or Harassment:</strong> Profanity, abuse, or discriminatory language.</li>
+                    <li><strong>Spam or Promotion:</strong> Links to other websites, promotional material, or irrelevant content.</li>
+                    <li><strong>Personal Information:</strong> Phone numbers, physical addresses, or other sensitive personal data of the reviewer or employees of the store.</li>
+                    <li><strong>Irrelevant Content:</strong> Commentary that does not pertain to the product or the purchasing experience.</li>
+                </ul>
+
+                <h2>4. Moderation Process</h2>
+                <p>We utilize automated spam detection alongside manual reporting tools. Store owners may flag suspicious reviews, but Faithox retains the final authority to remove content that violates this policy to ensure the widget remains a source of truth.</p>
+                
+                <p><strong>Contact:</strong> support@faithox.com</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            // 1. Remove 'active' class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // 2. Hide all documents
+            const documents = document.querySelectorAll('.document');
+            documents.forEach(doc => doc.classList.remove('active'));
+
+            // 3. Add 'active' class to clicked button
+            // Finds the button that was clicked by matching the onclick attribute
+            const clickedBtn = document.querySelector(`button[onclick="switchTab('${tabId}')"]`);
+            if(clickedBtn) clickedBtn.classList.add('active');
+
+            // 4. Show the selected document
+            const targetDoc = document.getElementById(tabId);
+            if(targetDoc) targetDoc.classList.add('active');
+        }
+
+        // ADDED: Auto-load exact tab based on URL hash (e.g. from footer click)
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1); 
+            if (hash && (hash === 'tos' || hash === 'privacy' || hash === 'moderation')) {
+                switchTab(hash);
+            }
+        });
+    </script>
+</body>
+</html>
