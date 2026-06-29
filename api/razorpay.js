@@ -106,7 +106,7 @@ export default async function handler(req, res) {
       
     try {
       const { data: emailData, error: emailError } = await resend.emails.send({
-        from: 'onboarding@resend.dev', 
+        from: 'Faithox <noreply@faithox.com>', 
         to: customerEmail, 
         subject: `Thanks for your purchase! Leave a review for ${dynamicCompanyId}`,
         html: `
