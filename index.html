@@ -52,16 +52,16 @@
 
         .floating-hero-bg.side {
             /* 1. This makes BOTH side panels equal */
-            flex: 1 1 250px; 
-            min-width: 240px; /* Protects sides from getting squished on laptops */
+            flex: 1 1 0; 
+            min-width: 0; 
             
             /* 2. Adjust this value to make BOTH side panels thinner or wider */
             max-width: 315px; 
         }
 
         .floating-hero-bg.center {
-            /* 1. Allows center to flex harmoniously with smaller laptop screens */
-            flex: 2 1 600px; 
+            /* 1. Locks the center panel so it doesn't get crushed by the sides */
+            flex: 0 1 820px; 
             width: 100%;
             max-width: 820px;
         }
@@ -680,49 +680,6 @@
             opacity: 0; 
         }
         
-        /* --- RESPONSIVE FIX FOR SMALLER LAPTOPS --- */
-        @media (max-width: 1200px) {
-            .floating-hero-bg.side {
-                min-width: 220px;
-                padding: 20px 20px;
-                gap: 15px;
-            }
-            .hero-heading {
-                font-size: 52px;
-                margin-top: 60px;
-            }
-            .search-container {
-                max-width: 520px;
-            }
-            .why-us-title {
-                font-size: 22px;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .floating-hero-bg.side {
-                min-width: 180px;
-                padding: 15px 15px;
-                gap: 12px;
-            }
-            .why-us-title {
-                font-size: 18px;
-            }
-            .why-us-item p {
-                font-size: 11px;
-            }
-            .hero-heading {
-                font-size: 42px;
-                margin-top: 50px;
-            }
-            .search-container {
-                max-width: 400px;
-            }
-            .search-bar {
-                padding: 18px 50px 18px 20px;
-                font-size: 14px;
-            }
-        }
 
         @media (max-width: 900px) {
             .business-banner { flex-direction: column; padding: 60px 30px; align-items: center; text-align: center; gap: 40px; }
