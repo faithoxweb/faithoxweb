@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post a Review | Faithox</title>
+    
+    <!-- 🟢 NEW: Added Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* --- 1. BASE STYLES --- */
@@ -330,17 +334,59 @@
     </div>
 
     <script>
+        // 🟢 NEW: 1. Initialize Supabase
+        const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Global variables to hold the fetched data
+        let hiddenStoreId = null;
+        let hiddenProductId = null;
+        let hiddenGuestEmail = null;
+        let urlToken = null;
+
+        // 🟢 NEW: 2. Auto-Fetch Details on Page Load
+        async function fetchDetailsFromToken() {
+            const urlParams = new URLSearchParams(window.location.search);
+            urlToken = urlParams.get('token');
+
+            if (!urlToken) {
+                alert("Invalid review link. No security token found.");
+                document.getElementById('submit-btn').disabled = true;
+                return;
+            }
+
+            // Ask Supabase for the matching Store and Product IDs
+            const { data, error } = await db
+                .from('review_tokens')
+                .select('company_id, product_id, buyer_email')
+                .eq('token', urlToken)
+                .single();
+
+            if (error || !data) {
+                alert("This review link has expired or is invalid.");
+                document.getElementById('submit-btn').disabled = true;
+                return;
+            }
+
+            // Save them silently in the background
+            hiddenStoreId = data.company_id;
+            hiddenProductId = data.product_id;
+            hiddenGuestEmail = data.buyer_email;
+            console.log("Secure Token Verified!");
+        }
+
+        // Run the fetch as soon as the page loads
+        window.onload = fetchDetailsFromToken;
+
+
         // --- STAR RATING LOGIC ---
         const starsWrapper = document.getElementById('stars-wrapper');
         const stars = document.querySelectorAll('.star-icon');
         const ratingText = document.getElementById('rating-text');
         
         const ratingLabels = {
-            1: "Poor",
-            2: "Fair",
-            3: "Good",
-            4: "Very Good",
-            5: "Excellent"
+            1: "Poor", 2: "Fair", 3: "Good", 4: "Very Good", 5: "Excellent"
         };
 
         let currentRating = 0;
@@ -410,27 +456,26 @@
                     reader.readAsDataURL(file);
                 }
             });
-            // Reset input so same file can be selected again if removed
             fileInput.value = ''; 
         });
 
         function removePhoto(id, event) {
-            event.stopPropagation(); // prevent triggering the upload click
-            
-            // Remove from array
+            event.stopPropagation();
             uploadedFiles = uploadedFiles.filter(f => f.tempId !== id);
-            
-            // Remove from DOM
             const element = document.querySelector(`.preview-box[data-id="${id}"]`);
             if (element) {
                 element.remove();
             }
         }
 
-        // --- SUBMIT LOGIC ---
-        function submitReview() {
+        // 🟢 NEW: 3. SUBMIT REAL LOGIC TO SUPABASE
+        async function submitReview() {
             if (currentRating === 0) {
                 alert("Please select a star rating before submitting.");
+                return;
+            }
+            if (!hiddenStoreId) {
+                alert("Invalid session. Cannot submit review.");
                 return;
             }
 
@@ -442,35 +487,76 @@
             btn.disabled = true;
             btn.innerText = "Submitting...";
 
-            // Simulate network request progress bar
             const progressBar = document.getElementById('pro-progress-bar');
             progressBar.style.opacity = "1";
             progressBar.style.width = "40%";
 
-            setTimeout(() => {
-                progressBar.style.width = "100%";
-                
-                setTimeout(() => {
-                    alert(`Review submitted successfully!\n\nRating: ${currentRating} Stars\nName: ${guestName}\nPhotos attached: ${uploadedFiles.length}\nReview: ${reviewText}`);
-                    
-                    // Reset UI
-                    btn.disabled = false;
-                    btn.innerText = "Post Review";
-                    progressBar.style.opacity = "0";
-                    setTimeout(() => progressBar.style.width = "0%", 300);
-                    
-                    // Clear form
-                    currentRating = 0;
-                    starsWrapper.setAttribute('data-rating', '0');
-                    document.getElementById('review-text').value = '';
-                    document.getElementById('guest-name').value = '';
-                    uploadedFiles = [];
-                    previewContainer.innerHTML = '';
-                    ratingText.innerText = "Tap to rate";
-                    ratingText.style.color = "#94a3b8";
+            let finalImageUrl = null;
 
-                }, 500);
-            }, 1000);
+            // Optional: If they uploaded an image, save it to the product-images bucket
+            if (uploadedFiles.length > 0) {
+                btn.innerText = "Uploading Photos...";
+                const file = uploadedFiles[0]; // Currently handling the first image
+                const fileExt = file.name.split('.').pop();
+                const fileName = `guest-review-${urlToken}-${Date.now()}.${fileExt}`;
+
+                const { error: uploadError } = await db.storage
+                    .from('product-images')
+                    .upload(fileName, file);
+
+                if (!uploadError) {
+                    const { data: urlData } = db.storage.from('product-images').getPublicUrl(fileName);
+                    finalImageUrl = urlData.publicUrl;
+                }
+            }
+
+            progressBar.style.width = "80%";
+            btn.innerText = "Saving Review...";
+
+            // Insert into the MAIN reviews table!
+            const { error: insertError } = await db.from('reviews').insert([{
+                company_id: hiddenStoreId,
+                product_id: hiddenProductId,
+                reviewer_name: guestName,
+                reviewer_email: hiddenGuestEmail, // Pulled from the token!
+                comment: reviewText,
+                rating: parseInt(currentRating),
+                token: urlToken
+                // Note: If you want to save the photo URL, ensure your table has an 'image_url' or 'media_url' column, then add it here like: media_url: finalImageUrl
+            }]);
+
+            progressBar.style.width = "100%";
+
+            if (insertError) {
+                alert("Failed to submit review: " + insertError.message);
+                btn.disabled = false;
+                btn.innerText = "Post Review";
+                progressBar.style.opacity = "0";
+                setTimeout(() => progressBar.style.width = "0%", 300);
+                return;
+            }
+
+            // Success!
+            setTimeout(() => {
+                alert("Thank you! Your review has been submitted successfully.");
+                
+                // Reset UI
+                btn.disabled = true;
+                btn.innerText = "Review Submitted ✓";
+                btn.style.background = "#10B981";
+                progressBar.style.opacity = "0";
+                setTimeout(() => progressBar.style.width = "0%", 300);
+                
+                // Optionally clear form
+                currentRating = 0;
+                starsWrapper.setAttribute('data-rating', '0');
+                document.getElementById('review-text').value = '';
+                document.getElementById('guest-name').value = '';
+                uploadedFiles = [];
+                previewContainer.innerHTML = '';
+                ratingText.innerText = "Tap to rate";
+                ratingText.style.color = "#94a3b8";
+            }, 500);
         }
     </script>
 </body>
