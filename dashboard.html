@@ -211,7 +211,7 @@
         /* --- MODALS --- */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(240, 241, 241, 0.7); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; }
         .modal-overlay.open { display: flex; }
-        .modal-content { background: #fdfdfd; padding: 40px; border-radius: 24px; width: 100%; max-width: 480px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .modal-content { background: #fdfdfd; padding: 40px; border-radius: 24px; width: 100%; max-width: 550px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
         .close-modal { position: absolute; top: 24px; right: 24px; background: #f2f2f2; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; font-weight: 600; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .close-modal:hover { background: #e2e8f0; color: #ef4444; }
         .code-block { background: #1e293b; color: #38bdf8; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 13px; margin: 15px 0; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; }
@@ -435,15 +435,33 @@
         </div>
     </div>
 
+    <!-- NEW INTEGRATION MODAL -->
     <div id="code-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeCodeModal()">✕</button>
-            <h2 style="font-size: 24px; font-weight: 700; color: #242424; letter-spacing: -0.5px; margin-bottom: 8px;">Your Embed Code</h2>
-            <p style="font-size: 14px; color: #64748b;">Copy and paste this exact code into your website's HTML where you want the reviews widget to appear.</p>
+            <h2 style="font-size: 24px; font-weight: 700; color: #242424; letter-spacing: -0.5px; margin-bottom: 8px;">Integration Details</h2>
             
-            <div class="code-block" id="embed-code-text"></div>
-            
-            <button class="btn-primary copy-btn" onclick="copyCode()" style="margin-top: 10px;">Copy to Clipboard</button>
+            <!-- SECTION 1: Website Widget -->
+            <div style="margin-bottom: 24px;">
+                <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">1. Website Embed Code (Frontend)</p>
+                <p style="font-size: 13px; color: #64748b;">Paste this exactly where you want the reviews widget to appear on your product page.</p>
+                <div class="code-block" id="embed-code-text"></div>
+                <button class="btn-primary copy-btn" onclick="copyCode()" style="margin-top: 10px; width: auto; padding: 10px 16px; font-size: 13px;">Copy Embed Code</button>
+            </div>
+
+            <!-- SECTION 2: Razorpay Backend IDs -->
+            <div style="padding-top: 24px; border-top: 1px solid #e2e8f0;">
+                <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">2. Razorpay Checkout Data (Backend)</p>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Pass this exact Product ID inside the <code>notes</code> object of your Razorpay checkout code so Faithox can automatically verify purchases.</p>
+                
+                <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Unique Product ID</span>
+                        <div id="modal-product-id" style="font-family: monospace; font-size: 14px; font-weight: 600; color: #242424; margin-top: 4px;">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -782,18 +800,24 @@
             }
         }
 
-        // --- WIDGET MODAL LOGIC ---
+        // --- WIDGET MODAL LOGIC (UPDATED WITH PRODUCT ID) ---
         function openCodeModal(companyId) {
             const liveUrl = `https://faithoxweb.vercel.app/embed.html?id=${companyId}`;
-           const code = `\n<iframe \n  src="${liveUrl}" \n  width="100%" \n  height="350px" \n  style="border: none; background: transparent; overflow: hidden; display: block; margin: 0 auto;">\n</iframe>`;
+            const code = `\n<iframe \n  src="${liveUrl}" \n  width="100%" \n  height="350px" \n  style="border: none; background: transparent; overflow: hidden; display: block; margin: 0 auto;">\n</iframe>`;
+            
+            // Set Embed Code
             document.getElementById('embed-code-text').innerText = code;
+            
+            // Set Product ID
+            document.getElementById('modal-product-id').innerText = companyId;
+            
             document.getElementById('code-modal').classList.add('open');
         }
 
         function closeCodeModal() {
             document.getElementById('code-modal').classList.remove('open');
             const copyBtn = document.querySelector('.copy-btn');
-            copyBtn.innerText = 'Copy to Clipboard';
+            copyBtn.innerText = 'Copy Embed Code';
             copyBtn.style.background = '#242424';
         }
 
