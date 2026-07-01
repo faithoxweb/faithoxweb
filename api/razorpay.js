@@ -41,6 +41,9 @@ export default async function handler(req, res) {
     const paymentEntity = data.payload.payment.entity;
     const dynamicCompanyId = paymentEntity.notes?.store_name;
     
+    // 🟢 NEW: Extract the product_id from the Razorpay notes payload
+    const productId = paymentEntity.notes?.product_id || null;
+    
     // Safety check: Does the payload actually have a store name?
     if (!dynamicCompanyId) {
       console.error("Rejected: Missing store_name in payload notes");
@@ -84,13 +87,15 @@ export default async function handler(req, res) {
     const reviewToken = crypto.randomBytes(3).toString('hex').toUpperCase(); 
       
     // --- SUPABASE DATABASE INSERTION ---
+    // 🟢 NEW: Added product_id to the database insert
     const { error: supabaseError } = await supabase
       .from('review_tokens') 
       .insert([
         { 
           buyer_email: customerEmail, 
           token: reviewToken, 
-          company_id: dynamicCompanyId 
+          company_id: dynamicCompanyId,
+          product_id: productId 
         }
       ]);
 
@@ -99,7 +104,7 @@ export default async function handler(req, res) {
       return res.status(500).send('Failed to save token to database');
     }
 
-    console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${dynamicCompanyId}`);
+    console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${dynamicCompanyId} (Product ID: ${productId})`);
 
     // --- SEND EMAIL VIA RESEND ---
     console.log(`Attempting to send email to: ${customerEmail}`);
