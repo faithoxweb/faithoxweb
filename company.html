@@ -867,13 +867,35 @@
         let currentUser = null;
         let loadedReviews = []; 
 
+        // UPGRADED SYNC ORDER FIXED HERE
         async function init() {
-            if (companyId) { loadCompanyDetails(); loadReviews(); }
+            if (companyId) { 
+                // 1. Fetch company details first and block execution until resolved
+                const companyData = await loadCompanyDetails(); 
+                
+                // 2. Safely route target review id to prevent layout flash loops
+                if (companyData) {
+                    await loadReviews(companyId); 
+                }
+            }
         }
 
         async function loadCompanyDetails() {
-            const { data: co, error } = await db.from('companies').select('*').eq('id', companyId).single();
-            if (error || !co) { return; }
+            // Check if parameter is full standard UUID vs a loose textual segment lookup string
+            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(companyId);
+
+            let query = db.from('companies').select('*');
+            if (isUuid) {
+                query = query.eq('id', companyId);
+            } else {
+                // If it is 'stryde', look inside the name field with case-insensitive boundary syntax
+                query = query.ilike('name', `%${companyId}%`);
+            }
+
+            const { data, error } = await query;
+            if (error || !data || data.length === 0) { return null; }
+            
+            const co = data[0]; // Retrieve primary row item
 
             document.getElementById('img-frame').classList.remove('skeleton-anim');
             document.getElementById('dynamic-company-img').style.opacity = '1';
@@ -918,10 +940,13 @@
             } else {
                 document.getElementById('side-box-skel').style.display = 'none';
             }
+            
+            return co;
         }
 
-        async function loadReviews() {
-            const { data: reviews } = await db.from('reviews').select('*').eq('company_id', companyId).order('created_at', { ascending: false });
+        async function loadReviews(searchKey) {
+            // Case-insensitive clean lookup matching reviews row items
+            const { data: reviews } = await db.from('reviews').select('*').ilike('company_id', `%${searchKey}%`).order('created_at', { ascending: false });
             const list = document.getElementById('reviews-list');
             list.innerHTML = '';
 
