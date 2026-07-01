@@ -26,7 +26,7 @@
             position: relative;
             margin: 24px auto 0 auto;
             width: calc(100% - 48px);
-            min-height: 690px;
+            min-height: 641px;
             background: #fdfdfd;
             border-radius: 32px;
             z-index: 1;
@@ -38,7 +38,7 @@
             position: absolute; 
             top: 0; left: 0; 
             width: 100%; 
-            height: 139px; 
+            height: 90px; 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
@@ -140,7 +140,7 @@
         /* --- UPPER RECTANGULAR HOLE --- */
         .rectangular-hole {
             position: absolute;
-            top: 139px;
+            top: 90px;
             left: 12px;
             width: 1176px; 
             max-width: calc(100% - 24px); 
@@ -152,7 +152,7 @@
         /* --- LOWER REVIEWS HOLE --- */
         .reviews-hole {
             position: absolute;
-            top: 388px; 
+            top: 339px; 
             left: 12px; 
             width: 1176px; 
             max-width: calc(100% - 24px);
@@ -171,7 +171,7 @@
         /* --- RIGHT SIDE BOX --- */
         .right-side-box {
             position: absolute;
-            top: 139px;
+            top: 90px;
             left: 1200px; 
             right: 12px;
             height: 539px; 
@@ -212,11 +212,11 @@
             color: #2a2a2a; 
             font-family: 'Inter', sans-serif; 
             padding: 80px 0 30px; 
-            margin: auto 0 0 0; /* Pushes to bottom, flush with sides */
+            margin: auto 0 0 0;
             margin-top: 40px;
-            border-radius: 0; /* Removed rounded corners */
+            border-radius: 0; 
             border: none; 
-            border-top: 1px solid #ededed; /* Clean separation line */
+            border-top: 1px solid #ededed; 
             position: relative; 
             z-index: 10; 
         }
@@ -400,45 +400,81 @@
         .author-name { font-size: 15px; font-weight: 700; color: #242424; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .review-body { font-size: 14px; color: #242424; line-height: 1.5; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
 
-        /* --- MODALS --- */
-        #review-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99990; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 20px; }
+        /* --- MODALS (NEW WIDE RECTANGULAR LAYOUT) --- */
+        #review-modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); z-index: 99990; align-items: center; justify-content: center; backdrop-filter: blur(8px); padding: 20px; }
         #review-modal.open { display: flex; }
-        .rm-content { background: #fff; border-radius: 16px; width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .rm-content::-webkit-scrollbar { width: 6px; } .rm-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .rm-close { position: absolute; top: 20px; right: 20px; font-size: 18px; color: #64748b; cursor: pointer; transition: 0.2s; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f1f5f9; font-weight: bold; }
+        
+        .rm-content { 
+            background: #fff; border-radius: 24px; width: 100%; max-width: 900px; height: 500px; 
+            display: flex; flex-direction: column; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); 
+            overflow: hidden; padding: 40px; 
+        }
+        
+        .rm-close { position: absolute; top: 24px; right: 24px; font-size: 18px; color: #64748b; cursor: pointer; transition: 0.2s; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f1f5f9; font-weight: bold; z-index: 10; }
         .rm-close:hover { background: #e2e8f0; color: #0f172a; transform: scale(1.05); }
-        .rm-text { font-size: 16px; color: #334155; line-height: 1.7; white-space: pre-wrap; margin-bottom: 24px; }
-        .rm-photos { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 10px;}
-        .rm-photos img { width: 100%; border-radius: 8px; cursor: pointer; border: 1px solid #e2e8f0; max-height: 250px; object-fit: cover;} .rm-photos img:hover { opacity: 0.85; }
+        
+        #rm-body-container {
+            display: flex; flex-direction: column; height: 100%; width: 100%; transition: opacity 0.15s ease;
+        }
+
+        /* Modal Header Area */
+        .rm-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-right: 40px; flex-shrink: 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; }
+        .rm-header-left { display: flex; align-items: center; gap: 16px; }
+        .rm-header-right { display: flex; align-items: center; }
+
+        /* Modal Body Area (Split Left/Right) */
+        .rm-body-split { display: flex; gap: 40px; flex: 1; min-height: 0; overflow: hidden; }
+        
+        .rm-text-col { flex: 1; overflow-y: auto; font-size: 16px; color: #334155; line-height: 1.7; padding-right: 15px; white-space: pre-wrap; }
+        .rm-text-col::-webkit-scrollbar { width: 6px; } .rm-text-col::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .rm-photo-col { flex: 1; max-width: 350px; overflow-y: auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; align-content: start; padding-right: 10px; }
+        .rm-photo-col::-webkit-scrollbar { width: 6px; } .rm-photo-col::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .rm-photo-col img { width: 100%; border-radius: 8px; cursor: pointer; border: 1px solid #e2e8f0; aspect-ratio: 1/1; object-fit: cover; transition: opacity 0.2s;} 
+        .rm-photo-col img:hover { opacity: 0.85; }
+
+        /* Review Modal Slider Nav Buttons */
+        .rm-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%; background: #fdfdfd; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 99995; color: #1e293b; transition: all 0.2s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .rm-nav-btn:hover:not(:disabled) { background: #f1f5f9; transform: translateY(-50%) scale(1.05); }
+        .rm-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .rm-nav-btn svg { width: 24px; height: 24px; stroke-width: 2.5; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        
+        .rm-left { left: calc(50% - 500px); }
+        .rm-right { right: calc(50% - 500px); }
+
         #lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99999; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         #lightbox.open { display: flex; }
         #lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 12px; object-fit: contain; }
         #lightbox-close { position: absolute; top: 24px; right: 24px; color: #fff; cursor: pointer; font-size: 28px; font-weight: 300; line-height: 1; opacity: 0.7; transition: 0.2s; }
         #lightbox-close:hover { opacity: 1; }
 
+        @media (max-width: 1050px) {
+            .rm-left { left: 15px; }
+            .rm-right { right: 15px; }
+            .rm-content { max-width: calc(100% - 130px); }
+        }
+
         @media (max-width: 768px) {
             .rectangular-hole { overflow-y: auto; overflow-x: hidden; }
             .product-img-frame { border-right: none; border-bottom: 3px solid #cbd5e1; height: 234px; width: calc(100% - 16px); box-sizing: border-box; }
             .hole-info-box { left: 8px; right: 8px; top: 250px; bottom: auto; padding: 20px; align-items: stretch; text-align: left; flex-direction: column; gap: 15px; }
-            .hole-info-text-col { flex: 1; }
-            .title-container { height: auto; min-height: 50px; }
-            .sk-title { margin: 0 0 10px 0; border-radius: 8px; width: 100%; }
-            .skel-exact-rating { margin: 0 0 10px 0 !important; }
-            #dynamic-company-name { margin: 0 0 10px 0; border-radius: 8px; align-self: flex-start; max-width: 100%; width: 100%; }
-            .product-exact-rating-row { justify-content: flex-start; margin: 0; border-radius: 9px; padding: 0 8px; height: 28px; }
-            .top-rating-square { width: 100%; margin: 0; max-height: none; }
             
-            /* Responsive Header & Footer */
-            .company-header { padding: 0 20px; gap: 15px; }
-            .header-search-container { max-width: 200px; }
-            .header-search-container .search-bar { padding: 10px 40px 10px 15px; font-size: 12px; }
-            .header-search-container .search-icon { width: 28px; height: 28px; top: 6px; right: 6px; }
-            .header-search-container .search-icon svg { width: 14px; height: 14px; }
+            /* Make Modal Stack on Mobile */
+            .rm-content { height: 75vh; padding: 30px 25px; }
+            .rm-header { flex-direction: column; align-items: flex-start; padding-right: 0; gap: 15px; }
+            .rm-header-right { align-self: flex-start; }
+            .rm-body-split { flex-direction: column; overflow-y: auto; display: block; gap: 20px; padding-right: 5px; }
+            .rm-body-split::-webkit-scrollbar { width: 6px; } .rm-body-split::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+            .rm-text-col { overflow: visible; padding-right: 0; max-width: 100%; }
+            .rm-photo-col { max-width: 100%; overflow: visible; padding-right: 0; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+        }
 
-            .footer-wrapper { padding: 0 20px; }
-            .footer-top { grid-template-columns: 1fr; gap: 40px; }
-            .footer-brand-col { grid-column: span 1; padding-right: 0; }
-            .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+        @media (max-width: 600px) {
+            .rm-content { max-width: calc(100% - 10px); }
+            .rm-nav-btn { top: auto; bottom: 30px; transform: none; width: 48px; height: 48px; }
+            .rm-nav-btn:hover:not(:disabled) { transform: scale(1.05); }
+            .rm-left { left: calc(50% - 60px); }
+            .rm-right { right: calc(50% - 60px); }
         }
     </style>
 </head>
@@ -626,12 +662,22 @@
     </footer>
 
     <div class="glass-overlay"></div>
+    
     <div id="review-modal" onclick="closeReviewModal()">
+        <button class="rm-nav-btn rm-left" id="rm-btn-left" onclick="navigateReviewModal(-1); event.stopPropagation();">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        
         <div class="rm-content" onclick="event.stopPropagation()">
             <div class="rm-close" onclick="closeReviewModal()">✕</div>
             <div id="rm-body-container"></div>
         </div>
+
+        <button class="rm-nav-btn rm-right" id="rm-btn-right" onclick="navigateReviewModal(1); event.stopPropagation();">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
     </div>
+
     <div id="lightbox">
         <div id="lightbox-close" onclick="closeLightbox()">✕</div>
         <img id="lightbox-img" src="" alt="Review Photo">
@@ -655,27 +701,22 @@
             const cardWidth = 390; 
             const total = loadedReviews.length;
             
-            // Calculate which card is currently taking up the leftmost view
             const currentIndex = Math.round(list.scrollLeft / cardWidth) + 1;
             const displayIndex = Math.max(1, Math.min(currentIndex, total));
             
-            // Calculate how many cards are completely or mostly visible based on container width
             const visibleCards = Math.max(1, Math.round(list.clientWidth / cardWidth));
             const endIndex = Math.min(displayIndex + visibleCards - 1, total);
             
-            // Update Text
             if (displayIndex === endIndex) {
                 indicator.innerText = `${displayIndex} / ${total}`;
             } else {
                 indicator.innerText = `${displayIndex}-${endIndex} / ${total}`;
             }
             
-            // Update Button States
-            btnLeft.disabled = list.scrollLeft <= 5; // buffer for left edge
-            btnRight.disabled = Math.ceil(list.scrollLeft + list.clientWidth) >= list.scrollWidth - 5; // buffer for right edge
+            btnLeft.disabled = list.scrollLeft <= 5; 
+            btnRight.disabled = Math.ceil(list.scrollLeft + list.clientWidth) >= list.scrollWidth - 5; 
         }
 
-        // Attach listener for smooth UI updates while scrolling
         document.getElementById('reviews-list').addEventListener('scroll', () => {
             requestAnimationFrame(updateCarouselUI);
         });
@@ -690,30 +731,96 @@
         window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
         document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLightbox(); });
 
+        // --- NEW REVIEW MODAL LOGIC WITH SPLIT LAYOUT & SLIDER ---
+        let currentReviewIndex = -1;
+
         window.openReviewModal = function(id) {
-            const r = loadedReviews.find(x => x.id === id);
+            const index = loadedReviews.findIndex(x => x.id === id);
+            if(index === -1) return;
+            renderReviewModal(index);
+            document.getElementById('review-modal').classList.add('open');
+            document.addEventListener('keydown', handleReviewKeydown);
+        };
+
+        window.closeReviewModal = function() { 
+            document.getElementById('review-modal').classList.remove('open'); 
+            document.removeEventListener('keydown', handleReviewKeydown);
+        };
+
+        window.navigateReviewModal = function(direction) {
+            const newIndex = currentReviewIndex + direction;
+            if (newIndex >= 0 && newIndex < loadedReviews.length) {
+                renderReviewModal(newIndex);
+            }
+        };
+
+        function handleReviewKeydown(e) {
+            if (e.key === 'ArrowLeft') navigateReviewModal(-1);
+            if (e.key === 'ArrowRight') navigateReviewModal(1);
+            if (e.key === 'Escape') closeReviewModal();
+        }
+
+        function renderReviewModal(index) {
+            currentReviewIndex = index;
+            const r = loadedReviews[index];
             if(!r) return;
+
             const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
             const reviewerName = r.reviewer_name || 'Verified User';
             const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-            let photosHtml = r.parsedPhotos && r.parsedPhotos.length > 0 ? '<div class="rm-photos">' + r.parsedPhotos.map(url => `<img src="${url}" onclick="openLightbox('${url}')">`).join('') + '</div>' : '';
             
-            document.getElementById('rm-body-container').innerHTML = `
-                <div class="review-author" style="margin-bottom: 24px;">
-                    <div class="author-avatar" style="width:48px; height:48px; font-size:16px;">${initials}</div>
-                    <div class="author-info" style="margin-left: 12px; flex: 1;">
-                        <div class="author-name" style="font-size: 16px;">${escapeHTML(reviewerName)}</div>
-                        <div class="author-date" style="font-size: 13px;">${date}</div>
+            const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
+            let starsHtml = ''; for(let i=1; i<=5; i++) starsHtml += `<span class="star ${i <= r.rating ? 'filled' : ''}">${starSvg}</span>`;
+            
+            // Adjusted Rating Pill for Top Bar
+            let ratingPill = `<div class="rating-pill rating-${r.rating}" style="position: relative; top: auto; right: auto; height: 34px; padding: 0 12px;">${starsHtml}</div>`;
+
+            const hasPhotos = r.parsedPhotos && r.parsedPhotos.length > 0;
+            let photosHtml = '';
+            if (hasPhotos) {
+                photosHtml = `<div class="rm-photo-col">` + r.parsedPhotos.map(url => `<img src="${url}" onclick="openLightbox('${url}')">`).join('') + `</div>`;
+            }
+
+            const authorAvatarHtml = r.avatar_url ? `<img src="${escapeHTML(r.avatar_url)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` : initials;
+            const container = document.getElementById('rm-body-container');
+            
+            // Smooth fade effect between slides
+            container.style.opacity = '0';
+            
+            setTimeout(() => {
+                container.innerHTML = `
+                    <div class="rm-header">
+                        <div class="rm-header-left">
+                            <div class="author-avatar" style="width:56px; height:56px; font-size:18px;">${authorAvatarHtml}</div>
+                            <div class="author-info">
+                                <div class="author-name" style="font-size: 18px; font-weight: 700;">${escapeHTML(reviewerName)}</div>
+                                <div class="author-date" style="font-size: 13px; color: #64748b; margin-top: 4px;">${date}</div>
+                            </div>
+                        </div>
+                        <div class="rm-header-right">
+                            ${ratingPill}
+                        </div>
                     </div>
-                    <div class="review-stars" style="font-size: 18px;">${stars}</div>
-                </div>
-                <div class="rm-text">${escapeHTML(r.comment)}</div>
-                ${photosHtml}
-            `;
-            document.getElementById('review-modal').classList.add('open');
-        };
-        window.closeReviewModal = function() { document.getElementById('review-modal').classList.remove('open'); };
+                    <div class="rm-body-split">
+                        <div class="rm-text-col" style="${!hasPhotos ? 'flex: 1; max-width: 100%;' : ''}">
+                            ${escapeHTML(r.comment)}
+                        </div>
+                        ${photosHtml}
+                    </div>
+                `;
+                
+                const textCol = container.querySelector('.rm-text-col');
+                if (textCol) textCol.scrollTop = 0;
+                
+                const photoCol = container.querySelector('.rm-photo-col');
+                if (photoCol) photoCol.scrollTop = 0;
+
+                container.style.opacity = '1';
+                
+                document.getElementById('rm-btn-left').disabled = (index === 0);
+                document.getElementById('rm-btn-right').disabled = (index === loadedReviews.length - 1);
+            }, 150);
+        }
 
         function updateVisualRatings(ratingValue) {
             const formatted = ratingValue.toFixed(1);
@@ -765,7 +872,6 @@
         }
 
         async function loadCompanyDetails() {
-            // --- 1. FETCH PRODUCT DETAILS ---
             const { data: co, error } = await db.from('companies').select('*').eq('id', companyId).single();
             if (error || !co) { return; }
 
@@ -792,13 +898,11 @@
             const r = parseFloat(co.rating) || 0;
             updateVisualRatings(r); 
             
-            // Populate temporary numbers until loadReviews finishes fetching the full array
             const tempCount = co.reviews_count || 0;
             const tempCountStr = tempCount + (tempCount === 1 ? ' review' : ' reviews');
             document.getElementById('big-rating-count').innerText = tempCountStr;
             document.getElementById('top-review-count-text').innerText = tempCountStr;
 
-            // --- 2. FETCH SECURE OWNER NAME FROM AUTH ---
             if (co.owner_id) {
                 const { data: ownerName, error: nameError } = await db.rpc('get_owner_name', { owner_uid: co.owner_id });
 
@@ -827,14 +931,12 @@
                 list.innerHTML = "<p style='color:#94a3b8; font-size:14px; text-align:center; padding:30px; width:100%;'>No reviews yet. Be the first to review!</p>";
                 buildRatingBars([]);
                 
-                // Set accurate count if 0
                 document.getElementById('big-rating-count').innerText = '0 reviews';
                 document.getElementById('top-review-count-text').innerText = '0 reviews';
-                controlsContainer.style.display = 'none'; // Hide scroll controls completely
+                controlsContainer.style.display = 'none'; 
                 return;
             }
 
-            // SET THE REAL, ACCURATE REVIEW COUNT
             const countStr = reviews.length + (reviews.length === 1 ? ' review' : ' reviews');
             document.getElementById('big-rating-count').innerText = countStr;
             document.getElementById('top-review-count-text').innerText = countStr;
@@ -900,12 +1002,10 @@
                 list.appendChild(div);
             });
 
-            // Initialize Controls Display
             if (reviews.length <= 1) {
-                controlsContainer.style.display = 'none'; // Don't show controls for 1 review
+                controlsContainer.style.display = 'none'; 
             } else {
                 controlsContainer.style.display = 'flex';
-                // Small timeout allows DOM to paint the new items so widths calculate correctly
                 setTimeout(updateCarouselUI, 100); 
             }
         }
