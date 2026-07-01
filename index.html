@@ -34,12 +34,12 @@
         .floating-hero-wrapper {
             position: absolute;
             top: 70px;
-            left: 24px;
-            right: 24px;
+            left: 24px; /* Restored to your exact original spacing */
+            right: 24px; /* Restored to your exact original spacing */
             height: 520px;
             z-index: 0;
             display: flex;
-            gap: 10px;
+            gap: 10px; /* Restored to your exact original gap */
             justify-content: center;
         }
 
@@ -51,19 +51,15 @@
         }
 
         .floating-hero-bg.side {
-            /* 1. This makes BOTH side panels equal */
-            flex: 1 1 0; 
+            flex: 315; /* Tells the browser this box is exactly 315 parts of the layout */
             min-width: 0; 
-            
-            /* 2. Adjust this value to make BOTH side panels thinner or wider */
-            max-width: 315px; 
+            max-width: 315px; /* Locks it to your exact original design size */
         }
 
         .floating-hero-bg.center {
-            /* 1. Locks the center panel so it doesn't get crushed by the sides */
-            flex: 0 1 820px; 
+            flex: 820; /* Tells the browser this box is exactly 820 parts of the layout */
             width: 100%;
-            max-width: 820px;
+            max-width: 820px; /* Locks it to your exact original design size */
         }
 
         /* --- LEFT AND RIGHT HERO SECTIONS --- */
