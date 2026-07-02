@@ -868,7 +868,7 @@
 
             // 2. If the browser session is lagging, fetch it directly from your database table!
             const { data: profile } = await db
-                .from('business_profiles')
+                .from('stores')
                 .select('store_id')
                 .eq('email', currentUser.email)
                 .single();
@@ -886,7 +886,7 @@
             let newStoreId = cleanDomain + Math.floor(1000 + Math.random() * 9000);
 
             await db.auth.updateUser({ data: { store_id: newStoreId } });
-            await db.from('business_profiles').insert([{ store_id: newStoreId, email: currentUser.email, domain_name: domainName }]);
+            await db.from('stores').insert([{ store_id: newStoreId, email: currentUser.email, domain_name: domainName }]);
             
             currentUser.user_metadata = currentUser.user_metadata || {};
             currentUser.user_metadata.store_id = newStoreId;
