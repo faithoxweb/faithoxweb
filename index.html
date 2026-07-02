@@ -1010,31 +1010,6 @@ a.nav.link:hover {
                                 </div>
                             </div>
 
-                            <div class="skeleton-card">
-                                <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                                    <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                                            <div class="review-author" style="margin: 0; align-items: center; gap: 8px;">
-                                                <div class="skel-avatar skeleton-anim"></div>
-                                                <div style="display: flex; flex-direction: column; justify-content: center; gap: 6px;">
-                                                    <div class="skel-name skeleton-anim"></div>
-                                                    <div class="skel-sub skeleton-anim"></div>
-                                                </div>
-                                            </div>
-                                            <div class="skel-rating skeleton-anim"></div>
-                                        </div>
-                                        <div class="skel-body">
-                                            <div class="skel-line skeleton-anim"></div>
-                                            <div class="skel-line skeleton-anim"></div>
-                                            <div class="skel-line skeleton-anim"></div>
-                                            <div class="skel-line skeleton-anim"></div>
-                                            <div class="skel-line short skeleton-anim"></div>
-                                        </div>
-                                    </div>
-                                    <div class="skel-photo skeleton-anim"></div>
-                                </div>
-                            </div>
-
                         </div>
                         <div class="scrolling-content" id="scroll-content-2"></div>
                     </div>
@@ -1445,13 +1420,13 @@ a.nav.link:hover {
             if (!grid) return; 
 
             // 1. Fetch the 4 newest products actually registered in your database
-            const { data: companies, error } = await db.from('companies')
+            const { data: products, error } = await db.from('products')
                 .select('*')
                 .eq('is_featured',true)//magic new line
                 .order('created_at', { ascending: false })
                 .limit(4);
 
-            if (error || !companies || companies.length === 0) {
+            if (error || !products || products.length === 0) {
                 grid.innerHTML = `<p style="padding:20px; color:#64748b; width: 100%; grid-column: span 4;">No products available yet. Register your first product!</p>`;
                 return;
             }
@@ -1461,7 +1436,7 @@ a.nav.link:hover {
 
             // 3. Loop through the real database products and create their cards
             let html = '';
-            companies.forEach(co => {
+            products.forEach(co => {
                 // Get the first two letters of the company for the avatar circle
                 const initials = co.name ? co.name.substring(0, 2).toUpperCase() : 'FX';
                 
@@ -1472,7 +1447,7 @@ a.nav.link:hover {
                 const subText = co.website || co.category || 'Faithox Verified';
 
                 html += `
-                <a href="company.html?id=${co.id}" onclick="event.preventDefault(); navigateTo('company.html?id=${co.id}');" class="lr-card" style="text-decoration: none; width: 100%; display: flex; flex-direction: column; box-sizing: border-box;">
+                <a href="company.html?id=${co.product_id}" onclick="event.preventDefault(); navigateTo('company.html?id=${co.product_id}');" class="lr-card" style="text-decoration: none; width: 100%; display: flex; flex-direction: column; box-sizing: border-box;">
                     <img src="${imgUrl}" alt="${escapeHTML(co.name)}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; flex-shrink: 0;">
                     <div class="lr-header">
                         <div class="lr-avatar">${initials}</div>
@@ -1510,17 +1485,17 @@ a.nav.link:hover {
                 return;
             }
 
-            const companyIds = [...new Set(reviews.map(r => r.company_id))];
-            const { data: companiesFound } = await db.from('companies').select('id, name').in('id', companyIds);
+            const productIds = [...new Set(reviews.map(r => r.store_id))];
+            const { data: productsFound } = await db.from('products').select('product_id, name').in('product_id', productIds);
             
             const companyMap = {};
-            if (companiesFound) companiesFound.forEach(c => companyMap[c.id] = c.name);
+            if (productsFound) productsFound.forEach(c => companyMap[c.product_id] = c.name);
 
             let html = '';
             reviews.forEach(r => {
                 const reviewerName = r.reviewer_name || 'Verified User';
                 const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                const coName = companyMap[r.company_id] || 'Unknown Company';
+                const coName = companyMap[r.store_id] || 'Unknown Company';
                 const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
                 // Exact photo parsing logic from company.html
@@ -1588,7 +1563,7 @@ a.nav.link:hover {
                     : initials;
 
                 html += `
-                    <div class="review-item-main" onclick="navigateTo('company.html?id=${r.company_id}')">
+                    <div class="review-item-main" onclick="navigateTo('company.html?id=${r.store_id}')">
                         <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
                             <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
                                 <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
@@ -1721,8 +1696,8 @@ a.nav.link:hover {
                 
                 searchTimeout = setTimeout(async () => {
                     // LIVE SUPABASE QUERY!
-                    const { data: matches, error } = await db.from('companies')
-                        .select('id, name, parent_company, is_product, category, rating')
+                    const { data: matches, error } = await db.from('products')
+                        .select('product_id, name, parent_company, is_product, category, rating')
                         .or(`name.ilike.%${term}%,parent_company.ilike.%${term}%`)
                         .limit(4); // Limit to exactly 4 maximum
 
@@ -1736,7 +1711,7 @@ a.nav.link:hover {
                             const parentText = co.is_product ? `( product by ${escapeHTML(co.parent_company || 'Unknown')} )` : (co.category ? `(${escapeHTML(co.category)})` : '');
                             
                             newHTML += `
-                            <div class="result-item" onclick="navigateTo('company.html?id=${co.id}')">
+                            <div class="result-item" onclick="navigateTo('company.html?id=${co.product_id}')">
                                 <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
                                     ${searchIconSVG}
                                     <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
