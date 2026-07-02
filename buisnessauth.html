@@ -587,7 +587,7 @@
         async function completeSignup() {
             clearMessage();
             
-            // 1. Grab the input and convert it to lowercase (since domains don't use capital letters)
+            // 1. Grab the input and convert it to lowercase
             let domainValue = document.getElementById('company-domain-up').value.trim().toLowerCase();
 
             // 2. Check if the input is empty
@@ -596,30 +596,52 @@
                 return;
             }
 
-            // 3. Regex validation for standard domain format (e.g., words + dot + letters)
-            // It ensures there is at least one dot, and 2 or more letters after the dot.
+            // 3. Regex validation for standard domain format
             const domainRegex = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            
             if (!domainRegex.test(domainValue)) {
-                // If it fails the test, show the exact error you requested
                 showMessage("please type domain of buisness and not the name", "error");
                 return;
             }
 
-            // 4. If validation passes, save it to full_name exactly as before so the product page reads it!
-            const { data, error } = await db.auth.updateUser({
+            // 4. --- GENERATE STORE ID AUTOMATICALLY ---
+            // Remove 'www.' if they typed it, then extract the main name before the dot
+            let cleanDomain = domainValue.replace(/^www\./i, '');
+            let domainNameOnly = cleanDomain.split('.')[0]; 
+            // Generate a random 4 digit number
+            let randomDigits = Math.floor(1000 + Math.random() * 9000);
+            // Combine them to make the final store_id (e.g., apple + 1234 = apple1234)
+            let generatedStoreId = domainNameOnly + randomDigits;
+
+            // 5. Save the data to the Auth Metadata (keeping your existing logic safe)
+            const { error: authError } = await db.auth.updateUser({
                 data: {
                     full_name: domainValue, 
-                    role: 'business'        // Elevate role to strictly business
+                    store_id: generatedStoreId, // Saving store_id here too just in case
+                    role: 'business'        
                 }
             });
 
-            if (error) {
-                showMessage("Failed to set up account: " + error.message, "error");
-            } else {
-                showMessage("Business Account setup complete! Redirecting...", "success");
-                setTimeout(() => navigateTo('dashboard.html'), 1500);
+            if (authError) {
+                showMessage("Failed to set up account: " + authError.message, "error");
+                return;
             }
+
+            // 6. --- SAVE TO YOUR NEW CUSTOM DATABASE TABLE ---
+            const { error: dbError } = await db.from('business_profiles').insert([
+                {
+                    store_id: generatedStoreId,
+                    email: currentEmail,
+                    domain_name: domainValue
+                }
+            ]);
+
+            if (dbError) {
+                showMessage("Failed to save to database: " + dbError.message, "error");
+                return;
+            }
+
+            showMessage("Business Account setup complete! Redirecting...", "success");
+            setTimeout(() => navigateTo('dashboard.html'), 1500);
         }
     </script>
 </body>
