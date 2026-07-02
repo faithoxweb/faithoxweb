@@ -627,7 +627,7 @@
             }
 
             // 6. --- SAVE TO YOUR NEW CUSTOM DATABASE TABLE ---
-            const { error: dbError } = await db.from('business_profiles').insert([
+            const { error: dbError } = await db.from('stores').insert([
                 {
                     store_id: generatedStoreId,
                     email: currentEmail,
