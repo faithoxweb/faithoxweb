@@ -859,6 +859,39 @@
         }
 
         initDashboard();
+        // --- BULLETPROOF STORE ID FETCHER ---
+        async function getStoreIdSecurely() {
+            // 1. Try to get it from the browser's current session memory
+            if (currentUser.user_metadata?.store_id) {
+                return currentUser.user_metadata.store_id;
+            }
+
+            // 2. If the browser session is lagging, fetch it directly from your database table!
+            const { data: profile } = await db
+                .from('business_profiles')
+                .select('store_id')
+                .eq('email', currentUser.email)
+                .single();
+
+            if (profile && profile.store_id) {
+                // Save it back into the local session so it doesn't have to fetch again
+                currentUser.user_metadata = currentUser.user_metadata || {};
+                currentUser.user_metadata.store_id = profile.store_id;
+                return profile.store_id;
+            }
+
+            // 3. Absolute Fallback: Auto-generate one if it's an old test account
+            let domainName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
+            let cleanDomain = domainName.replace(/^www\./i, '').split('.')[0]; 
+            let newStoreId = cleanDomain + Math.floor(1000 + Math.random() * 9000);
+
+            await db.auth.updateUser({ data: { store_id: newStoreId } });
+            await db.from('business_profiles').insert([{ store_id: newStoreId, email: currentUser.email, domain_name: domainName }]);
+            
+            currentUser.user_metadata = currentUser.user_metadata || {};
+            currentUser.user_metadata.store_id = newStoreId;
+            return newStoreId;
+        }
     </script>
 </body>
 </html>
