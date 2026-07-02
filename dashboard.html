@@ -536,7 +536,7 @@
         // --- FETCH AND RENDER PRODUCTS ---
         async function fetchBusinessProducts() {
             // Retrieve the dynamically generated store_id from the user's meta data
-            const storeId = currentUser.user_metadata?.store_id;
+            const storeId = await getStoreIdSecurely();
 
             if(!storeId) {
                 document.getElementById('products-container').innerHTML = `<p style="text-align:center; padding: 20px; color:#ef4444;">Store ID missing. Please recreate your account or contact support.</p>`;
@@ -770,7 +770,7 @@
             const fileInput = document.getElementById('reg-image-file');
             
             // Get store_id from auth metadata
-            const storeId = currentUser.user_metadata?.store_id;
+            const storeId = await getStoreIdSecurely();
 
             if (!name || !website) return alert("Please fill in both the Product Name and the Product Link.");
             if (!fileInput.files || fileInput.files.length === 0) return alert("Please upload an image of your product.");
