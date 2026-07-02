@@ -874,316 +874,23 @@
             
             if (!targetId) return;
 
-            // 1. Fetch exact company/product by its unique ID
-            const companyData = await loadCompanyDetails(targetId);
-            
-            // 2. Fetch reviews using that EXACT unique ID to prevent mix-ups
-            if (companyData) {
-                await loadReviews(companyData.id); 
-            }
-        }
-
-        async function loadCompanyDetails(id) {
-            // STRICT MATCH: No fuzzy searching. Finds exactly the registered store/product.
-            const { data: co, error } = await db.from('companies')
-                .select('*')
-                .eq('id', id)
-                .single();
-            
-            if (error || !co) {
-                console.error("Store/Product not found");
-                return null;
-            }
-
-            // --- UI Updates ---
-            document.getElementById('img-frame').classList.remove('skeleton-anim');
-            document.getElementById('dynamic-company-img').style.opacity = '1';
-            
-            const titleEl = document.getElementById('dynamic-company-name');
-            titleEl.classList.remove('skeleton-anim', 'sk-title');
-            document.getElementById('exact-rating-box').classList.remove('skeleton-anim', 'skel-exact-rating');
-            document.getElementById('top-review-count-badge').classList.remove('skeleton-anim', 'skel-exact-rating');
-            document.getElementById('rating-square-box').classList.remove('skeleton-anim', 'skel-rating-square');
-
-            document.title = escapeHTML(co.name) + ' | Faithox';
-            titleEl.innerText = co.name;
-
-            if (co.image_url || co.logo_url || co.image) {
-                document.getElementById('dynamic-company-img').src = co.image_url || co.logo_url || co.image;
-            }
-            if (co.website) {
-                document.getElementById('dynamic-company-link').href = co.website;
-            }
-
-            updateVisualRatings(parseFloat(co.rating) || 0); 
-            
-            const tempCount = co.reviews_count || 0;
-            const tempCountStr = tempCount + (tempCount === 1 ? ' review' : ' reviews');
-            document.getElementById('big-rating-count').innerText = tempCountStr;
-            document.getElementById('top-review-count-text').innerText = tempCountStr;
-
-            if (co.owner_id) {
-                const { data: ownerName } = await db.rpc('get_owner_name', { owner_uid: co.owner_id });
-                if (ownerName) {
-                    document.getElementById('side-box-skel').style.display = 'none';
-                    document.getElementById('side-box-content').style.display = 'flex';
-                    document.getElementById('side-comp-name-display').innerText = ownerName;
-                    document.getElementById('top-left-brand').innerText = co.is_product ? `product from ${ownerName}` : `store by ${ownerName}`;
-                }
-            } else {
-                document.getElementById('side-box-skel').style.display = 'none';
-            }
-            
-            return co;
-        }
-
-        async function loadReviews(exactId) {
-            // STRICT MATCH: Only loads reviews matching this exact product/store ID
-            const { data: reviews } = await db.from('reviews')
-                .select('*')
-                .eq('company_id', exactId)
-                .order('created_at', { ascending: false });
-                
-            const list = document.getElementById('reviews-list');
-            list.innerHTML = '';
-            const controlsContainer = document.getElementById('carousel-controls');
-
-            if (!reviews || reviews.length === 0) {
-                list.innerHTML = "<p style='color:#94a3b8; font-size:14px; text-align:center; padding:30px; width:100%;'>No reviews yet. Be the first to review!</p>";
-                buildRatingBars([]);
-                document.getElementById('big-rating-count').innerText = '0 reviews';
-                document.getElementById('top-review-count-text').innerText = '0 reviews';
-                controlsContainer.style.display = 'none'; 
-                return;
-            }
-
-            const countStr = reviews.length + (reviews.length === 1 ? ' review' : ' reviews');
-            document.getElementById('big-rating-count').innerText = countStr;
-            document.getElementById('top-review-count-text').innerText = countStr;
-
-            const totalRatingSum = reviews.reduce((sum, rev) => sum + (rev.rating || 0), 0);
-            updateVisualRatings(totalRatingSum / reviews.length);
-            loadedReviews = reviews; 
-            buildRatingBars(reviews);
-
-            reviews.forEach(r => {
-                const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-                const reviewerName = r.reviewer_name || 'Verified User';
-                const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-
-                let photoUrls = [];
-                try {
-                    if (r.photos) {
-                        let parsed = Array.isArray(r.photos) ? r.photos : 
-                                     (r.photos.trim().startsWith('[') ? JSON.parse(r.photos) : 
-                                     (r.photos.trim().startsWith('{') ? r.photos.trim().slice(1, -1).split(',').map(s => s.replace(/^"|"$/g, '').trim()) : 
-                                     (r.photos.trim().startsWith('http') ? [r.photos.trim()] : [])));
-                        photoUrls = parsed.filter(u => typeof u === 'string' && u.startsWith('http'));
-                    }
-                } catch(e) {}
-                r.parsedPhotos = photoUrls;
-
-                const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
-                let starsHtml = ''; for(let i=1; i<=5; i++) starsHtml += `<span class="star ${i <= r.rating ? 'filled' : ''}">${starSvg}</span>`;
-                let ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
-
-                let photoHtml = '';
-                if (photoUrls.length > 0) {
-                    let imagesHtml = photoUrls.length === 1 ? `<img src="${photoUrls[0]}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">` :
-                                     photoUrls.length === 2 ? `<div style="position: relative; width: 100%; aspect-ratio: 1 / 1;"><img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-6deg); z-index: 1;"><img src="${photoUrls[1]}" style="position: absolute; bottom: 0; right: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(6deg); z-index: 2; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);"></div>` :
-                                     `<div style="position: relative; width: 100%; aspect-ratio: 1 / 1;"><img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-12deg); z-index: 1;"><img src="${photoUrls[1]}" style="position: absolute; top: 12.5%; left: 12.5%; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(0deg); z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.1);"><img src="${photoUrls[2]}" style="position: absolute; bottom: 0; right: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(12deg); z-index: 3; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);"></div>`;
-                    photoHtml = `<div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 55px;">${imagesHtml}</div>`;
-                }
-
-                const authorAvatarHtml = r.avatar_url ? `<img src="${escapeHTML(r.avatar_url)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` : initials;
-                const div = document.createElement('div');
-                div.className = 'review-item-main';
-                div.setAttribute('onclick', `openReviewModal('${r.id}')`);
-                div.innerHTML = `
-                    <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                        <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                                <div class="review-author" style="margin: 0; align-items: center;">
-                                    <div class="author-avatar">${authorAvatarHtml}</div>
-                                    <div style="display: flex; flex-direction: column; justify-content: center;">
-                                        <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
-                                        <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">${date}</div>
-                                    </div>
-                                </div>
-                                ${ratingPill}
-                            </div>
-                            <div class="review-content-wrapper" style="padding: 0; flex: 1; height: auto; margin-top: 12px;">
-                                <p class="review-body" style="-webkit-line-clamp: 5; margin-bottom: 4px;">${escapeHTML(r.comment || '')}</p>
-                            </div>
-                        </div>
-                        ${photoHtml}
-                    </div>
-                `;
-                list.appendChild(div);
-            });
-
-            if (reviews.length <= 1) {
-                controlsContainer.style.display = 'none'; 
-            } else {
-                controlsContainer.style.display = 'flex';
-                setTimeout(updateCarouselUI, 100); 
-            }
-        }
-        // --- SCROLLING & CAROUSEL LOGIC ---
-        window.scrollReviews = function(direction) {
-            const list = document.getElementById('reviews-list');
-            list.scrollBy({ left: direction * 390, behavior: 'smooth' });
-        };
-
-        function updateCarouselUI() {
-            if (!loadedReviews || loadedReviews.length <= 1) return;
-            const list = document.getElementById('reviews-list');
-            const btnLeft = document.getElementById('btn-left');
-            const btnRight = document.getElementById('btn-right');
-            const indicator = document.getElementById('carousel-indicator');
-            const cardWidth = 390; 
-            const total = loadedReviews.length;
-            const currentIndex = Math.round(list.scrollLeft / cardWidth) + 1;
-            const displayIndex = Math.max(1, Math.min(currentIndex, total));
-            const visibleCards = Math.max(1, Math.round(list.clientWidth / cardWidth));
-            const endIndex = Math.min(displayIndex + visibleCards - 1, total);
-            if (displayIndex === endIndex) {
-                indicator.innerText = `${displayIndex} / ${total}`;
-            } else {
-                indicator.innerText = `${displayIndex}-${endIndex} / ${total}`;
-            }
-            btnLeft.disabled = list.scrollLeft <= 5; 
-            btnRight.disabled = Math.ceil(list.scrollLeft + list.clientWidth) >= list.scrollWidth - 5; 
-        }
-
-        document.getElementById('reviews-list').addEventListener('scroll', () => {
-            requestAnimationFrame(updateCarouselUI);
-        });
-        
-        // --- UTILS & MODALS ---
-        function escapeHTML(str) {
-            if (!str) return '';
-            return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
-        }
-
-        window.openLightbox = function(url) { document.getElementById('lightbox-img').src = url; document.getElementById('lightbox').classList.add('open'); };
-        window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
-        document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLightbox(); });
-
-        let currentReviewIndex = -1;
-
-        window.openReviewModal = function(id) {
-            const index = loadedReviews.findIndex(x => x.id === id);
-            if(index === -1) return;
-            renderReviewModal(index);
-            document.getElementById('review-modal').classList.add('open');
-            document.addEventListener('keydown', handleReviewKeydown);
-        };
-
-        window.closeReviewModal = function() { 
-            document.getElementById('review-modal').classList.remove('open'); 
-            document.removeEventListener('keydown', handleReviewKeydown);
-        };
-
-        window.navigateReviewModal = function(direction) {
-            const newIndex = currentReviewIndex + direction;
-            if (newIndex >= 0 && newIndex < loadedReviews.length) {
-                renderReviewModal(newIndex);
-            }
-        };
-
-        function handleReviewKeydown(e) {
-            if (e.key === 'ArrowLeft') navigateReviewModal(-1);
-            if (e.key === 'ArrowRight') navigateReviewModal(1);
-            if (e.key === 'Escape') closeReviewModal();
-        }
-
-        function renderReviewModal(index) {
-            currentReviewIndex = index;
-            const r = loadedReviews[index];
-            if(!r) return;
-            const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-            const reviewerName = r.reviewer_name || 'Verified User';
-            const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
-            let starsHtml = ''; for(let i=1; i<=5; i++) starsHtml += `<span class="star ${i <= r.rating ? 'filled' : ''}">${starSvg}</span>`;
-            let ratingPill = `<div class="rating-pill rating-${r.rating}" style="position: relative; top: auto; right: auto; height: 34px; padding: 0 12px;">${starsHtml}</div>`;
-            const hasPhotos = r.parsedPhotos && r.parsedPhotos.length > 0;
-            let photosHtml = hasPhotos ? '<div class="rm-photo-col">' + r.parsedPhotos.map(url => `<img src="${url}" onclick="openLightbox('${url}')">`).join('') + '</div>' : '';
-            const authorAvatarHtml = r.avatar_url ? `<img src="${escapeHTML(r.avatar_url)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` : initials;
-            const container = document.getElementById('rm-body-container');
-            container.style.opacity = '0';
-            setTimeout(() => {
-                container.innerHTML = `
-                    <div class="rm-header">
-                        <div class="rm-header-left">
-                            <div class="author-avatar" style="width:56px; height:56px; font-size:18px;">${authorAvatarHtml}</div>
-                            <div class="author-info">
-                                <div class="author-name" style="font-size: 18px; font-weight: 700;">${escapeHTML(reviewerName)}</div>
-                                <div class="author-date" style="font-size: 13px; color: #64748b; margin-top: 4px;">${date}</div>
-                            </div>
-                        </div>
-                        <div class="rm-header-right">${ratingPill}</div>
-                    </div>
-                    <div class="rm-body-split">
-                        <div class="rm-text-col" style="${!hasPhotos ? 'flex: 1; max-width: 100%;' : ''}">${escapeHTML(r.comment)}</div>
-                        ${photosHtml}
-                    </div>
-                `;
-                container.style.opacity = '1';
-                document.getElementById('rm-btn-left').disabled = (index === 0);
-                document.getElementById('rm-btn-right').disabled = (index === loadedReviews.length - 1);
-            }, 150);
-        }
-
-        function updateVisualRatings(ratingValue) {
-            const formatted = ratingValue.toFixed(1);
-            let activeColor = ratingValue === 0 ? "#cbd5e1" : (ratingValue < 1.5 ? "#EF4444" : (ratingValue < 2.5 ? "#F97316" : (ratingValue < 3.5 ? "#F59E0B" : (ratingValue < 4.5 ? "#84CC16" : "#10B981"))));
-            document.getElementById('big-rating-val').innerText = formatted;
-            renderExactStars(ratingValue, 'big-rating-stars', 20, activeColor);
-            const exactTextEl = document.getElementById('exact-rating-text');
-            exactTextEl.innerText = formatted; exactTextEl.style.color = activeColor;
-            document.getElementById('exact-rating-box').style.borderColor = activeColor;
-            renderExactStars(ratingValue, 'exact-stars-container', 20, activeColor); 
-        }
-
-        function renderExactStars(rating, containerId, size = 20, fillColor = "#10B981") {
-            const container = document.getElementById(containerId);
-            if(!container) return;
-            container.innerHTML = '';
-            for (let i = 1; i <= 5; i++) {
-                let fillPercent = rating >= i ? 100 : (rating > i - 1 ? (rating - (i - 1)) * 100 : 0);
-                container.innerHTML += `<svg width="${size}" height="${size}" viewBox="0 0 24 24"><defs><linearGradient id="grad-${containerId}-${i}"><stop offset="${fillPercent}%" stop-color="${fillColor}" /><stop offset="${fillPercent}%" stop-color="#e2e8f0" /></linearGradient></defs><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" fill="url(#grad-${containerId}-${i})"/></svg>`;
-            }
-        }
-
-        const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        let loadedReviews = []; 
-
-        async function init() {
-            const params = new URLSearchParams(window.location.search);
-            const targetId = params.get('id'); 
-            
-            if (!targetId) return;
-
-            // 1. Fetch exact company/product (handles both UUID or Text Name)
+            // 1. Fetch exact product by its unique ID
             const companyData = await loadCompanyDetails(targetId);
             
             // 2. Fetch reviews strictly using the exact UUID (or the name as a fallback) to prevent cross-contamination
             if (companyData) {
-                await loadReviews(companyData.id, companyData.name); 
+                await loadReviews(companyData.product_id, companyData.name); 
             }
         }
 
         async function loadCompanyDetails(searchParam) {
             const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(searchParam);
             
-            let query = db.from('companies').select('*');
+            // Updated to fetch from the new 'products' table
+            let query = db.from('products').select('*');
             if (isUuid) {
-                query = query.eq('id', searchParam);
+                // Use the new product_id column
+                query = query.eq('product_id', searchParam);
             } else {
                 // EXACT match on the name (no wildcards!). This prevents "Stryde" from loading "Stryde Air"
                 query = query.ilike('name', searchParam);
@@ -1244,14 +951,15 @@
             // First we try to grab reviews strictly linked to the UUID
             let { data: reviews } = await db.from('reviews')
                 .select('*')
-                .eq('company_id', exactUuid)
+                // Note: Change 'company_id' to 'product_id' if you renamed the column in your reviews table
+                .eq('store_id', exactUuid) 
                 .order('created_at', { ascending: false });
 
             // Fallback: If reviews were accidentally saved under the product's text name instead of the UUID, fetch those
             if (!reviews || reviews.length === 0) {
                 const { data: nameReviews } = await db.from('reviews')
                     .select('*')
-                    .ilike('company_id', exactName)
+                    .ilike('store_id', exactName) // Note: Change 'company_id' to 'product_id' here too if renamed
                     .order('created_at', { ascending: false });
                 reviews = nameReviews;
             }
