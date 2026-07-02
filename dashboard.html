@@ -252,7 +252,7 @@
 
         @media (max-width: 1250px) {
             .new-profile-card { flex-direction: column !important;  width: 100% !important; padding-right: 12px !important; }
-            .right-side-box { position: relative !important; right: auto !important; width: 100% !important; margin-top: 20px !important; }
+            .right-side-box { position: relative !important; right: auto !important; width: 100% !important; margin-top: 30px !important; }
         }
 
         @media (max-width: 1100px) {
@@ -502,9 +502,11 @@
 
             currentUser = session.user;
             updateSidebarAndProfileUI();
-            fetchBusinessProducts();
             
-            // ADDED: Load their secret keys when dashboard opens
+            // Wait for products to load before anything else
+            await fetchBusinessProducts();
+            
+            // Load their secret keys when dashboard opens
             await fetchWebhookCredentials();
         }
 
@@ -533,33 +535,44 @@
 
         // --- FETCH AND RENDER PRODUCTS ---
         async function fetchBusinessProducts() {
-            const { data: companies, error: compErr } = await db
-                .from('companies')
+            // Retrieve the dynamically generated store_id from the user's meta data
+            const storeId = currentUser.user_metadata?.store_id;
+
+            if(!storeId) {
+                document.getElementById('products-container').innerHTML = `<p style="text-align:center; padding: 20px; color:#ef4444;">Store ID missing. Please recreate your account or contact support.</p>`;
+                return;
+            }
+
+            // Query the NEW products table using the store_id
+            const { data: products, error: prodErr } = await db
+                .from('products')
                 .select('*')
-                .eq('owner_id', currentUser.id)
+                .eq('store_id', storeId)
                 .order('created_at', { ascending: false });
 
             const container = document.getElementById('products-container');
 
-            if (compErr) {
-                container.innerHTML = `<p style="text-align:center; padding: 20px; color:#ef4444;">Error loading products.</p>`;
+            if (prodErr) {
+                container.innerHTML = `<p style="text-align:center; padding: 20px; color:#ef4444;">Error loading products: ${prodErr.message}</p>`;
                 return;
             }
 
-            if (!companies || companies.length === 0) {
+            if (!products || products.length === 0) {
                 container.innerHTML = `<p style="text-align:center; padding: 20px; color:#64748b; font-weight: 500;">You haven't registered any products yet. Click the button above to start!</p>`;
                 return;
             }
 
-            document.getElementById('stat-products').innerText = companies.length;
+            document.getElementById('stat-products').innerText = products.length;
             
             let html = '';
             let totalReviews = 0;
             let totalRatingSum = 0;
             let ratingCount = 0;
 
-            for (const company of companies) {
-                const { data: reviews } = await db.from('reviews').select('rating').eq('company_id', company.id);
+            for (const product of products) {
+                // Fetch reviews linked to this specific product (using company_id assuming the old structure, or change to product_id if you renamed it)
+                const { data: reviews } = await db.from('reviews').select('rating').eq('company_id', product.product_id);
+                
                 let prodReviewsCount = 0;
                 let prodAvgRating = 0.0;
 
@@ -574,19 +587,20 @@
                 }
 
                 // If no custom image, use a grey placeholder
-                const imgUrl = company.image_url || 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/Grade%20Grey.jpg';
+                const imgUrl = product.image_url || 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/Grade%20Grey.jpg';
 
                 html += `
                     <div class="product-item">
                         <div class="product-info">
                             <img src="${imgUrl}" class="product-img" alt="Product Image">
                             <div class="product-text">
-                                <h3>${escapeHTML(company.name)}</h3>
-                                <p>ID: ${company.id} • ${prodReviewsCount} Reviews • ★ ${prodAvgRating}</p>
+                                <h3>${escapeHTML(product.name)}</h3>
+                                <p>ID: ${product.product_id} • ${prodReviewsCount} Reviews • ★ ${prodAvgRating}</p>
                             </div>
                         </div>
                         <div class="product-actions">
-                            <button class="widget-btn" onclick="openCodeModal('${company.id}')">&lt;/&gt; Get Widget</button>
+                            <!-- Passing product_id to the widget modal -->
+                            <button class="widget-btn" onclick="openCodeModal('${product.product_id}')">&lt;/&gt; Get Widget</button>
                         </div>
                     </div>
                 `;
@@ -612,7 +626,6 @@
 
             btn.innerText = "Uploading...";
             
-            // Upload to the 'product-images' bucket since we know it works and is public
             const fileExt = file.name.split('.').pop();
             const fileName = `logo-${currentUser.id}-${Math.random()}.${fileExt}`; 
             
@@ -628,7 +641,6 @@
             const { data: publicUrlData } = db.storage.from('product-images').getPublicUrl(fileName);
             const avatarUrl = publicUrlData.publicUrl;
 
-            // Save to Auth Metadata
             const { data, error: updateError } = await db.auth.updateUser({
                 data: { avatar_url: avatarUrl }
             });
@@ -682,14 +694,12 @@
             const generateArea = document.getElementById('generate-secret-area');
 
             if (error || !data) {
-                // No keys exist yet for this user. Ask them to generate.
                 secretInput.value = "NO_SECRET_GENERATED";
                 secretInput.type = "text";
                 generateArea.style.display = 'block';
             } else {
-                // Keys exist! Hide the generator and show the secret.
                 secretInput.value = data.webhook_secret;
-                secretInput.type = "password"; // Keeps it hidden with asterisks until copied
+                secretInput.type = "password";
                 generateArea.style.display = 'none';
             }
         }
@@ -704,13 +714,11 @@
             btn.innerText = "Generating...";
             btn.disabled = true;
 
-            // Generate a highly secure random string
             const randomArray = new Uint8Array(12);
             window.crypto.getRandomValues(randomArray);
             const randomString = Array.from(randomArray, byte => byte.toString(16).padStart(2, '0')).join('');
             const newSecret = `fx_sec_${randomString}`;
 
-            // Save to your Supabase connected_stores table
             const { error } = await db.from('connected_stores').insert([{
                 user_id: currentUser.id,
                 store_name: storeName,
@@ -723,7 +731,7 @@
                 btn.disabled = false;
             } else {
                 showStatus("Webhook keys successfully generated and secured!");
-                fetchWebhookCredentials(); // Instantly refresh the UI
+                fetchWebhookCredentials(); 
             }
         }
 
@@ -738,7 +746,6 @@
                 btn.style.color = 'white';
                 btn.style.border = 'none';
                 
-                // Reset button after 2 seconds
                 setTimeout(() => {
                     btn.innerText = "Copy Secret";
                     btn.style.background = 'transparent';
@@ -761,9 +768,13 @@
             const name = document.getElementById('reg-name').value.trim();
             const website = document.getElementById('reg-website').value.trim();
             const fileInput = document.getElementById('reg-image-file');
+            
+            // Get store_id from auth metadata
+            const storeId = currentUser.user_metadata?.store_id;
 
             if (!name || !website) return alert("Please fill in both the Product Name and the Product Link.");
             if (!fileInput.files || fileInput.files.length === 0) return alert("Please upload an image of your product.");
+            if (!storeId) return alert("Store ID not found. Ensure you created your business account correctly.");
 
             const btn = document.getElementById('submit-reg-btn');
             btn.innerText = "Uploading Image & Registering...";
@@ -785,9 +796,16 @@
             const { data: urlData } = db.storage.from('product-images').getPublicUrl(fileName);
             const finalImageUrl = urlData.publicUrl;
 
-            const { error } = await db.from('companies').insert([{
-                name: name, image_url: finalImageUrl, website: website, owner_id: currentUser.id,
-                is_product: true, rating: 0, reviews_count: 0
+            // INSERT INTO THE NEW PRODUCTS TABLE
+            const { error } = await db.from('products').insert([{
+                store_id: storeId,
+                name: name, 
+                image_url: finalImageUrl, 
+                website: website, 
+                owner_id: currentUser.id,
+                is_product: true, 
+                rating: 0, 
+                reviews_count: 0
             }]);
 
             btn.innerText = "Register Product";
@@ -801,15 +819,15 @@
         }
 
         // --- WIDGET MODAL LOGIC (UPDATED WITH PRODUCT ID) ---
-        function openCodeModal(companyId) {
-            const liveUrl = `https://faithoxweb.vercel.app/embed.html?id=${companyId}`;
+        function openCodeModal(productId) {
+            const liveUrl = `https://faithoxweb.vercel.app/embed.html?id=${productId}`;
             const code = `\n<iframe \n  src="${liveUrl}" \n  width="100%" \n  height="350px" \n  style="border: none; background: transparent; overflow: hidden; display: block; margin: 0 auto;">\n</iframe>`;
             
             // Set Embed Code
             document.getElementById('embed-code-text').innerText = code;
             
-            // Set Product ID
-            document.getElementById('modal-product-id').innerText = companyId;
+            // Set Product ID securely in the modal
+            document.getElementById('modal-product-id').innerText = productId;
             
             document.getElementById('code-modal').classList.add('open');
         }
