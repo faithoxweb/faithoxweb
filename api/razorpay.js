@@ -39,26 +39,26 @@ export default async function handler(req, res) {
     }
 
     const paymentEntity = data.payload.payment.entity;
-    const dynamicCompanyId = paymentEntity.notes?.store_name;
     
-    // 🟢 NEW: Extract the product_id from the Razorpay notes payload
+    // 🟢 UPDATED: Extract store_id and product_id from the Razorpay notes payload
+    const storeId = paymentEntity.notes?.store_id;
     const productId = paymentEntity.notes?.product_id || null;
     
-    // Safety check: Does the payload actually have a store name?
-    if (!dynamicCompanyId) {
-      console.error("Rejected: Missing store_name in payload notes");
-      return res.status(400).send('Missing store_name parameter');
+    // Safety check: Does the payload actually have a store ID?
+    if (!storeId) {
+      console.error("Rejected: Missing store_id in payload notes");
+      return res.status(400).send('Missing store_id parameter');
     }
 
-    // 3. Look up the specific store's password in your new Supabase Vault
+    // 3. Look up the specific store's password in your Supabase Vault
     const { data: storeData, error: storeError } = await supabase
       .from('connected_stores')
       .select('webhook_secret')
-      .eq('store_name', dynamicCompanyId)
+      .eq('store_name', storeId) // Verifying against the store_name column in connected_stores
       .single();
 
     if (storeError || !storeData) {
-      console.error(`🚨 Security Alert: Unrecognized store tried to connect: ${dynamicCompanyId}`);
+      console.error(`🚨 Security Alert: Unrecognized store tried to connect: ${storeId}`);
       return res.status(401).send('Unauthorized Store');
     }
 
@@ -72,14 +72,14 @@ export default async function handler(req, res) {
       .digest('hex');
 
     if (expectedSignature !== signature) {
-      console.error(`🚨 Security Alert: Invalid signature for store: ${dynamicCompanyId}`);
+      console.error(`🚨 Security Alert: Invalid signature for store: ${storeId}`);
       return res.status(400).send('Invalid signature');
     }
 
     // ==========================================
     // 5. IF VERIFIED: RUN YOUR ORIGINAL LOGIC
     // ==========================================
-    console.log(`✅ Success! Verified payload from authorized store: ${dynamicCompanyId}`);
+    console.log(`✅ Success! Verified payload from authorized store: ${storeId}`);
       
     const customerEmail = paymentEntity.email;
       
@@ -87,14 +87,14 @@ export default async function handler(req, res) {
     const reviewToken = crypto.randomBytes(3).toString('hex').toUpperCase(); 
       
     // --- SUPABASE DATABASE INSERTION ---
-    // 🟢 NEW: Added product_id to the database insert
+    // 🟢 UPDATED: Using store_id instead of company_id
     const { error: supabaseError } = await supabase
       .from('review_tokens') 
       .insert([
         { 
           buyer_email: customerEmail, 
           token: reviewToken, 
-          company_id: dynamicCompanyId,
+          store_id: storeId,   // Correctly mapped to new database column
           product_id: productId 
         }
       ]);
@@ -104,7 +104,7 @@ export default async function handler(req, res) {
       return res.status(500).send('Failed to save token to database');
     }
 
-    console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${dynamicCompanyId} (Product ID: ${productId})`);
+    console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${storeId} (Product ID: ${productId})`);
 
     // --- SEND EMAIL VIA RESEND ---
     console.log(`Attempting to send email to: ${customerEmail}`);
@@ -113,7 +113,7 @@ export default async function handler(req, res) {
       const { data: emailData, error: emailError } = await resend.emails.send({
         from: 'Faithox <noreply@faithox.com>', 
         to: customerEmail, 
-        subject: `Thanks for your purchase! Leave a review for ${dynamicCompanyId}`,
+        subject: `Thanks for your purchase! Leave a review for us.`,
         html: `
           <div style="font-family: sans-serif; padding: 20px; color: #333;">
             <h2>Thank you for your payment!</h2>
