@@ -40,13 +40,13 @@ export default async function handler(req, res) {
 
     const paymentEntity = data.payload.payment.entity;
     
-    // 🟢 UPDATED: Extract store_name and product_id from the Razorpay notes payload
+    // 🟢 UPDATED: Extract store_name and product_name from the Razorpay notes payload
     const storeName = paymentEntity.notes?.store_name;
-    const productId = paymentEntity.notes?.product_id || null;
+    const productName = paymentEntity.notes?.product_name; // Changed from product_id
     
     // Safety check: Does the payload actually have the required notes?
-    if (!storeName || !productId) {
-      console.error("Rejected: Missing store_name or product_id in payload notes");
+    if (!storeName || !productName) {
+      console.error("Rejected: Missing store_name or product_name in payload notes");
       return res.status(400).send('Missing parameters');
     }
 
@@ -77,24 +77,27 @@ export default async function handler(req, res) {
     }
 
     // ==========================================
-    // 5. IF VERIFIED: RUN YOUR ORIGINAL LOGIC
+    // 5. ✨ THE ULTIMATE MAGIC FIX: Auto-Find BOTH IDs by Name ✨
     // ==========================================
     console.log(`✅ Success! Verified payload from authorized store: ${storeName}`);
+    console.log(`Searching Faithox product catalog for name: "${productName}"`);
       
-    // 🟢 NEW: Auto-Find the TRUE store_id from the products table
+    // 🟢 NEW: Auto-Find BOTH the TRUE store_id and product_id using the product_name
     const { data: productData, error: productError } = await supabase
       .from('products')
-      .select('store_id')
-      .eq('product_id', productId)
+      .select('product_id, store_id')
+      .ilike('name', productName) // Case-insensitive exact lookup by product name
+      .limit(1)
       .single();
 
     if (productError || !productData) {
-       console.error("🚨 Mismatch: Could not find matching product in Faithox database.");
+       console.error(`🚨 Mismatch: Could not find product named "${productName}" in Faithox database.`);
        return res.status(404).send('Product not registered in Faithox');
     }
 
-    // We successfully pulled the real relational ID (e.g. 'stryde4829') from your database
+    // We successfully pulled BOTH real relational IDs from your database
     const trueStoreId = productData.store_id;
+    const trueProductId = productData.product_id;
 
     const customerEmail = paymentEntity.email;
       
@@ -102,7 +105,7 @@ export default async function handler(req, res) {
     const reviewToken = crypto.randomBytes(3).toString('hex').toUpperCase(); 
       
     // --- SUPABASE DATABASE INSERTION ---
-    // 🟢 UPDATED: Using trueStoreId for the store_id column
+    // 🟢 UPDATED: Using trueStoreId and trueProductId
     const { error: supabaseError } = await supabase
       .from('review_tokens') 
       .insert([
@@ -110,7 +113,7 @@ export default async function handler(req, res) {
           buyer_email: customerEmail, 
           token: reviewToken, 
           store_id: trueStoreId, 
-          product_id: productId,
+          product_id: trueProductId,
           status: 'unused'
         }
       ]);
@@ -120,7 +123,7 @@ export default async function handler(req, res) {
       return res.status(500).send('Failed to save token to database');
     }
 
-    console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${trueStoreId} (Product ID: ${productId})`);
+    console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${trueStoreId} (Product ID: ${trueProductId})`);
 
     // --- SEND EMAIL VIA RESEND ---
     console.log(`Attempting to send email to: ${customerEmail}`);
