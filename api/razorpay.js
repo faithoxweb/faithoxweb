@@ -40,25 +40,25 @@ export default async function handler(req, res) {
 
     const paymentEntity = data.payload.payment.entity;
     
-    // 🟢 UPDATED: Extract store_id and product_id from the Razorpay notes payload
-    const storeId = paymentEntity.notes?.store_id;
+    // 🟢 UPDATED: Extract store_name and product_id from the Razorpay notes payload
+    const storeName = paymentEntity.notes?.store_name;
     const productId = paymentEntity.notes?.product_id || null;
     
-    // Safety check: Does the payload actually have a store ID?
-    if (!storeId) {
-      console.error("Rejected: Missing store_id in payload notes");
-      return res.status(400).send('Missing store_id parameter');
+    // Safety check: Does the payload actually have the required notes?
+    if (!storeName || !productId) {
+      console.error("Rejected: Missing store_name or product_id in payload notes");
+      return res.status(400).send('Missing parameters');
     }
 
-    // 3. Look up the specific store's password in your Supabase Vault
+    // 3. Look up the specific store's password in your Supabase Vault using store_name
     const { data: storeData, error: storeError } = await supabase
       .from('connected_stores')
       .select('webhook_secret')
-      .eq('store_name', storeId) // Verifying against the store_name column in connected_stores
+      .eq('store_name', storeName) 
       .single();
 
     if (storeError || !storeData) {
-      console.error(`🚨 Security Alert: Unrecognized store tried to connect: ${storeId}`);
+      console.error(`🚨 Security Alert: Unrecognized store tried to connect: ${storeName}`);
       return res.status(401).send('Unauthorized Store');
     }
 
@@ -72,30 +72,46 @@ export default async function handler(req, res) {
       .digest('hex');
 
     if (expectedSignature !== signature) {
-      console.error(`🚨 Security Alert: Invalid signature for store: ${storeId}`);
+      console.error(`🚨 Security Alert: Invalid signature for store: ${storeName}`);
       return res.status(400).send('Invalid signature');
     }
 
     // ==========================================
     // 5. IF VERIFIED: RUN YOUR ORIGINAL LOGIC
     // ==========================================
-    console.log(`✅ Success! Verified payload from authorized store: ${storeId}`);
+    console.log(`✅ Success! Verified payload from authorized store: ${storeName}`);
       
+    // 🟢 NEW: Auto-Find the TRUE store_id from the products table
+    const { data: productData, error: productError } = await supabase
+      .from('products')
+      .select('store_id')
+      .eq('product_id', productId)
+      .single();
+
+    if (productError || !productData) {
+       console.error("🚨 Mismatch: Could not find matching product in Faithox database.");
+       return res.status(404).send('Product not registered in Faithox');
+    }
+
+    // We successfully pulled the real relational ID (e.g. 'stryde4829') from your database
+    const trueStoreId = productData.store_id;
+
     const customerEmail = paymentEntity.email;
       
     // Generate a random 6-character alphanumeric token
     const reviewToken = crypto.randomBytes(3).toString('hex').toUpperCase(); 
       
     // --- SUPABASE DATABASE INSERTION ---
-    // 🟢 UPDATED: Using store_id instead of company_id
+    // 🟢 UPDATED: Using trueStoreId for the store_id column
     const { error: supabaseError } = await supabase
       .from('review_tokens') 
       .insert([
         { 
           buyer_email: customerEmail, 
           token: reviewToken, 
-          store_id: storeId,   // Correctly mapped to new database column
-          product_id: productId 
+          store_id: trueStoreId, 
+          product_id: productId,
+          status: 'unused'
         }
       ]);
 
@@ -104,7 +120,7 @@ export default async function handler(req, res) {
       return res.status(500).send('Failed to save token to database');
     }
 
-    console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${storeId} (Product ID: ${productId})`);
+    console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${trueStoreId} (Product ID: ${productId})`);
 
     // --- SEND EMAIL VIA RESEND ---
     console.log(`Attempting to send email to: ${customerEmail}`);
