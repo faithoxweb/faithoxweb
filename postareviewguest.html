@@ -359,7 +359,7 @@
             // Ask Supabase for the matching Store and Product IDs
             const { data, error } = await db
                 .from('review_tokens')
-                .select('company_id, product_id, buyer_email')
+                .select('store_id, product_id, buyer_email, status')
                 .eq('token', urlToken)
                 .single();
 
@@ -369,8 +369,15 @@
                 return;
             }
 
+            // Block submission if token is already used
+            if (data.status === 'used') {
+                alert("This review link has already been used to post a review.");
+                document.getElementById('submit-btn').disabled = true;
+                return;
+            }
+
             // Save them silently in the background
-            hiddenStoreId = data.company_id;
+            hiddenStoreId = data.store_id;
             hiddenProductId = data.product_id;
             hiddenGuestEmail = data.buyer_email;
             console.log("Secure Token Verified!");
@@ -474,8 +481,8 @@
                 alert("Please select a star rating before submitting.");
                 return;
             }
-            if (!hiddenStoreId) {
-                alert("Invalid session. Cannot submit review.");
+            if (!hiddenStoreId || !hiddenProductId) {
+                alert("Invalid session or expired link. Cannot submit review.");
                 return;
             }
 
@@ -491,7 +498,7 @@
             progressBar.style.opacity = "1";
             progressBar.style.width = "40%";
 
-            let finalImageUrl = null;
+            let photoUrlsArray = null;
 
             // Optional: If they uploaded an image, save it to the product-images bucket
             if (uploadedFiles.length > 0) {
@@ -506,7 +513,7 @@
 
                 if (!uploadError) {
                     const { data: urlData } = db.storage.from('product-images').getPublicUrl(fileName);
-                    finalImageUrl = urlData.publicUrl;
+                    photoUrlsArray = [urlData.publicUrl]; // Pass the photo inside an array for text[]
                 }
             }
 
@@ -515,14 +522,14 @@
 
             // Insert into the MAIN reviews table!
             const { error: insertError } = await db.from('reviews').insert([{
-                company_id: hiddenStoreId,
+                store_id: hiddenStoreId,
                 product_id: hiddenProductId,
                 reviewer_name: guestName,
-                reviewer_email: hiddenGuestEmail, // Pulled from the token!
+                reviewer_email: hiddenGuestEmail, // Pulled securely from the token!
                 comment: reviewText,
                 rating: parseInt(currentRating),
-                token: urlToken
-                // Note: If you want to save the photo URL, ensure your table has an 'image_url' or 'media_url' column, then add it here like: media_url: finalImageUrl
+                token: urlToken,
+                photos: photoUrlsArray
             }]);
 
             progressBar.style.width = "100%";
@@ -535,6 +542,9 @@
                 setTimeout(() => progressBar.style.width = "0%", 300);
                 return;
             }
+
+            // Immediately mark the token as 'used' to prevent duplicate submissions
+            await db.from('review_tokens').update({ status: 'used' }).eq('token', urlToken);
 
             // Success!
             setTimeout(() => {
