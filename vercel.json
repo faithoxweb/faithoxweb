@@ -6,9 +6,6 @@
   ],
   "routes": [
     { "src": "/api/razorpay", "dest": "api/razorpay.js" }
-  ]
-}
-
-{
+  ],
   "cleanUrls": true
 }
