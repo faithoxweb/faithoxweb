@@ -262,8 +262,18 @@
         display: flex; 
         align-items: center;
         justify-content: center; 
+        transition: all 0.2s ease;
     }
-        .nav-link:hover{background-color: #dcdcdc;}
+    .nav-link:hover { background-color: #dcdcdc; }
+
+    /* New specific styling for the "For Business" button */
+    .nav-link.for-business-btn {
+        background-color: #2a2a2a;
+        color: #fdfdfd;
+    }
+    .nav-link.for-business-btn:hover {
+        background-color: #404040;
+    }
         
         /* --- NOTIFICATION BUTTON AND PANEL STYLES --- */
         .nav-notif-btn {
@@ -878,8 +888,9 @@ a.nav.link:hover {
         
         <div class="nav-right-section">
             <div class="nav-options">
-                <a class="nav-link" onclick="navigateTo('forbuisness.html')">For Business</a>
                 <a class="nav-link" onclick="navigateTo('contact.html')">Contact Us</a>
+                <a class="nav-link" onclick="navigateTo('buisnesslogin.html')">Login</a>
+                <a class="nav-link for-business-btn" onclick="navigateTo('forbuisness.html')">For Business</a>
             </div>
         </div>
     </nav>
