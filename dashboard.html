@@ -571,7 +571,7 @@
 
             for (const product of products) {
                 // Fetch reviews linked to this specific product (using company_id assuming the old structure, or change to product_id if you renamed it)
-                const { data: reviews } = await db.from('reviews').select('rating').eq('company_id', product.product_id);
+                const { data: reviews } = await db.from('reviews').select('rating').eq('product_id', product.product_id);
                 
                 let prodReviewsCount = 0;
                 let prodAvgRating = 0.0;
