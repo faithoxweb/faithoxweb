@@ -1377,7 +1377,8 @@ a.nav.link:hover {
                 return;
             }
 
-            const productIds = [...new Set(reviews.map(r => r.store_id))];
+            // 🟢 FIXED: Gather the unique product IDs, not store IDs
+            const productIds = [...new Set(reviews.map(r => r.product_id))];
             const { data: productsFound } = await db.from('products').select('product_id, name').in('product_id', productIds);
             
             const companyMap = {};
@@ -1387,7 +1388,8 @@ a.nav.link:hover {
             reviews.forEach(r => {
                 const reviewerName = r.reviewer_name || 'Verified User';
                 const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                const coName = companyMap[r.store_id] || 'Unknown Company';
+                // 🟢 FIXED: Get the company name using the product_id
+                const coName = companyMap[r.product_id] || 'Unknown Company';
                 const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
                 // Exact photo parsing logic from company.html
@@ -1455,7 +1457,8 @@ a.nav.link:hover {
                     : initials;
 
                 html += `
-                    <div class="review-item-main" onclick="navigateTo('company.html?id=${r.store_id}')">
+                    <!-- 🟢 FIXED: Clicking navigates using the product_id instead of store_id -->
+                    <div class="review-item-main" onclick="navigateTo('company.html?id=${r.product_id}')">
                         <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
                             <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
                                 <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
