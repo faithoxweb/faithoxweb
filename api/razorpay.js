@@ -1,6 +1,6 @@
-import crypto from 'crypto';
-import { createClient } from '@supabase/supabase-js';
-import { Resend } from 'resend';
+const crypto = require('crypto');
+const { createClient } = require('@supabase/supabase-js');
+const { Resend } = require('resend');
 
 // 1. Initialize Supabase
 const supabaseUrl = 'https://fdjcvpsqossuiljuadkk.supabase.co';
@@ -11,13 +11,13 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Tell Vercel to give us the raw text so the security check works
-export const config = {
+const config = {
   api: {
     bodyParser: false,
   },
 };
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
   }
@@ -40,13 +40,13 @@ export default async function handler(req, res) {
 
     const paymentEntity = data.payload.payment.entity;
     
-    // 🟢 UPDATED: Extract store_name and product_name from the Razorpay notes payload
+    // 🟢 Extract store_name and faithox_product_id from the Razorpay notes payload
     const storeName = paymentEntity.notes?.store_name;
-    const productName = paymentEntity.notes?.product_name; // Changed from product_id
+    const trueProductId = paymentEntity.notes?.faithox_product_id;
     
-    // Safety check: Does the payload actually have the required notes?
-    if (!storeName || !productName) {
-      console.error("Rejected: Missing store_name or product_name in payload notes");
+    // Safety check
+    if (!storeName || !trueProductId) {
+      console.error("Rejected: Missing store_name or faithox_product_id in payload notes");
       return res.status(400).send('Missing parameters');
     }
 
@@ -76,25 +76,12 @@ export default async function handler(req, res) {
       return res.status(400).send('Invalid signature');
     }
 
-        // ==========================================
+    // ==========================================
     // 5. ✨ THE ULTIMATE MAGIC FIX: Direct ID Mapping ✨
     // ==========================================
     console.log(`✅ Success! Verified payload from authorized store: ${storeName}`);
       
-    // 🟢 NEW: Grab the exact Faithox Product ID sent by the client
-    const trueProductId = paymentEntity.notes?.faithox_product_id;
-
-    if (!trueProductId) {
-       console.error(`🚨 Missing ID: Client did not provide a faithox_product_id in the payload.`);
-       return res.status(400).send('Missing Faithox Product ID');
-    }
-
-    // Since we verified the store's secret signature above, we already know the store_name is valid.
-    // We just need the true store_id from connected_stores (which we queried in Step 3!)
-    // Wait, let's grab the user_id/store_id from that earlier query.
-    // Let's modify your Step 3 query slightly to pull 'user_id' or 'id' if needed, 
-    // OR we can just use a quick lookup to get the store_id from the products table using the trueProductId:
-
+    // Look up the store_id using the faithox_product_id provided by the client
     const { data: productData, error: productError } = await supabase
       .from('products')
       .select('store_id')
@@ -111,3 +98,68 @@ export default async function handler(req, res) {
       
     // Generate a random 6-character alphanumeric token
     const reviewToken = crypto.randomBytes(3).toString('hex').toUpperCase(); 
+      
+    // --- SUPABASE DATABASE INSERTION ---
+    const { error: supabaseError } = await supabase
+      .from('review_tokens') 
+      .insert([
+        { 
+          buyer_email: customerEmail, 
+          token: reviewToken, 
+          store_id: trueStoreId, 
+          product_id: trueProductId,
+          status: 'unused'
+        }
+      ]);
+
+    if (supabaseError) {
+      console.error("Supabase Error:", supabaseError);
+      return res.status(500).send('Failed to save token to database');
+    }
+
+    console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${trueStoreId} (Product ID: ${trueProductId})`);
+
+    // --- SEND EMAIL VIA RESEND ---
+    console.log(`Attempting to send email to: ${customerEmail}`);
+      
+    try {
+      const { data: emailData, error: emailError } = await resend.emails.send({
+        from: 'Faithox <noreply@faithox.com>', 
+        to: customerEmail, 
+        subject: `Thanks for your purchase! Leave a review for us.`,
+        html: `
+          <div style="font-family: sans-serif; padding: 20px; color: #333;">
+            <h2>Thank you for your payment!</h2>
+            <p>We hope you love your experience. We would highly appreciate it if you could take a brief moment to leave us a review.</p>
+            <p>Your unique security review token is: <strong>${reviewToken}</strong></p>
+            <p>Click the button below to automatically unlock your review form without any manual entry:</p>
+            <br />
+            <a href="https://faithoxweb.vercel.app/postareviewguest.html?token=${reviewToken}" 
+               style="padding: 12px 24px; background-color: #111111; color: white; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
+              Leave a Review
+            </a>
+          </div>
+        `,
+      });
+
+      if (emailError) {
+        console.error("🚨 RESEND BLOCKED THE EMAIL:", emailError);
+      } else {
+        console.log(`✅ Email successfully dispatched! Resend ID:`, emailData);
+      }
+
+    } catch (systemError) {
+      console.error("🚨 CRITICAL SYSTEM ERROR DURING EMAIL:", systemError);
+    }
+
+    return res.status(200).send('OK');
+
+  } catch (error) {
+    console.error("Server Error:", error);
+    return res.status(500).send('Server Error');
+  }
+}
+
+// Exporting in CommonJS format for Vercel
+module.exports = handler;
+module.exports.config = config;
