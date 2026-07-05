@@ -76,92 +76,38 @@ export default async function handler(req, res) {
       return res.status(400).send('Invalid signature');
     }
 
-    // ==========================================
-    // 5. ✨ THE ULTIMATE MAGIC FIX: Auto-Find BOTH IDs by Name ✨
+        // ==========================================
+    // 5. ✨ THE ULTIMATE MAGIC FIX: Direct ID Mapping ✨
     // ==========================================
     console.log(`✅ Success! Verified payload from authorized store: ${storeName}`);
-    console.log(`Searching Faithox product catalog for name: "${productName}"`);
       
-    // 🟢 NEW: Auto-Find BOTH the TRUE store_id and product_id using the product_name
+    // 🟢 NEW: Grab the exact Faithox Product ID sent by the client
+    const trueProductId = paymentEntity.notes?.faithox_product_id;
+
+    if (!trueProductId) {
+       console.error(`🚨 Missing ID: Client did not provide a faithox_product_id in the payload.`);
+       return res.status(400).send('Missing Faithox Product ID');
+    }
+
+    // Since we verified the store's secret signature above, we already know the store_name is valid.
+    // We just need the true store_id from connected_stores (which we queried in Step 3!)
+    // Wait, let's grab the user_id/store_id from that earlier query.
+    // Let's modify your Step 3 query slightly to pull 'user_id' or 'id' if needed, 
+    // OR we can just use a quick lookup to get the store_id from the products table using the trueProductId:
+
     const { data: productData, error: productError } = await supabase
       .from('products')
-      .select('product_id, store_id')
-      .ilike('name', productName) // Case-insensitive exact lookup by product name
-      .limit(1)
+      .select('store_id')
+      .eq('product_id', trueProductId)
       .single();
 
     if (productError || !productData) {
-       console.error(`🚨 Mismatch: Could not find product named "${productName}" in Faithox database.`);
-       return res.status(404).send('Product not registered in Faithox');
+       console.error(`🚨 Database Error: Provided faithox_product_id (${trueProductId}) does not exist in Faithox.`);
+       return res.status(404).send('Invalid Faithox Product ID');
     }
 
-    // We successfully pulled BOTH real relational IDs from your database
     const trueStoreId = productData.store_id;
-    const trueProductId = productData.product_id;
-
     const customerEmail = paymentEntity.email;
       
     // Generate a random 6-character alphanumeric token
     const reviewToken = crypto.randomBytes(3).toString('hex').toUpperCase(); 
-      
-    // --- SUPABASE DATABASE INSERTION ---
-    // 🟢 UPDATED: Using trueStoreId and trueProductId
-    const { error: supabaseError } = await supabase
-      .from('review_tokens') 
-      .insert([
-        { 
-          buyer_email: customerEmail, 
-          token: reviewToken, 
-          store_id: trueStoreId, 
-          product_id: trueProductId,
-          status: 'unused'
-        }
-      ]);
-
-    if (supabaseError) {
-      console.error("Supabase Error:", supabaseError);
-      return res.status(500).send('Failed to save token to database');
-    }
-
-    console.log(`Success! Token ${reviewToken} saved for ${customerEmail} at ${trueStoreId} (Product ID: ${trueProductId})`);
-
-    // --- SEND EMAIL VIA RESEND ---
-    console.log(`Attempting to send email to: ${customerEmail}`);
-      
-    try {
-      const { data: emailData, error: emailError } = await resend.emails.send({
-        from: 'Faithox <noreply@faithox.com>', 
-        to: customerEmail, 
-        subject: `Thanks for your purchase! Leave a review for us.`,
-        html: `
-          <div style="font-family: sans-serif; padding: 20px; color: #333;">
-            <h2>Thank you for your payment!</h2>
-            <p>We hope you love your experience. We would highly appreciate it if you could take a brief moment to leave us a review.</p>
-            <p>Your unique security review token is: <strong>${reviewToken}</strong></p>
-            <p>Click the button below to automatically unlock your review form without any manual entry:</p>
-            <br />
-            <a href="https://faithoxweb.vercel.app/postareviewguest.html?token=${reviewToken}" 
-               style="padding: 12px 24px; background-color: #111111; color: white; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
-              Leave a Review
-            </a>
-          </div>
-        `,
-      });
-
-      if (emailError) {
-        console.error("🚨 RESEND BLOCKED THE EMAIL:", emailError);
-      } else {
-        console.log(`✅ Email successfully dispatched! Resend ID:`, emailData);
-      }
-
-    } catch (systemError) {
-      console.error("🚨 CRITICAL SYSTEM ERROR DURING EMAIL:", systemError);
-    }
-
-    return res.status(200).send('OK');
-
-  } catch (error) {
-    console.error("Server Error:", error);
-    return res.status(500).send('Server Error');
-  }
-}
