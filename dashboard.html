@@ -630,7 +630,7 @@
             const fileName = `logo-${currentUser.id}-${Math.random()}.${fileExt}`; 
             
             const { error: uploadError } = await db.storage
-                .from('product-images')
+                .from('avatars')
                 .upload(fileName, file, { upsert: true });
 
             if (uploadError) {
@@ -638,7 +638,7 @@
                 return showStatus("Error uploading image: " + uploadError.message, true);
             }
 
-            const { data: publicUrlData } = db.storage.from('product-images').getPublicUrl(fileName);
+            const { data: publicUrlData } = db.storage.from('avatars').getPublicUrl(fileName);
             const avatarUrl = publicUrlData.publicUrl;
 
             const { data, error: updateError } = await db.auth.updateUser({
