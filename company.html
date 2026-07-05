@@ -951,15 +951,14 @@
             // First we try to grab reviews strictly linked to the UUID
             let { data: reviews } = await db.from('reviews')
                 .select('*')
-                // Note: Change 'company_id' to 'product_id' if you renamed the column in your reviews table
-                .eq('store_id', exactUuid) 
+                .eq('product_id', exactUuid) 
                 .order('created_at', { ascending: false });
 
             // Fallback: If reviews were accidentally saved under the product's text name instead of the UUID, fetch those
             if (!reviews || reviews.length === 0) {
                 const { data: nameReviews } = await db.from('reviews')
                     .select('*')
-                    .ilike('store_id', exactName) // Note: Change 'company_id' to 'product_id' here too if renamed
+                    .ilike('product_id', exactName) 
                     .order('created_at', { ascending: false });
                 reviews = nameReviews;
             }
