@@ -508,11 +508,11 @@
                 const fileName = `guest-review-${urlToken}-${Date.now()}.${fileExt}`;
 
                 const { error: uploadError } = await db.storage
-                    .from('product-images')
+                    .from('review-photos')
                     .upload(fileName, file);
 
                 if (!uploadError) {
-                    const { data: urlData } = db.storage.from('product-images').getPublicUrl(fileName);
+                    const { data: urlData } = db.storage.from('review-photos').getPublicUrl(fileName);
                     photoUrlsArray = [urlData.publicUrl]; // Pass the photo inside an array for text[]
                 }
             }
