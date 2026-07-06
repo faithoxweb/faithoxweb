@@ -134,7 +134,7 @@ async function handler(req, res) {
             <p>Your unique security review token is: <strong>${reviewToken}</strong></p>
             <p>Click the button below to automatically unlock your review form without any manual entry:</p>
             <br />
-            <a href="https://faithoxweb.vercel.app/postareviewguest.html?token=${reviewToken}" 
+            <a href="https://faitho.com/postareviewguest.html?token=${reviewToken}" 
                style="padding: 12px 24px; background-color: #111111; color: white; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
               Leave a Review
             </a>
