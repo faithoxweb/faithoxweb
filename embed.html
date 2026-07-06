@@ -168,12 +168,12 @@
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const params = new URLSearchParams(window.location.search);
-        const companyId = params.get('id');
+        const productId = params.get('id'); // 🟢 FIXED: Variable correctly named productId
 
         async function loadWidgetReviews() {
             const list = document.getElementById('widget-reviews-list');
 
-            if (!companyId) {
+            if (!productId) {
                 list.innerHTML = "<p style='text-align:center; color:#ef4444; font-size:13px; padding: 20px; font-weight: 600;'>Error: Product ID missing.</p>";
                 return;
             }
@@ -182,7 +182,7 @@
             const { data: reviews, error } = await db
                 .from('reviews')
                 .select('*')
-                .eq('company_id', companyId)
+                .eq('product_id', productId) // 🟢 FIXED: Using product_id to match the database schema
                 .order('created_at', { ascending: false })
                 .limit(10);
 
@@ -206,7 +206,7 @@
                 }
                 const ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
 
-                // 2. EXTRACT PHOTOS (This is the new part!)
+                // 2. EXTRACT PHOTOS
                 let photosHtml = '';
                 if (r.photos) {
                     let photoUrls = [];
@@ -253,8 +253,8 @@
 
             // Configure the See More button
             const seeMoreBtn = document.getElementById('see-more-link');
-            // CHANGE IT TO THIS:
-            seeMoreBtn.href = `https://faithoxweb.vercel.app/company.html?id=${companyId}`;
+            // 🟢 FIXED: Pass the correct variable to the Faithox link
+            seeMoreBtn.href = `https://faithoxweb.vercel.app/company.html?id=${productId}`;
             seeMoreBtn.style.display = 'flex';
         }
 
