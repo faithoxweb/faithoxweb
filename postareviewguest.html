@@ -500,20 +500,29 @@
 
             let photoUrlsArray = null;
 
-            // Optional: If they uploaded an image, save it to the product-images bucket
+            // Optional: If they uploaded images, save them to the review-photos bucket
             if (uploadedFiles.length > 0) {
                 btn.innerText = "Uploading Photos...";
-                const file = uploadedFiles[0]; // Currently handling the first image
-                const fileExt = file.name.split('.').pop();
-                const fileName = `guest-review-${urlToken}-${Date.now()}.${fileExt}`;
+                photoUrlsArray = [];
+                
+                for (let i = 0; i < uploadedFiles.length; i++) {
+                    const file = uploadedFiles[i];
+                    const fileExt = file.name.split('.').pop();
+                    // Appended unique counter '-i' to safely avoid simultaneous timestamp generation bugs
+                    const fileName = `guest-review-${urlToken}-${Date.now()}-${i}.${fileExt}`;
 
-                const { error: uploadError } = await db.storage
-                    .from('review-photos')
-                    .upload(fileName, file);
+                    const { error: uploadError } = await db.storage
+                        .from('review-photos')
+                        .upload(fileName, file);
 
-                if (!uploadError) {
-                    const { data: urlData } = db.storage.from('review-photos').getPublicUrl(fileName);
-                    photoUrlsArray = [urlData.publicUrl]; // Pass the photo inside an array for text[]
+                    if (!uploadError) {
+                        const { data: urlData } = db.storage.from('review-photos').getPublicUrl(fileName);
+                        photoUrlsArray.push(urlData.publicUrl);
+                    }
+                }
+                
+                if (photoUrlsArray.length === 0) {
+                    photoUrlsArray = null;
                 }
             }
 
