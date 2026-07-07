@@ -803,6 +803,36 @@ a.nav.link:hover {
   background-color: #0056b3; /* Darker blue on hover */
   text-decoration: none;
 }
+    /* --- HERO ANIMATION --- */
+    .faithox-hero-animation {
+      display: flex; align-items: center; justify-content: center;
+      height: 120px; width: 100%; max-width: 500px; 
+      margin: 80px auto 30px auto; /* Matches your old heading spacing */
+      background: #fdfdfd; border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); 
+      position: relative; overflow: hidden;
+    }
+    .animated-word {
+      position: absolute; display: flex; align-items: center; gap: 15px;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeSlideCycle 9s infinite;
+    }
+    .animated-word .icon { width: 45px; height: 45px; color: #9ca3af; transition: all 0.3s ease; }
+    .animated-word span { font-size: 42px; font-weight: 800; color: #2a2a2a; letter-spacing: -1.5px; }
+    .search-word { animation-delay: 0s; }
+    .review-word { animation-delay: 3s; }
+    .decide-word { animation-delay: 6s; }
+    @keyframes fadeSlideCycle {
+      0%, 2%   { opacity: 0; transform: translateY(20px); }
+      8%, 25%  { opacity: 1; transform: translateY(0); }
+      31%, 100% { opacity: 0; transform: translateY(-20px); }
+    }
+    .search-word .icon { animation: searchFocus 9s infinite; }
+    @keyframes searchFocus { 8%, 25% { transform: scale(1.1) rotate(-10deg); color: #3b82f6; } }
+    .review-word .icon { animation: starPop 9s infinite; animation-delay: 3s; }
+    @keyframes starPop { 8%, 25% { transform: scale(1.2) rotate(360deg); color: #f59e0b; } }
+    .decide-word .icon { animation: checkPop 9s infinite; animation-delay: 6s; }
+    @keyframes checkPop { 8%, 25% { transform: scale(1.2); color: #10b981; } }
     </style>
 </head>
 <body>
@@ -899,7 +929,26 @@ a.nav.link:hover {
         <div class="content-wrapper">
             <div class="hero-section" id="home-view">
                 
-                <h1 class="hero-heading">Search. Review. Decide.</h1>
+                                <div class="faithox-hero-animation">
+                  <div class="animated-word search-word">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <span>Search.</span>
+                  </div>
+                  <div class="animated-word review-word">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <span>Review.</span>
+                  </div>
+                  <div class="animated-word decide-word">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path d="M22 11.08V12a10 10 10 0 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>Decide.</span>
+                  </div>
+                </div>
 
                 <div class="search-container">
                     <input type="text" class="search-bar" placeholder="Search for company or product" id="main-search">
