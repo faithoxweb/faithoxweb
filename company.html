@@ -273,7 +273,7 @@
         .skel-body { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; width: 100%; }
         .skel-line { height: 12px; width: 100%; }
         .skel-line.short { width: 70%; }
-        .skel-photo { width: 30%; height: calc(100% - 45px); margin-top: 45px; border-radius: 8px; flex-shrink: 0; }
+        .skel-photo { width: 30%; height: calc(100% - 35px); margin-top: 35px; border-radius: 8px; flex-shrink: 0; }
 
         /* --- PRODUCT IMAGE --- */
         .product-img-frame {
@@ -384,7 +384,6 @@
             transition: all 0.2s ease; display: flex; flex-direction: column; gap: 12px; cursor: pointer; text-align: left;
             position: relative; overflow: hidden; border: 2px solid transparent; scroll-snap-align: start; margin-right: 10px; 
         }
-        .review-item-main:hover { box-shadow: none; border-color: #bac5d2; }
 
         .rating-pill { position: absolute; top: 24px; right: 24px; display: inline-flex; align-items: center; gap: 4px; padding: 0 8px; height: 28px; border-radius: 9px; background: #fdfdfd; border: 2px solid #19bb42; width: fit-content; margin: 0; flex-shrink: 0; }
         .rating-pill .star { width: 20px; height: 20px; color: #e2e8f0; display: inline-flex; align-items: center; justify-content: center; }
@@ -1012,7 +1011,7 @@
                     let imagesHtml = photoUrls.length === 1 ? `<img src="${photoUrls[0]}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">` :
                                      photoUrls.length === 2 ? `<div style="position: relative; width: 100%; aspect-ratio: 1 / 1;"><img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-6deg); z-index: 1;"><img src="${photoUrls[1]}" style="position: absolute; bottom: 0; right: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(6deg); z-index: 2; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);"></div>` :
                                      `<div style="position: relative; width: 100%; aspect-ratio: 1 / 1;"><img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-12deg); z-index: 1;"><img src="${photoUrls[1]}" style="position: absolute; top: 12.5%; left: 12.5%; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(0deg); z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.1);"><img src="${photoUrls[2]}" style="position: absolute; bottom: 0; right: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(12deg); z-index: 3; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);"></div>`;
-                    photoHtml = `<div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 55px;">${imagesHtml}</div>`;
+                    photoHtml = `<div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 35px;">${imagesHtml}</div>`;
                 }
 
                 const authorAvatarHtml = r.avatar_url ? `<img src="${escapeHTML(r.avatar_url)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` : initials;
