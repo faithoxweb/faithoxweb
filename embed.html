@@ -17,7 +17,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-       .widget-wrapper {
+        .widget-wrapper {
             display: flex;
             flex-direction: column;
             width: 100%;
@@ -25,95 +25,116 @@
             max-height: 100vh;
             padding: 16px;
             
-            /* --- NEW BORDER STYLES --- */
-            background: #ffffff; /* Gives it a solid background */
-            border: 2px solid #3fa3dd; /* The Faithox Blue Border */
-            border-radius: 16px; /* Smooth rounded corners */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Soft drop shadow */
-            overflow: hidden; /* Keeps everything cleanly inside the border */
+            /* --- WIDGET BORDER STYLES --- */
+            background: #ffffff;
+            border: 2px solid #3fa3dd; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            overflow: hidden; 
         }
         .reviews-scroll-container {
             flex: 1;
-            /* 1. Turn on horizontal scrolling, turn off vertical */
             overflow-x: auto;
             overflow-y: hidden;
             display: flex;
-            /* 2. Put them in a row instead of a column */
             flex-direction: row; 
             gap: 16px;
-            padding-bottom: 12px; /* Space for the scrollbar */
-            /* Optional: Makes it snap neatly to cards when swiping */
+            padding-bottom: 12px; 
             scroll-snap-type: x mandatory; 
         }
 
-        /* Widget Scrollbar (Updated for horizontal) */
-        .reviews-scroll-container::-webkit-scrollbar { height: 6px; } /* Changed width to height */
+        /* Widget Scrollbar */
+        .reviews-scroll-container::-webkit-scrollbar { height: 6px; } 
         .reviews-scroll-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
         .reviews-scroll-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .reviews-scroll-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Review Card adapted for Horizontal Widget */
-        .review-item { 
-            background: #f8f8f8;
-            border-radius: 14px; 
-            padding: 16px; 
-            border: 1px solid #cbd5e1;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-            
-            /* 3. Give them a fixed width so they don't squish! */
-            width: 320px; 
-            min-width: 320px; 
-            flex-shrink: 0; /* Prevents shrinking */
-            scroll-snap-align: start; /* Snaps beautifully into place */
-            
+        /* --- INDEX.HTML REVIEW CARD STYLES --- */
+        .review-item-main { 
+            background: #fdfdfd;
+            border-radius: 32px;
+            padding: 24px; 
+            box-shadow: none;
+            width: 380px;
+            height: 200px; 
+            flex-shrink: 0;
+            transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            transition: all 0.2s ease;
+            cursor: default; 
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #ededed; 
+            scroll-snap-align: start; /* Ensures clean swiping in widget */
         }
-        .review-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: #d1d8e0; }
-
-        .review-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .review-author { display: flex; align-items: center; gap: 8px; }
-        .author-avatar { 
-            width: 32px; height: 32px; border-radius: 50%; 
-            background: #0f172a; color: #fff; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 12px; font-weight: 800; flex-shrink: 0;
-        }
-        .author-name { font-size: 14px; font-weight: 700; color: #0f172a; line-height: 1.2; }
-        .author-date { font-size: 11px; color: #94a3b8; font-weight: 500; margin-top: 2px; }
+        .review-item-main:hover { box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04); }
 
         .rating-pill {
-            display: inline-flex; align-items: center; gap: 2px;
-            padding: 0 8px; height: 24px; border-radius: 4px;
-            background: #242424;
+            position: absolute; top: 24px; right: 24px; display: inline-flex; align-items: center; gap: 4px; padding: 0 8px; height: 28px; border-radius: 9px; 
+            background: #fdfdfd; 
+            border: 2px solid #19bb42; 
+            width: fit-content; margin: 0; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
+            flex-shrink: 0;
         }
-        .rating-pill .star { width: 14px; height: 14px; color: #334155; display: inline-flex; align-items: center; justify-content: center; }
+        
+        .rating-pill .star { 
+            width: 20px; height: 20px; 
+            color: #e2e8f0; 
+            display: inline-flex; align-items: center; justify-content: center; 
+        }
+        
         .rating-pill .star svg { width: 100%; height: 100%; fill: currentColor; }
-        .rating-pill.rating-5 .filled, .rating-pill.rating-4 .filled { color: #10B981; }
+
+        .rating-pill.rating-5 { border-color: #10B981; }
+        .rating-pill.rating-5 .filled { color: #10B981; }
+        .rating-pill.rating-4 { border-color: #84CC16; }
+        .rating-pill.rating-4 .filled { color: #84CC16; }
+        .rating-pill.rating-3 { border-color: #F59E0B; }
         .rating-pill.rating-3 .filled { color: #F59E0B; }
+        .rating-pill.rating-2 { border-color: #F97316; }
         .rating-pill.rating-2 .filled { color: #F97316; }
+        .rating-pill.rating-1 { border-color: #EF4444; }
         .rating-pill.rating-1 .filled { color: #EF4444; }
 
+        .review-content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+        }
+
+        .review-author { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-shrink: 0; }
+        .author-avatar { 
+            width: 32px; height: 32px; border-radius: 50%; 
+            background: #242424; color: #f2f2f2; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 11px; font-weight: 800; flex-shrink: 0;
+            overflow: hidden;
+        }
+        .author-name { font-size: 15px; font-weight: 700; color: #242424; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
         .review-body { 
-            font-size: 13px; color: #475569; line-height: 1.5;
-            display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+            font-size: 14px; color: #242424; line-height: 1.5; margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .verified-badge { 
             display: inline-flex; align-items: center; gap: 4px; 
             background: #f0fdf4; color: #16a34a; 
             padding: 2px 8px; border-radius: 20px; 
-            font-size: 10px; font-weight: 700; width: fit-content;
+            font-size: 10px; font-weight: 700; 
+            align-self: flex-start; margin-top: auto;
         }
         .verified-badge svg { width: 10px; height: 10px; stroke: #16a34a; }
 
+        /* --- WIDGET FOOTER --- */
         .widget-footer {
             padding-top: 12px;
             background: transparent;
@@ -169,7 +190,7 @@
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const params = new URLSearchParams(window.location.search);
-        const productId = params.get('id'); // 🟢 FIXED: Variable correctly named productId
+        const productId = params.get('id'); 
 
         async function loadWidgetReviews() {
             const list = document.getElementById('widget-reviews-list');
@@ -183,7 +204,7 @@
             const { data: reviews, error } = await db
                 .from('reviews')
                 .select('*')
-                .eq('product_id', productId) // 🟢 FIXED: Using product_id to match the database schema
+                .eq('product_id', productId) 
                 .order('created_at', { ascending: false })
                 .limit(10);
 
@@ -193,6 +214,7 @@
             }
 
             list.innerHTML = '';
+            
             const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
 
             reviews.forEach(r => {
@@ -200,53 +222,96 @@
                 const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                 const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
-                // 1. Generate Stars
+                // AVATAR LOGIC FROM INDEX.HTML
+                const avatarUrl = r.avatar_url;
+                const authorAvatarHtml = avatarUrl 
+                    ? `<img src="${escapeHTML(avatarUrl)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` 
+                    : initials;
+
+                // STAR RATING PILL LOGIC FROM INDEX.HTML
                 let starsHtml = '';
                 for(let i=1; i<=5; i++) {
                     starsHtml += `<span class="star ${i <= r.rating ? 'filled' : ''}">${starSvg}</span>`;
                 }
-                const ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
+                let ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
 
-                // 2. EXTRACT PHOTOS
-                let photosHtml = '';
-                if (r.photos) {
-                    let photoUrls = [];
-                    // Check if it is an array or a string from Supabase
-                    if (Array.isArray(r.photos)) {
-                        photoUrls = r.photos;
-                    } else if (typeof r.photos === 'string') {
-                        // Safely extract any web links from the string
-                        const extractedLinks = r.photos.match(/https?:\/\/[^\s"\]}]+/g);
-                        if (extractedLinks) photoUrls = extractedLinks;
+                // ROTATING PHOTO LOGIC FROM INDEX.HTML
+                let photoUrls = [];
+                try {
+                    if (r.photos) {
+                        if (Array.isArray(r.photos)) {
+                            photoUrls = r.photos;
+                        } else if (typeof r.photos === 'string') {
+                            const trimmed = r.photos.trim();
+                            if (trimmed.startsWith('[')) {
+                                photoUrls = JSON.parse(trimmed);
+                            } else if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                                photoUrls = trimmed.slice(1, -1).split(',').map(s => s.replace(/^"|"$/g, '').trim());
+                            } else if (trimmed.startsWith('http')) {
+                                photoUrls = [trimmed];
+                            } else {
+                                const extractedLinks = r.photos.match(/https?:\/\/[^\s"\]}]+/g);
+                                if (extractedLinks) photoUrls = extractedLinks;
+                            }
+                        }
                     }
+                } catch (e) {
+                    photoUrls = [];
+                }
+                photoUrls = photoUrls.filter(u => u && typeof u === 'string' && u.startsWith('http'));
 
-                    // If we found photos, build the HTML for them
-                    if (photoUrls.length > 0) {
-                        photosHtml = '<div style="display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 4px;">' + 
-                            photoUrls.map(url => `<img src="${escapeHTML(url)}" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" alt="Review Photo">`).join('') + 
-                        '</div>';
+                let photoHtml = '';
+                if (photoUrls.length > 0) {
+                    let imagesHtml = '';
+                    if (photoUrls.length === 1) {
+                        imagesHtml = `<img src="${photoUrls[0]}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">`;
+                    } else if (photoUrls.length === 2) {
+                        imagesHtml = `
+                        <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
+                            <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-6deg); z-index: 1;">
+                            <img src="${photoUrls[1]}" style="position: absolute; bottom: 0; right: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(6deg); z-index: 2; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
+                        </div>`;
+                    } else {
+                        imagesHtml = `
+                        <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
+                            <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-12deg); z-index: 1;">
+                            <img src="${photoUrls[1]}" style="position: absolute; top: 12.5%; left: 12.5%; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(0deg); z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                            <img src="${photoUrls[2]}" style="position: absolute; bottom: 0; right: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(12deg); z-index: 3; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
+                        </div>`;
                     }
+                    photoHtml = `
+                    <div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 55px;">
+                        ${imagesHtml}
+                    </div>`;
                 }
 
-                // 3. Build the Review Card
+                // 3. BUILD THE REVIEW CARD USING INDEX.HTML LAYOUT
                 const div = document.createElement('div');
-                div.className = 'review-item';
+                div.className = 'review-item-main';
                 div.innerHTML = `
-                    <div class="review-header-row">
-                        <div class="review-author">
-                            <div class="author-avatar">${initials}</div>
-                            <div>
-                                <div class="author-name">${escapeHTML(reviewerName)}</div>
-                                <div class="author-date">${date}</div>
+                    <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
+                        <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                                <div class="review-author" style="margin: 0; align-items: center;">
+                                    <div class="author-avatar">${authorAvatarHtml}</div>
+                                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                                        <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
+                                        <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">
+                                            ${date}
+                                        </div>
+                                    </div>
+                                </div>
+                                ${ratingPill}
+                            </div>
+                            <div class="review-content-wrapper" style="padding: 0; flex: 1; height: auto; margin-top: 12px;">
+                                <p class="review-body" style="-webkit-line-clamp: 5; margin-bottom: 4px;">${escapeHTML(r.comment || '')}</p>
+                            </div>
+                            <div class="verified-badge">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Verified Review
                             </div>
                         </div>
-                        ${ratingPill}
-                    </div>
-                    <p class="review-body">${escapeHTML(r.comment)}</p>
-                    
-                    ${photosHtml} <div class="verified-badge">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Verified Review
+                        ${photoHtml}
                     </div>
                 `;
                 list.appendChild(div);
@@ -254,7 +319,6 @@
 
             // Configure the See More button
             const seeMoreBtn = document.getElementById('see-more-link');
-            // 🟢 FIXED: Pass the correct variable to the Faithox link
             seeMoreBtn.href = `https://faithoxweb.vercel.app/company.html?id=${productId}`;
             seeMoreBtn.style.display = 'flex';
         }
