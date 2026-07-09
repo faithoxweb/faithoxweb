@@ -821,7 +821,7 @@
         // --- WIDGET MODAL LOGIC (UPDATED WITH PRODUCT ID) ---
         function openCodeModal(productId) {
             const liveUrl = `https://faithox.com/embed.html?id=${productId}`;
-            const code = `\n<iframe \n  src="${liveUrl}" \n  width="100%" \n  height="350px" \n  style="border: none; background: transparent; overflow: hidden; display: block; margin: 0 auto;">\n</iframe>`;
+            const code = `\n<iframe \n  src="${liveUrl}" \n  width="100%" \n "max-width: 1204px; \n height="350px" \n  style="border: none; background: transparent; overflow: hidden; display: block; margin: 0 auto;">\n</iframe>`;
             
             // Set Embed Code
             document.getElementById('embed-code-text').innerText = code;
