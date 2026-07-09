@@ -23,9 +23,9 @@
             width: 100%;
             height: 100vh;
             max-height: 100vh;
-            padding: 16px;
+            /* PERFECTLY EQUAL 20px PADDING ON ALL SIDES */
+            padding: 20px; 
             
-            /* --- WIDGET BORDER STYLES --- */
             background: #ffffff;
             border: 2px solid #2a2a2a; 
             border-radius: 16px; 
@@ -38,24 +38,39 @@
             overflow-y: hidden;
             display: flex;
             flex-direction: row; 
-            gap: 16px;
-            padding-bottom: 12px; 
+            /* EXACTLY 10PX GAP BETWEEN CARDS */
+            gap: 10px; 
+            padding-bottom: 8px; /* Room for scrollbar so it doesn't overlap cards */
             scroll-snap-type: x mandatory; 
         }
 
-        /* Widget Scrollbar */
+        /* Subtle Widget Scrollbar */
         .reviews-scroll-container::-webkit-scrollbar { height: 6px; } 
-        .reviews-scroll-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-        .reviews-scroll-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .reviews-scroll-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .reviews-scroll-container::-webkit-scrollbar-track { background: transparent; }
+        .reviews-scroll-container::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .reviews-scroll-container::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
 
-        /* --- EXACT REVIEW CARD STYLES FROM COMPANY.HTML --- */
+        /* --- EXACT REVIEW CARD STYLES --- */
         .review-item-main { 
-            background: #fdfdfd; border-radius: 32px; padding: 24px; width: 380px; height: 200px; flex-shrink: 0;
-            transition: all 0.1s ease; display: flex; flex-direction: column; gap: 12px; cursor: pointer; text-align: left;
-            position: relative; overflow: hidden; border: 2px solid transparent; scroll-snap-align: start; margin-right: 10px; 
+            background: #fdfdfd; 
+            border-radius: 32px; 
+            padding: 24px; 
+            width: 380px; 
+            height: 200px; 
+            flex-shrink: 0;
+            transition: all 0.1s ease; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            cursor: pointer; 
+            text-align: left;
+            position: relative; 
+            overflow: hidden; 
+            border: 1px solid #ededed; 
+            scroll-snap-align: start; 
+            /* Removed margin-right: 10px; relying entirely on the gap property above */
         }
-        .review-item-main:hover { background: #dcdcdc; }
+        .review-item-main:hover { box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04); }
 
         .rating-pill { position: absolute; top: 24px; right: 24px; display: inline-flex; align-items: center; gap: 4px; padding: 0 8px; height: 28px; border-radius: 9px; background: #fdfdfd; border: 2px solid #19bb42; width: fit-content; margin: 0; flex-shrink: 0; }
         .rating-pill .star { width: 20px; height: 20px; color: #e2e8f0; display: inline-flex; align-items: center; justify-content: center; }
@@ -114,7 +129,6 @@
     </div>
 
     <script>
-        // XSS Protection
         function escapeHTML(str) {
             if (!str) return '';
             return String(str).replace(/[&<>'"]/g, tag => ({
@@ -137,7 +151,6 @@
                 return;
             }
 
-            // Fetch latest 10 reviews
             const { data: reviews, error } = await db
                 .from('reviews')
                 .select('*')
@@ -159,20 +172,17 @@
                 const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                 const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
-                // AVATAR LOGIC FROM INDEX.HTML
                 const avatarUrl = r.avatar_url;
                 const authorAvatarHtml = avatarUrl 
                     ? `<img src="${escapeHTML(avatarUrl)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` 
                     : initials;
 
-                // STAR RATING PILL LOGIC FROM INDEX.HTML
                 let starsHtml = '';
                 for(let i=1; i<=5; i++) {
                     starsHtml += `<span class="star ${i <= r.rating ? 'filled' : ''}">${starSvg}</span>`;
                 }
                 let ratingPill = `<div class="rating-pill rating-${r.rating}">${starsHtml}</div>`;
 
-                // ROTATING PHOTO LOGIC FROM INDEX.HTML
                 let photoUrls = [];
                 try {
                     if (r.photos) {
@@ -222,11 +232,9 @@
                     </div>`;
                 }
 
-                // 3. BUILD THE REVIEW CARD USING EXACT COMPANY.HTML LAYOUT
                 const div = document.createElement('div');
                 div.className = 'review-item-main';
                 
-                // Allows users clicking inside the embed widget to open your product page in a new tab
                 div.onclick = () => window.open(`https://faithoxweb.vercel.app/company.html?id=${productId}`, '_blank');
                 
                 div.innerHTML = `
@@ -252,7 +260,6 @@
                 list.appendChild(div);
             });
 
-            // Configure the See More button
             const seeMoreBtn = document.getElementById('see-more-link');
             seeMoreBtn.href = `https://faithoxweb.vercel.app/company.html?id=${productId}`;
             seeMoreBtn.style.display = 'flex';
