@@ -430,7 +430,13 @@
                 <label>Official Product Link <span style="color: #ef4444;">*</span></label>
                 <input type="text" id="reg-website" class="form-input" placeholder="https://yourwebsite.com/product">
             </div>
-            
+
+           <div class="form-group">
+                <label>Shopify / External Product ID <span style="color: #64748b; font-weight: 500; text-transform: none;">(Optional)</span></label>
+                <input type="text" id="reg-external-id" class="form-input" placeholder="e.g. 8056291304 (For Shopify Webhooks)">
+                <p style="font-size: 11px; color: #64748b; margin-top: 4px;">Leave blank if using custom Razorpay integration.</p>
+            </div>
+
             <button class="btn-primary" id="submit-reg-btn" onclick="submitNewProduct()" style="margin-top: 10px;">Register Product</button>
         </div>
     </div>
@@ -757,16 +763,18 @@
 
         // --- PRODUCT REGISTRATION MODALS ---
         function openRegisterModal() { document.getElementById('register-modal').classList.add('open'); }
-        function closeRegisterModal() { 
+               function closeRegisterModal() { 
             document.getElementById('register-modal').classList.remove('open');
             document.getElementById('reg-name').value = '';
             document.getElementById('reg-image-file').value = '';
             document.getElementById('reg-website').value = '';
+            document.getElementById('reg-external-id').value = '';
         }
 
-        async function submitNewProduct() {
+              async function submitNewProduct() {
             const name = document.getElementById('reg-name').value.trim();
             const website = document.getElementById('reg-website').value.trim();
+            const externalId = document.getElementById('reg-external-id').value.trim();
             const fileInput = document.getElementById('reg-image-file');
             
             // Get store_id from auth metadata
@@ -796,7 +804,7 @@
             const { data: urlData } = db.storage.from('product-images').getPublicUrl(fileName);
             const finalImageUrl = urlData.publicUrl;
 
-            // INSERT INTO THE NEW PRODUCTS TABLE
+                       // INSERT INTO THE NEW PRODUCTS TABLE
             const { error } = await db.from('products').insert([{
                 store_id: storeId,
                 name: name, 
@@ -805,7 +813,8 @@
                 owner_id: currentUser.id,
                 is_product: true, 
                 rating: 0, 
-                reviews_count: 0
+                reviews_count: 0,
+                external_product_id: externalId || null
             }]);
 
             btn.innerText = "Register Product";
