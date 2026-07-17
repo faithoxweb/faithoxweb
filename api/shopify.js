@@ -1,0 +1,110 @@
+import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js';
+import { Resend } from 'resend';
+
+// Initialize Services
+const resend = new Resend(process.env.RESEND_API_KEY);
+const supabaseAdmin = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+// CRITICAL FOR VERCEL: Disables default body parsing so Shopify signature works
+export const config = {
+    api: {
+        bodyParser: false, 
+    },
+};
+
+export default async function handler(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).send('Method Not Allowed');
+    }
+
+    try {
+        // 1. Manually read the raw buffer string
+        const chunks = [];
+        for await (const chunk of req) {
+            chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+        }
+        const rawBody = Buffer.concat(chunks);
+
+        // 2. Verify Shopify Signature
+        const hmacHeader = req.headers['x-shopify-hmac-sha256'];
+        const shopifySecret = process.env.SHOPIFY_WEBHOOK_SECRET;
+
+        const generatedHash = crypto
+            .createHmac('sha256', shopifySecret)
+            .update(rawBody, 'utf8')
+            .digest('base64');
+
+        if (generatedHash !== hmacHeader) {
+            console.error('Failed Shopify Webhook Verification');
+            return res.status(401).send('Unauthorized');
+        }
+
+        // 3. Parse JSON safely
+        const payload = JSON.parse(rawBody.toString('utf8'));
+        const customerEmail = payload.customer?.email;
+        const lineItems = payload.line_items || [];
+
+        if (customerEmail && lineItems.length > 0) {
+            // 4. Map to Faithox
+            for (const item of lineItems) {
+                const shopifyProductId = String(item.product_id);
+
+                // Added 'website' and 'name' to the select query for the email
+                const { data: product, error: findError } = await supabaseAdmin
+                    .from('products')
+                    .select('product_id, store_id, name, website')
+                    .eq('external_product_id', shopifyProductId)
+                    .maybeSingle();
+
+                if (findError || !product) continue; 
+
+                // 5. Insert Eligibility
+                const { error: insertError } = await supabaseAdmin
+                    .from('eligible_reviewers')
+                    .insert({
+                        store_id: product.store_id,
+                        product_id: product.product_id,
+                        reviewer_email: customerEmail
+                    });
+
+                // 6. Only send the email if the insert was brand new and successful
+                if (insertError) {
+                    console.log(`Eligibility insert note: ${insertError.message}`);
+                } else {
+                    console.log(`✅ Authorized review for ${customerEmail}`);
+                    
+                    try {
+                        await resend.emails.send({
+                            // Note: The "from" email must be a domain you have verified in Resend
+                            from: 'Faithox Reviews <reviews@faithox.com>', 
+                            to: customerEmail,
+                            subject: `How are you liking your new ${product.name}?`,
+                            html: `
+                                <div style="font-family: sans-serif; text-align: center; padding: 20px;">
+                                    <h2>We hope you love your new gear!</h2>
+                                    <p>As a verified buyer of the <strong>${product.name}</strong>, your opinion matters. You are officially eligible to leave a review.</p>
+                                    <br>
+                                    <a href="${product.website}" style="padding: 12px 24px; background: #242424; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Write a Review</a>
+                                </div>
+                            `
+                        });
+                        console.log(`✉️ Automated review request sent to ${customerEmail}`);
+                    } catch (emailError) {
+                        console.error('Failed to send Resend email:', emailError);
+                    }
+                }
+            }
+        }
+
+        // 7. Success Response
+        return res.status(200).send('Webhook Processed Successfully');
+
+    } catch (error) {
+        console.error('Error processing Shopify webhook:', error.message);
+        return res.status(500).send('Internal Server Error');
+    }
+}
