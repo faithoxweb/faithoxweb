@@ -413,7 +413,19 @@
         .search-icon { position: absolute; right: 10px; top: 10px; width: 46px; height: 46px; background: #2a2a2a; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 3; }
         .search-icon svg { width: 20px; height: 20px; stroke: #f1f1f1; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
-        .search-container.active { z-index: 2200; } 
+        .search-container.active { 
+            z-index: 2200; 
+            position: fixed;
+            top: 20vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 650px;
+            margin: 0;
+        } 
+        .search-container.active + .scrolling-reviews-container {
+            margin-top: 280px; /* Prevent layout shift when search bar becomes fixed */
+        }
         .search-container.active .search-bar { 
             background: #fdfdfd !important; 
             color: #2a2a2a; 
@@ -698,7 +710,21 @@
         .ft-btn:hover { background: #636363; }
 
         /* --- OVERLAYS --- */
-        #search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 2150; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.4s ease, visibility 0.4s ease; }
+        #search-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0, 0, 0, 0.4); 
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px); 
+            z-index: 2150; 
+            opacity: 0; 
+            visibility: hidden; 
+            pointer-events: none; 
+            transition: all 0.4s ease; 
+        }
         #search-overlay.active { opacity: 1; visibility: visible; pointer-events: auto; }
 
         /* --- LOADER STYLES --- */
@@ -766,7 +792,24 @@
             .footer-top { grid-template-columns: 1fr; gap: 40px; }
             .footer-brand-col { grid-column: span 1; padding-right: 0; }
             .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+
+            /* Hero adjustments for mobile */
+            .faithox-hero-animation { height: 160px !important; margin: 20px auto 10px auto !important; max-width: 100% !important; }
+            
+            .typewriter-container { font-size: 42px; }
+            .typewriter-container .cursor { height: 45px; }
+            
+            /* Mobile scaled proportional starboxes */
+            .faithox-hero-animation .rating-pill { height: 35px !important; padding: 0 10px !important; gap: 5px !important; border-width: 2px !important; border-radius: 11px !important; }
+            .faithox-hero-animation .rating-pill .star { width: 25px !important; height: 25px !important; }
+            
+            .fsb-1 { left: 5% !important; top: 15% !important; bottom: auto !important; }
+            .fsb-2 { left: 10% !important; bottom: 15% !important; top: auto !important; }
+            .fsb-3 { right: 5% !important; top: 20% !important; bottom: auto !important; }
+            .fsb-4 { display: none !important; }
+            .fsb-5 { display: none !important; }
         }
+        
         /* Make the Contact link look like a button */
 a.nav.link {
   display: inline-block;
@@ -785,36 +828,92 @@ a.nav.link:hover {
   background-color: #0056b3; /* Darker blue on hover */
   text-decoration: none;
 }
-    /* --- HERO ANIMATION --- */
+    /* --- HERO STATIC ANIMATION AREA --- */
     .faithox-hero-animation {
       display: flex; align-items: center; justify-content: center;
-      height: 120px; width: 100%; max-width: 500px; 
-      margin: 80px auto 30px auto; /* Matches your old heading spacing */
-      background: #fdfdfd; border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); 
-      position: relative; overflow: hidden;
+      height: 220px; width: 100%; max-width: 800px; 
+      margin: 40px auto 10px auto; 
+      position: relative;
     }
-    .animated-word {
-      position: absolute; display: flex; align-items: center; gap: 15px;
-      opacity: 0; transform: translateY(20px);
-      animation: fadeSlideCycle 9s infinite;
+
+    /* --- HERO TYPEWRITER TEXT --- */
+    .typewriter-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 75px;
+        font-weight: 800;
+        color: #1a1a1a;
+        letter-spacing: -2.5px;
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Ensures content stays centered */
+        text-align: center; /* Enforces text alignment to the middle */
+        white-space: nowrap; /* Prevents dot or cursor from dropping to a new line */
+        width: max-content; /* Strictly binds the container width to its content to perfectly calculate center */
+        z-index: 10;
     }
-    .animated-word .icon { width: 45px; height: 45px; color: #9ca3af; transition: all 0.3s ease; }
-    .animated-word span { font-size: 42px; font-weight: 800; color: #2a2a2a; letter-spacing: -1.5px; }
-    .search-word { animation-delay: 0s; }
-    .review-word { animation-delay: 3s; }
-    .decide-word { animation-delay: 6s; }
-    @keyframes fadeSlideCycle {
-      0%, 2%   { opacity: 0; transform: translateY(20px); }
-      8%, 25%  { opacity: 1; transform: translateY(0); }
-      31%, 100% { opacity: 0; transform: translateY(-20px); }
+    .typewriter-container .cursor {
+        display: inline-block;
+        width: 6px;
+        height: 75px;
+        background-color: #1a1a1a;
+        margin-left: 8px;
+        animation: blink 0.8s infinite;
+        flex-shrink: 0; /* Ensures the cursor never squishes on smaller screens */
     }
-    .search-word .icon { animation: searchFocus 9s infinite; }
-    @keyframes searchFocus { 8%, 25% { transform: scale(1.1) rotate(-10deg); color: #3b82f6; } }
-    .review-word .icon { animation: starPop 9s infinite; animation-delay: 3s; }
-    @keyframes starPop { 8%, 25% { transform: scale(1.2) rotate(360deg); color: #f59e0b; } }
-    .decide-word .icon { animation: checkPop 9s infinite; animation-delay: 6s; }
-    @keyframes checkPop { 8%, 25% { transform: scale(1.2); color: #10b981; } }
+    @keyframes blink {
+        0%, 49% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+    }
+
+    /* --- HERO FLOATING STARS --- */
+    .floating-pill {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        z-index: 1;
+        position: absolute;
+    }
+
+    /* Make hero stars bigger proportionally without affecting scrolling cards */
+    .faithox-hero-animation .rating-pill {
+        height: 42px !important;
+        padding: 0 12px !important;
+        gap: 6px !important;
+        border-radius: 14px !important;
+        border-width: 3px !important;
+    }
+    .faithox-hero-animation .rating-pill .star {
+        width: 30px !important;
+        height: 30px !important;
+    }
+
+    .fsb-1 { top: 15%; left: 5%; bottom: auto; right: auto; animation: floatLocal1 6s infinite ease-in-out; }
+    .fsb-2 { bottom: 15%; left: 10%; top: auto; right: auto; animation: floatLocal2 7s infinite ease-in-out; }
+    .fsb-3 { top: 20%; right: 5%; bottom: auto; left: auto; animation: floatLocal3 6.5s infinite ease-in-out; }
+    .fsb-4 { bottom: 20%; right: 10%; top: auto; left: auto; animation: floatLocal4 7.5s infinite ease-in-out; }
+    .fsb-5 { top: -5%; left: 50%; bottom: auto; right: auto; transform: translateX(-50%); animation: floatLocal5 8s infinite ease-in-out; }
+
+    @keyframes floatLocal1 {
+        0%, 100% { transform: translate(0, 0) rotate(-10deg); }
+        50% { transform: translate(12px, -18px) rotate(-5deg); }
+    }
+    @keyframes floatLocal2 {
+        0%, 100% { transform: translate(0, 0) rotate(12deg); }
+        50% { transform: translate(-12px, 15px) rotate(6deg); }
+    }
+    @keyframes floatLocal3 {
+        0%, 100% { transform: translate(0, 0) rotate(-15deg); }
+        50% { transform: translate(-18px, -12px) rotate(-8deg); }
+    }
+    @keyframes floatLocal4 {
+        0%, 100% { transform: translate(0, 0) rotate(8deg); }
+        50% { transform: translate(15px, 18px) rotate(15deg); }
+    }
+    @keyframes floatLocal5 {
+        0%, 100% { transform: translateX(-50%) translate(0, 0) rotate(0deg); }
+        50% { transform: translateX(-50%) translate(0, -20px) rotate(5deg); }
+    }
     </style>
 </head>
 <body>
@@ -911,24 +1010,47 @@ a.nav.link:hover {
         <div class="content-wrapper">
             <div class="hero-section" id="home-view">
                 
-                                <div class="faithox-hero-animation">
-                  <div class="animated-word search-word">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <span>Search.</span>
+                <div class="faithox-hero-animation">
+                  
+                  <!-- Floating Stars -->
+                  <div class="rating-pill rating-1 floating-pill fsb-1">
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
                   </div>
-                  <div class="animated-word review-word">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                    </svg>
-                    <span>Review.</span>
+                  <div class="rating-pill rating-2 floating-pill fsb-2">
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
                   </div>
-                  <div class="animated-word decide-word">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <path d="M22 11.08V12a10 10 10 0 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                    <span>Decide.</span>
+                  <div class="rating-pill rating-3 floating-pill fsb-3">
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                  </div>
+                  <div class="rating-pill rating-4 floating-pill fsb-4">
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                  </div>
+                  <div class="rating-pill rating-5 floating-pill fsb-5">
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                      <span class="star filled"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></span>
+                  </div>
+
+                  <div class="typewriter-container">
+                      <span id="typewriter-text"></span><span class="cursor"></span>
                   </div>
                 </div>
 
@@ -1695,6 +1817,47 @@ a.nav.link:hover {
             loadCompaniesGrid();
             loadLatestReviews();
         }
+        
+        // --- HERO TYPEWRITER SCRIPT ---
+        (function() {
+            const words = ["Search.", "Review.", "Decide."];
+            let i = 0;
+            const typingSpeed = 120;
+            const deletingSpeed = 80;
+            const pauseEnd = 1500;
+            const el = document.getElementById("typewriter-text");
+
+            if (el) {
+                function typeWriter() {
+                    const word = words[i];
+                    let j = 0;
+                    el.innerHTML = "";
+
+                    function type() {
+                        if (j < word.length) {
+                            el.innerHTML += word.charAt(j);
+                            j++;
+                            setTimeout(type, typingSpeed);
+                        } else {
+                            setTimeout(erase, pauseEnd);
+                        }
+                    }
+
+                    function erase() {
+                        if (j > 0) {
+                            el.innerHTML = word.substring(0, j - 1);
+                            j--;
+                            setTimeout(erase, deletingSpeed);
+                        } else {
+                            i = (i + 1) % words.length;
+                            setTimeout(typeWriter, typingSpeed);
+                        }
+                    }
+                    type();
+                }
+                typeWriter();
+            }
+        })();
     </script>
 </body>
 </html>
