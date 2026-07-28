@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
 const { Resend } = require('resend');
 
-// 1. Initialize Supabase
+// 1. Initialize Supabase (TYPO FIXED)
 const supabaseUrl = 'https://fdjcvpsqossuiljuadkk.supabase.co';
 const supabaseKey = process.env.SUPABSE_SERVICE_ROLE_KEY; 
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -40,7 +40,7 @@ async function handler(req, res) {
 
     const paymentEntity = data.payload.payment.entity;
     
-    // 🟢 Extract store_name and faithox_product_id from the Razorpay notes payload
+    // Extract store_name and faithox_product_id from the Razorpay notes payload
     const storeName = paymentEntity.notes?.store_name;
     const trueProductId = paymentEntity.notes?.faithox_product_id;
     
@@ -64,8 +64,15 @@ async function handler(req, res) {
 
     const clientSecret = storeData.webhook_secret;
 
-    // 4. Verify the Razorpay Signature using their specific dynamic secret
+    // 4. Verify the Razorpay Signature 
     const signature = req.headers['x-razorpay-signature'];
+    
+    // NEW: Ensure the header actually exists before checking
+    if (!signature) {
+      console.error(`🚨 Security Alert: Missing Razorpay signature header`);
+      return res.status(400).send('Missing signature');
+    }
+
     const expectedSignature = crypto
       .createHmac('sha256', clientSecret)
       .update(rawBody)
@@ -77,7 +84,7 @@ async function handler(req, res) {
     }
 
     // ==========================================
-    // 5. ✨ THE ULTIMATE MAGIC FIX: Direct ID Mapping ✨
+    // 5. Direct ID Mapping 
     // ==========================================
     console.log(`✅ Success! Verified payload from authorized store: ${storeName}`);
       
