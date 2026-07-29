@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase client using Service Role Key to bypass RLS for secure backend writes
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY 
@@ -14,7 +13,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1. Exchange temporary code for permanent Shopify Access Token
+    // 1. Exchange temporary code for permanent Access Token
     const tokenResponse = await fetch(`https://${shop}/admin/oauth/access_token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -29,10 +28,10 @@ export default async function handler(req, res) {
     const accessToken = tokenData.access_token;
 
     if (!accessToken) {
-      return res.status(400).json({ error: 'Failed to obtain access token from Shopify' });
+      return res.status(400).json({ error: 'Failed to obtain access token' });
     }
 
-    // 2. Save or update the store credentials in Supabase
+    // 2. Save store credentials in Supabase
     const { error } = await supabase
       .from('shopify_stores')
       .upsert(
@@ -46,12 +45,28 @@ export default async function handler(req, res) {
         { onConflict: 'shop' }
       );
 
-    if (error) {
-      console.error('Supabase save error:', error);
-      return res.status(500).send('Failed to save store token.');
-    }
+    if (error) throw error;
 
-    // 3. Redirect merchant back to their Shopify Admin embedded view or your dashboard
+    // 3. NEW STEP: Register the Webhook with Shopify
+    const webhookResponse = await fetch(`https://${shop}/admin/api/2024-01/webhooks.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': accessToken, // Using the token we just generated
+      },
+      body: JSON.stringify({
+        webhook: {
+          topic: 'orders/create', // The event you want to listen to
+          address: `${process.env.HOST}/api/webhooks/shopify`, // Your new handler!
+          format: 'json'
+        }
+      })
+    });
+    
+    const webhookResult = await webhookResponse.json();
+    console.log('Webhook Registration:', webhookResult);
+
+    // 4. Redirect merchant to their Shopify Admin
     return res.redirect(`https://${shop}/admin/apps`);
 
   } catch (err) {
