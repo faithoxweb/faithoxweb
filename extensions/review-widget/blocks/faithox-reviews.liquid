@@ -1,0 +1,104 @@
+<div class="faithox-review-widget" id="faithox-widget-{{ block.id }}">
+  <h2 class="faithox-title">Customer Reviews</h2>
+  
+  <!-- The Scrollable Reviews Container -->
+  <div class="faithox-review-list" id="faithox-reviews-container-{{ block.id }}">
+    <p>Loading reviews...</p>
+  </div>
+</div>
+
+<style>
+  /* Core Widget Styling */
+  #faithox-widget-{{ block.id }} {
+    /* Keeps the widget in the center always */
+    margin: 0 auto; 
+    /* Allows decreasing the width via the Shopify editor slider below */
+    max-width: {{ block.settings.widget_width }}px; 
+    padding: 20px;
+    background-color: {{ block.settings.bg_color }};
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    font-family: inherit;
+  }
+
+  .faithox-title {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  /* Scrollable Container Logic */
+  #faithox-reviews-container-{{ block.id }} {
+    /* Makes reviews scrollable if they don't fit together */
+    max-height: 400px; 
+    overflow-y: auto; 
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  /* Individual Review Card */
+  .faithox-review-card {
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    background: #fff;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const productId = "{{ product.id }}";
+    const container = document.getElementById("faithox-reviews-container-{{ block.id }}");
+
+    if (!productId) {
+      container.innerHTML = "<p>No product detected.</p>";
+      return;
+    }
+
+    // Fetch the reviews from your Faithox backend
+    fetch(`https://www.faithox.com/api/reviews?product_id=${productId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.reviews && data.reviews.length > 0) {
+          container.innerHTML = data.reviews.map(review => `
+            <div class="faithox-review-card">
+              <strong>${review.author_name}</strong>
+              <div>⭐⭐⭐⭐⭐</div>
+              <p>${review.content}</p>
+            </div>
+          `).join('');
+        } else {
+          container.innerHTML = "<p>No reviews yet. Be the first to write one!</p>";
+        }
+      })
+      .catch(error => {
+        console.error("Error loading Faithox reviews:", error);
+        container.innerHTML = "<p>Failed to load reviews.</p>";
+      });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Faithox Reviews",
+  "target": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "widget_width",
+      "min": 300,
+      "max": 1200,
+      "step": 20,
+      "default": 800,
+      "label": "Maximum Widget Width (px)"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    }
+  ]
+}
+{% endschema %}
