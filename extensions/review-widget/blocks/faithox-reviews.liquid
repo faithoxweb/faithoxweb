@@ -58,14 +58,22 @@
 
     // Fetch the reviews from your Faithox backend
     fetch(`https://www.faithox.com/api/webhook/shopify?product_id=${productId}`)
-      .then(response => response.json())
+      .then(async (response) => {
+        // This stops the "Unexpected Token T" error by checking if the server failed
+        if (!response.ok) {
+          throw new Error(`Server returned a ${response.status} error! Check your Vercel deployment.`);
+        }
+        return response.json();
+      })
       .then(data => {
-        if (data.reviews && data.reviews.length > 0) {
-          container.innerHTML = data.reviews.map(review => `
+        // Supabase returns the array directly, so we just check 'data'
+        if (data && data.length > 0) {
+          container.innerHTML = data.map(review => `
             <div class="faithox-review-card">
-              <strong>${review.author_name}</strong>
-              <div>⭐⭐⭐⭐⭐</div>
-              <p>${review.content}</p>
+              <strong>${review.reviewer_name || 'Anonymous'}</strong>
+              <!-- This dynamically prints stars based on your database rating integer! -->
+              <div>${'⭐'.repeat(review.rating || 5)}</div>
+              <p>${review.comment}</p>
             </div>
           `).join('');
         } else {
@@ -73,8 +81,8 @@
         }
       })
       .catch(error => {
-        console.error("Error loading Faithox reviews:", error);
-        container.innerHTML = "<p>Failed to load reviews.</p>";
+        console.error("Faithox Widget Error:", error.message);
+        container.innerHTML = "<p>Failed to load reviews. Check the console for details.</p>";
       });
   });
 </script>
