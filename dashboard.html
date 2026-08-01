@@ -431,11 +431,12 @@
                 <input type="text" id="reg-website" class="form-input" placeholder="https://yourwebsite.com/product">
             </div>
 
-           <div class="form-group">
-                <label>Shopify / External Product ID <span style="color: #64748b; font-weight: 500; text-transform: none;">(Optional)</span></label>
-                <input type="text" id="reg-external-id" class="form-input" placeholder="e.g. 8056291304 (For Shopify Webhooks)">
-                <p style="font-size: 11px; color: #64748b; margin-top: 4px;">Leave blank if using custom Razorpay integration.</p>
+          <div class="form-group">
+                <label>Shopify Product ID <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="reg-product-id" class="form-input" placeholder="e.g. 8472910382" required>
+                <p style="font-size: 11px; color: #64748b; margin-top: 4px;">This is the unique ID from your Shopify store, required for linking reviews.</p>
             </div>
+
 
             <button class="btn-primary" id="submit-reg-btn" onclick="submitNewProduct()" style="margin-top: 10px;">Register Product</button>
         </div>
@@ -768,19 +769,20 @@
             document.getElementById('reg-name').value = '';
             document.getElementById('reg-image-file').value = '';
             document.getElementById('reg-website').value = '';
-            document.getElementById('reg-external-id').value = '';
+            document.getElementById('reg-product-id').value = '';
         }
 
-              async function submitNewProduct() {
+                   async function submitNewProduct() {
             const name = document.getElementById('reg-name').value.trim();
             const website = document.getElementById('reg-website').value.trim();
-            const externalId = document.getElementById('reg-external-id').value.trim();
+            const productId = document.getElementById('reg-product-id').value.trim();
             const fileInput = document.getElementById('reg-image-file');
             
             // Get store_id from auth metadata
             const storeId = await getStoreIdSecurely();
 
             if (!name || !website) return alert("Please fill in both the Product Name and the Product Link.");
+            if (!productId) return alert("Please enter the Shopify Product ID.");
             if (!fileInput.files || fileInput.files.length === 0) return alert("Please upload an image of your product.");
             if (!storeId) return alert("Store ID not found. Ensure you created your business account correctly.");
 
@@ -804,17 +806,17 @@
             const { data: urlData } = db.storage.from('product-images').getPublicUrl(fileName);
             const finalImageUrl = urlData.publicUrl;
 
-                       // INSERT INTO THE NEW PRODUCTS TABLE
+            // INSERT INTO THE NEW PRODUCTS TABLE WITH MANUAL PRODUCT ID
             const { error } = await db.from('products').insert([{
                 store_id: storeId,
+                product_id: productId, // Manually mapped from the input field
                 name: name, 
                 image_url: finalImageUrl, 
                 website: website, 
                 owner_id: currentUser.id,
                 is_product: true, 
                 rating: 0, 
-                reviews_count: 0,
-                external_product_id: externalId || null
+                reviews_count: 0
             }]);
 
             btn.innerText = "Register Product";
@@ -826,6 +828,7 @@
                 fetchBusinessProducts(); // Instantly refresh the products grid!
             }
         }
+
 
         // --- WIDGET MODAL LOGIC (UPDATED WITH PRODUCT ID) ---
         function openCodeModal(productId) {
