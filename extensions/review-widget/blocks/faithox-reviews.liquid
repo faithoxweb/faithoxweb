@@ -57,7 +57,7 @@
     }
 
     // Fetch the reviews from your Faithox backend
-    fetch(`https://www.faithox.com/api/reviews?product_id=${productId}`)
+    fetch(`https://www.faithox.com/api/webhook/shopify?product_id=${productId}`)
       .then(response => response.json())
       .then(data => {
         if (data.reviews && data.reviews.length > 0) {
