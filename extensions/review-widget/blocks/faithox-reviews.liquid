@@ -57,7 +57,7 @@
     }
 
     // Fetch the reviews from your Faithox backend
-    fetch(`https://www.faithox.com/api/webhook/shopify?product_id=${productId}`)
+    fetch(`https://www.faithox.com/api/reviews?product_id=${productId}`)
       .then(async (response) => {
         // This stops the "Unexpected Token T" error by checking if the server failed
         if (!response.ok) {
