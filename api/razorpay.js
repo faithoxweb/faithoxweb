@@ -4,7 +4,7 @@ const { Resend } = require('resend');
 
 // 1. Initialize Supabase (TYPO FIXED)
 const supabaseUrl = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-const supabaseKey = process.env.SUPABSE_SERVICE_ROLE_KEY; 
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY; 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // 2. Initialize Resend
