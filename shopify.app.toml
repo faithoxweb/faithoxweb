@@ -8,6 +8,11 @@ embedded = true
 [webhooks]
 api_version = "2026-07"
 
+  # This is the "one-click" setup pointing to your Vercel endpoint
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "https://faithox.com/api/webhooks/shopify"
+
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "read_orders,read_products"
@@ -15,4 +20,8 @@ optional_scopes = [ ]
 use_legacy_install_flow = false
 
 [auth]
-redirect_urls = [ "https://www.faithox.com/api/auth/callback" ]
+# Added both www and non-www to prevent OAuth installation errors
+redirect_urls = [ 
+  "https://faithox.com/api/auth/callback",
+  "https://www.faithox.com/api/auth/callback" 
+]
