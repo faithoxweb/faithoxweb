@@ -1,8 +1,17 @@
 {
   "name": "faithox",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "shopify app dev",
+    "deploy": "shopify app deploy",
+    "build": "echo 'No build step required'"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.0.0",
     "resend": "^3.2.0"
+  },
+  "devDependencies": {
+    "@shopify/cli": "^3.0.0"
   }
 }
-
