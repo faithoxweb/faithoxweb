@@ -4,7 +4,9 @@ client_id = "2fab3cb6a774769f418c08f1e7c9de16"
 name = "Faithox"
 application_url = "https://faithox.com/api/auth"
 embedded = true
- 
+ [webhooks]
+api_version = "2026-07"
+
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
