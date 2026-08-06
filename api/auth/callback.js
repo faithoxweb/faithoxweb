@@ -74,6 +74,43 @@ export default async function handler(req, res) {
       throw new Error(`Database error: ${error.message}`);
     }
 
+    // =============================================================
+    // 4.5. AUTOMATICALLY REGISTER WEBHOOKS WITH SHOPIFY
+    // =============================================================
+    const webhooksToRegister = [
+      { topic: "app/uninstalled", address: "https://faithox.com/api/webhooks/shopify" },
+      { topic: "orders/paid", address: "https://faithox.com/api/webhooks/shopify" }
+    ];
+
+    for (const hook of webhooksToRegister) {
+      try {
+        const webhookRes = await fetch(`https://${shop}/admin/api/2026-07/webhooks.json`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Shopify-Access-Token': accessToken,
+          },
+          body: JSON.stringify({
+            webhook: {
+              topic: hook.topic,
+              address: hook.address,
+              format: "json"
+            }
+          })
+        });
+
+        if (webhookRes.ok) {
+          console.log(`✅ Webhook [${hook.topic}] successfully registered for ${shop}`);
+        } else {
+          const errBody = await webhookRes.text();
+          console.error(`❌ Webhook [${hook.topic}] failed to register:`, errBody);
+        }
+      } catch (whError) {
+        console.error(`Webhook error during [${hook.topic}]:`, whError);
+      }
+    }
+    // =============================================================
+
     // 5. Redirect merchant to their modern Shopify Admin App interface
     const shopName = shop.replace('.myshopify.com', '');
     const redirectUri = `https://admin.shopify.com/store/${shopName}/apps/${process.env.SHOPIFY_API_KEY}`;
