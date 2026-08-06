@@ -1,46 +1,46 @@
 import { createClient } from '@supabase/supabase-js';
-import crypto from 'crypto'; // Native Node.js module for HMAC validation
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY 
-);
+import crypto from 'crypto';
 
 export default async function handler(req, res) {
-  // Extract hmac alongside shop and code
+  // 1. Initialize Supabase INSIDE the handler to guarantee ENV variables are loaded
+  const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY 
+  );
+
   const { shop, code, hmac } = req.query;
 
   if (!shop || !code || !hmac) {
     return res.status(400).send('Missing required parameters.');
   }
 
-  // 1. HMAC Security Validation (Crucial for Shopify approval)
+  // 2. HMAC Security Validation
   const map = Object.assign({}, req.query);
   delete map['signature'];
   delete map['hmac'];
   
-  // Sort and format the query string for validation
   const message = Object.keys(map)
     .sort()
     .map(key => `${key}=${map[key]}`)
     .join('&');
     
   const generatedHash = crypto
-    .createHmac('sha256', process.env.SHOPIFY_API_SECRET) // Add this to your Vercel ENV
+    .createHmac('sha256', process.env.SHOPIFY_API_SECRET)
     .update(message)
     .digest('hex');
 
   if (generatedHash !== hmac) {
+    console.error('HMAC Validation Failed!');
     return res.status(401).send('HMAC validation failed. Invalid request.');
   }
 
   try {
-    // 2. Exchange temporary code for permanent Access Token
+    // 3. Exchange temporary code for permanent Access Token
     const tokenResponse = await fetch(`https://${shop}/admin/oauth/access_token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        client_id: process.env.SHOPIFY_API_KEY, // Ensure this matches your toml Client ID
+        client_id: process.env.SHOPIFY_API_KEY,
         client_secret: process.env.SHOPIFY_API_SECRET,
         code: code,
       }),
@@ -50,11 +50,12 @@ export default async function handler(req, res) {
     const accessToken = tokenData.access_token;
 
     if (!accessToken) {
+      console.error('Token fetch failed:', tokenData);
       return res.status(400).json({ error: 'Failed to obtain access token' });
     }
 
-    // 3. Save store credentials in Supabase
-    const { error } = await supabase
+    // 4. Save store credentials in Supabase
+    const { data, error } = await supabase
       .from('shopify_stores')
       .upsert(
         {
@@ -64,12 +65,16 @@ export default async function handler(req, res) {
           is_active: true,
           installed_at: new Date().toISOString(),
         },
-        { onConflict: 'shop' } // Make sure 'shop' is set as a UNIQUE constraint in Supabase
+        { onConflict: 'shop' } 
       );
 
-    if (error) throw error;
+    // If Supabase rejects it, we catch the exact error here!
+    if (error) {
+      console.error('SUPABASE DB ERROR:', error.message, error.details);
+      throw new Error(`Database error: ${error.message}`);
+    }
 
-    // 4. Redirect merchant to their modern Shopify Admin App interface
+    // 5. Redirect merchant to their modern Shopify Admin App interface
     const shopName = shop.replace('.myshopify.com', '');
     const redirectUri = `https://admin.shopify.com/store/${shopName}/apps/${process.env.SHOPIFY_API_KEY}`;
     
