@@ -1,6 +1,7 @@
 {
   "name": "faithox",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "shopify app dev",
