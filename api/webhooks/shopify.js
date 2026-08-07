@@ -67,9 +67,9 @@ export default async function handler(req, res) {
             return res.status(200).send('Uninstall Processed');
         }
 
-        // --- EXISTING LOGIC: Handle Order Webhooks ---
-        if (topic === 'orders/create' || topic === 'orders/fulfilled') {
-            const customerEmail = payload.customer?.email;
+             // --- NEW: Handle Order Webhooks ---
+        if (topic === 'orders/paid') {
+            const customerEmail = payload.contact_email || payload.customer?.email;
             const lineItems = payload.line_items || [];
 
             if (customerEmail && lineItems.length > 0) {
@@ -100,8 +100,9 @@ export default async function handler(req, res) {
                     } else {
                         console.log(`✅ Authorized review for ${customerEmail}`);
                         
-                        try {// We removed 'await' here so the server keeps moving instantly!
-                            resend.emails.send({
+                        try {
+                            // CRITICAL: We MUST await this on Vercel, otherwise the function dies before sending
+                            await resend.emails.send({
                                 from: 'Faithox Reviews <reviews@faithox.com>', 
                                 to: customerEmail,
                                 subject: `How are you liking your new ${product.name}?`,
@@ -122,6 +123,7 @@ export default async function handler(req, res) {
                 }
             }
         }
+
 
         // 7. Catch-All Success Response
         return res.status(200).send('Webhook Processed Successfully');
