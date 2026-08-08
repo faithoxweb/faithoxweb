@@ -424,7 +424,7 @@
             margin: 0;
         } 
         .search-container.active + .scrolling-reviews-container {
-            margin-top: 280px; /* Prevent layout shift when search bar becomes fixed */
+            margin-top: 100px; /* Prevent layout shift when search bar becomes fixed */
         }
         .search-container.active .search-bar { 
             background: #fdfdfd !important; 
@@ -542,7 +542,7 @@
         .skel-date { width: 80px; height: 22px; position: absolute; bottom: 24px; right: 24px; border-radius: 50px; }
 
         /* --- LATEST REVIEWS SCROLLER --- */
-        .scrolling-reviews-container { width: 100vw; margin-top: 200px; margin-bottom: 60px; overflow: hidden; padding: 10px 0; display: flex; flex-direction: column; align-items: flex-start; }
+        .scrolling-reviews-container { width: 100vw; margin-top: 150px; margin-bottom: 60px; overflow: hidden; padding: 10px 0; display: flex; flex-direction: column; align-items: flex-start; }
         .scrolling-track { display: flex; width: max-content; }
         .scrolling-content { display: flex; gap: 10px; padding-right: 20px; }
         .scrolling-content.start-scrolling { animation: scrollBanner 220s linear infinite; }
@@ -796,16 +796,16 @@
             /* Hero adjustments for mobile */
             .faithox-hero-animation { height: 160px !important; margin: 20px auto 10px auto !important; max-width: 100% !important; }
             
-            .typewriter-container { font-size: 42px; }
-            .typewriter-container .cursor { height: 45px; }
+            .typewriter-container { font-size: 38px; }
+            .typewriter-container .cursor { height: 40px; }
             
             /* Mobile scaled proportional starboxes */
             .faithox-hero-animation .rating-pill { height: 35px !important; padding: 0 10px !important; gap: 5px !important; border-width: 2px !important; border-radius: 11px !important; }
             .faithox-hero-animation .rating-pill .star { width: 25px !important; height: 25px !important; }
             
-            .fsb-1 { left: 5% !important; top: 15% !important; bottom: auto !important; }
-            .fsb-2 { left: 10% !important; bottom: 15% !important; top: auto !important; }
-            .fsb-3 { right: 5% !important; top: 20% !important; bottom: auto !important; }
+            .fsb-1 { left: 2% !important; top: 10% !important; bottom: auto !important; }
+            .fsb-2 { left: 4% !important; bottom: 20% !important; top: auto !important; }
+            .fsb-3 { right: 2% !important; top: 15% !important; bottom: auto !important; }
             .fsb-4 { display: none !important; }
             .fsb-5 { display: none !important; }
         }
@@ -842,7 +842,7 @@ a.nav.link:hover {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 75px;
+        font-size: 68px;
         font-weight: 800;
         color: #1a1a1a;
         letter-spacing: -2.5px;
@@ -857,7 +857,7 @@ a.nav.link:hover {
     .typewriter-container .cursor {
         display: inline-block;
         width: 6px;
-        height: 75px;
+        height: 68px;
         background-color: #1a1a1a;
         margin-left: 8px;
         animation: blink 0.8s infinite;
@@ -888,31 +888,31 @@ a.nav.link:hover {
         height: 30px !important;
     }
 
-    .fsb-1 { top: 15%; left: 5%; bottom: auto; right: auto; animation: floatLocal1 6s infinite ease-in-out; }
-    .fsb-2 { bottom: 15%; left: 10%; top: auto; right: auto; animation: floatLocal2 7s infinite ease-in-out; }
-    .fsb-3 { top: 20%; right: 5%; bottom: auto; left: auto; animation: floatLocal3 6.5s infinite ease-in-out; }
-    .fsb-4 { bottom: 20%; right: 10%; top: auto; left: auto; animation: floatLocal4 7.5s infinite ease-in-out; }
-    .fsb-5 { top: -5%; left: 50%; bottom: auto; right: auto; transform: translateX(-50%); animation: floatLocal5 8s infinite ease-in-out; }
+    .fsb-1 { top: 8%; left: 2%; bottom: auto; right: auto; animation: floatLocal1 4s infinite ease-in-out; }
+    .fsb-2 { bottom: 18%; left: 4%; top: auto; right: auto; animation: floatLocal2 4.5s infinite ease-in-out; }
+    .fsb-3 { top: 12%; right: 2%; bottom: auto; left: auto; animation: floatLocal3 4.5s infinite ease-in-out; }
+    .fsb-4 { bottom: 20%; right: 4%; top: auto; left: auto; animation: floatLocal4 4.5s infinite ease-in-out; }
+    .fsb-5 { top: -5%; left: 50%; bottom: auto; right: auto; transform: translateX(-50%); animation: floatLocal5 5s infinite ease-in-out; }
 
     @keyframes floatLocal1 {
         0%, 100% { transform: translate(0, 0) rotate(-10deg); }
-        50% { transform: translate(12px, -18px) rotate(-5deg); }
+        50% { transform: translate(5px, -15px) rotate(-8deg); }
     }
     @keyframes floatLocal2 {
         0%, 100% { transform: translate(0, 0) rotate(12deg); }
-        50% { transform: translate(-12px, 15px) rotate(6deg); }
+        50% { transform: translate(-5px, -12px) rotate(10deg); }
     }
     @keyframes floatLocal3 {
         0%, 100% { transform: translate(0, 0) rotate(-15deg); }
-        50% { transform: translate(-18px, -12px) rotate(-8deg); }
+        50% { transform: translate(-8px, -10px) rotate(-13deg); }
     }
     @keyframes floatLocal4 {
         0%, 100% { transform: translate(0, 0) rotate(8deg); }
-        50% { transform: translate(15px, 18px) rotate(15deg); }
+        50% { transform: translate(6px, -14px) rotate(10deg); }
     }
     @keyframes floatLocal5 {
-        0%, 100% { transform: translateX(-50%) translate(0, 0) rotate(0deg); }
-        50% { transform: translateX(-50%) translate(0, -20px) rotate(5deg); }
+        0%, 100% { transform: translateX(-50%) translate(0, 0) rotate(5deg); }
+        50% { transform: translateX(-50%) translate(0, -18px) rotate(-3deg); }
     }
     </style>
 </head>
