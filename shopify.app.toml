@@ -3,7 +3,7 @@
 client_id = "2fab3cb6a774769f418c08f1e7c9de16"
 name = "Faithox"
 application_url = "https://faithox.com/api/auth"
-embedded = true
+embedded = false
 
 [webhooks]
 api_version = "2026-07"
