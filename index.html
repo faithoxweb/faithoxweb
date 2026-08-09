@@ -935,6 +935,19 @@
                 50% { transform: translateX(-50%) translate(0, -12px) rotate(-3deg); }
             }
         }
+
+        /* --- MOBILE SCROLLING REVIEWS CONTROL --- */
+            
+            /* 1. Move the entire scrolling section UP (Default laptop is 150px) */
+            .scrolling-reviews-container { 
+                margin-top: 70px !important; /* <--- Change this to push it higher or lower */
+            }
+
+            /* 2. Proportionately shrink both loading skeletons and real review cards */
+            .skeleton-card, 
+            .review-item-main {
+                zoom: 0.75 !important; /* <--- 1.0 is normal size, 0.85 is 15% smaller */
+            }
         
         /* Make the Contact link look like a button */
 a.nav.link {
