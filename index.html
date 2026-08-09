@@ -294,19 +294,18 @@
     #mobile-menu-overlay.active { opacity: 1; visibility: visible; }
     
     .mobile-menu-panel {
-        position: fixed; top: 0; right: -100%; width: 280px; max-width: 80vw; height: 100vh;
+        position: fixed; top: 0; right: -100%; width: 230px; max-width: 80vw; height: 100vh;
         background: #fdfdfd; box-shadow: -5px 0 30px rgba(0,0,0,0.1);
         z-index: 4000; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         display: flex; flex-direction: column; color: #2a2a2a;
     }
     .mobile-menu-panel.active { right: 0; }
     
-    .m-menu-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; border-bottom: 1px solid #ededed; }
-    .m-menu-header h3 { font-size: 18px; font-weight: 800; margin: 0; letter-spacing: -0.5px; text-transform: uppercase;}
-    .m-menu-header button { background: none; border: none; font-size: 28px; cursor: pointer; color: #64748b; transition: color 0.2s; line-height: 1; margin-top: -4px;}
-    .m-menu-header button:hover { color: #0f172a; }
+    .m-menu-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; }
+    .m-menu-header h3 { font-size: 18px; font-weight: 700; margin: 0; letter-spacing: -0.5px; text-transform: uppercase;}
+    .m-menu-header button { background: none; border: none; font-size: 28px; cursor: pointer; color: #2a2a2a; transition: color 0.2s; line-height: 1; margin-top: -4px;}
     
-    .m-menu-links { display: flex; flex-direction: column; padding: 20px; gap: 12px; }
+    .m-menu-links { display: flex; flex-direction: column; padding: 25px; gap: 15px; }
     .m-menu-links a { 
         padding: 15px 20px; font-size: 15px; font-weight: 600; color: #2a2a2a; 
         text-decoration: none; border-radius: 50px; background: #f0f1f1; 
@@ -1120,9 +1119,9 @@
             <button onclick="closeMobileMenu()">&times;</button>
         </div>
         <div class="m-menu-links">
-            <a onclick="closeMobileMenu(); navigateTo('contact.html')">Contact Us</a>
-            <a onclick="closeMobileMenu(); navigateTo('buisnesslogin.html')">Login</a>
             <a onclick="closeMobileMenu(); navigateTo('forbuisness.html')" class="m-menu-business">For Business</a>
+            <a onclick="closeMobileMenu(); navigateTo('buisnesslogin.html')">Login</a>
+            <a onclick="closeMobileMenu(); navigateTo('contact.html')">Contact Us</a>
         </div>
     </div>
 
