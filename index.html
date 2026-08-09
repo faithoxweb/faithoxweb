@@ -841,10 +841,10 @@
 
         @media (max-width: 768px) {
             .floating-hero-wrapper {
-                top: 65px;
-                left: 16px;
-                right: 16px;
-                height: 400px;
+                top: 55px;
+                left: 12px;
+                right: 12px;
+                height: 360px;
                 gap: 16px;
             }
             .floating-hero-bg {
@@ -854,12 +854,18 @@
                 display: none;
             }
             .live-banner {
-                top: 485px;
-                left: 16px;
+                top: 430px;
+                left: 12px;
             }
             .search-bar {padding: 16px 60px 16px 24px;font-size: 15px;}
             .search-icon {width: 38px; height: 38px; top: 7px; right: 8px; }
             .nav-options { display: none; }
+            /* --- MOBILE LOGO CONTROL --- */
+            .brand-text { 
+                font-size: 18px !important; /* <--- Change this to make the logo text bigger or smaller */
+                letter-spacing: -0.5px !important; /* <--- Optional: Change this to squeeze or spread the letters */
+            }
+            .top-bar { height: 55px !important; } /* <--- Controls the height of the actual top navigation bar */
             
             /* Responsive Notification & User Menu updates */
             .nav-notif-btn { margin-left: auto; margin-right: 12px; }
@@ -882,7 +888,7 @@
             /* Hero adjustments for mobile */
             .faithox-hero-animation { height: 180px !important; margin: 10px auto 10px auto !important; max-width: 100% !important; }
             
-            .typewriter-container { font-size: 40px !important; }
+            .typewriter-container { font-size: 40px !important; top: 40% !important; }
             .typewriter-container .cursor { height: 40px !important; width: 2px !important; margin-left: 3px !important; }
             
             /* 100% Proportional Scaled Starboxes (66.6% of Laptop Size) */
@@ -894,18 +900,18 @@
                 border-radius: 9px !important; 
                 box-shadow: 0 6px 20px rgba(0,0,0,0.08) !important; /* Scaled down visible mobile shadow */
             }
-            
+
             .faithox-hero-animation .rating-pill .star { 
                 width: 20px !important; 
                 height: 20px !important; 
             }
             
             /* Mobile Positions & Scaled Animations */
-            .fsb-1 { top: 5% !important; left: 6% !important; bottom: auto !important; right: auto !important; animation: floatMobile1 4s infinite ease-in-out !important; }
-            .fsb-2 { bottom: 5% !important; left: 8% !important; top: auto !important; right: auto !important; animation: floatMobile2 4.5s infinite ease-in-out !important; }
-            .fsb-3 { top: 8% !important; right: 6% !important; bottom: auto !important; left: auto !important; animation: floatMobile3 4.5s infinite ease-in-out !important; }
-            .fsb-4 { bottom: 8% !important; right: 8% !important; top: auto !important; left: auto !important; display: inline-flex !important; animation: floatMobile4 4.5s infinite ease-in-out !important; }
-            .fsb-5 { top: -25% !important; left: 50% !important; transform: translateX(-50%); bottom: auto !important; right: auto !important; display: inline-flex !important; animation: floatMobile5 5s infinite ease-in-out !important; }
+            .fsb-1 { top: 0% !important; left: 6% !important; bottom: auto !important; right: auto !important; animation: floatMobile1 4s infinite ease-in-out !important; }
+            .fsb-2 { bottom: 15% !important; left: 8% !important; top: auto !important; right: auto !important; animation: floatMobile2 4.5s infinite ease-in-out !important; }
+            .fsb-3 { top: 0% !important; right: 6% !important; bottom: auto !important; left: auto !important; animation: floatMobile3 4.5s infinite ease-in-out !important; }
+            .fsb-4 { bottom: 15% !important; right: 8% !important; top: auto !important; left: auto !important; display: inline-flex !important; animation: floatMobile4 4.5s infinite ease-in-out !important; }
+            .fsb-5 { top: -30% !important; left: 50% !important; transform: translateX(-50%); bottom: auto !important; right: auto !important; display: inline-flex !important; animation: floatMobile5 5s infinite ease-in-out !important; }
 
             /* 100% Proportional Float Distances (Movement reduced by 33%) */
             @keyframes floatMobile1 {
