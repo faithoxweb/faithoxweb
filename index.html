@@ -274,6 +274,47 @@
     .nav-link.for-business-btn:hover {
         background-color: #404040;
     }
+
+    /* --- MOBILE MENU BUTTON (HIDDEN ON DESKTOP) --- */
+    .mobile-menu-btn {
+        display: none;
+        background: transparent;
+        border: none;
+        color: #2a2a2a;
+        cursor: pointer;
+        padding: 5px;
+    }
+    
+    /* --- MOBILE SIDE PANEL --- */
+    #mobile-menu-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.4); z-index: 3999; backdrop-filter: blur(2px);
+        opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    }
+    #mobile-menu-overlay.active { opacity: 1; visibility: visible; }
+    
+    .mobile-menu-panel {
+        position: fixed; top: 0; right: -100%; width: 280px; max-width: 80vw; height: 100vh;
+        background: #fdfdfd; box-shadow: -5px 0 30px rgba(0,0,0,0.1);
+        z-index: 4000; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex; flex-direction: column; color: #2a2a2a;
+    }
+    .mobile-menu-panel.active { right: 0; }
+    
+    .m-menu-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; border-bottom: 1px solid #ededed; }
+    .m-menu-header h3 { font-size: 18px; font-weight: 800; margin: 0; letter-spacing: -0.5px; text-transform: uppercase;}
+    .m-menu-header button { background: none; border: none; font-size: 28px; cursor: pointer; color: #64748b; transition: color 0.2s; line-height: 1; margin-top: -4px;}
+    .m-menu-header button:hover { color: #0f172a; }
+    
+    .m-menu-links { display: flex; flex-direction: column; padding: 20px; gap: 12px; }
+    .m-menu-links a { 
+        padding: 15px 20px; font-size: 15px; font-weight: 600; color: #2a2a2a; 
+        text-decoration: none; border-radius: 50px; background: #f0f1f1; 
+        transition: all 0.2s; cursor: pointer; text-align: center;
+    }
+    .m-menu-links a:hover { background: #e2e8f0; }
+    .m-menu-links a.m-menu-business { background: #2a2a2a; color: #fdfdfd; }
+    .m-menu-links a.m-menu-business:hover { background: #404040; }
         
         /* --- NOTIFICATION BUTTON AND PANEL STYLES --- */
         .nav-notif-btn {
@@ -859,15 +900,19 @@
             }
             .search-bar {padding: 16px 60px 16px 24px;font-size: 15px;}
             .search-icon {width: 38px; height: 38px; top: 7px; right: 8px; }
-            .nav-options { display: none; }
+            
+            /* --- MOBILE NAV CONTROLS --- */
+            .nav-options { display: none; } /* Hide normal buttons */
+            .mobile-menu-btn { display: flex !important; align-items: center; justify-content: center; width: 35px; height: 35px; background: #fdfdfd; border-radius: 50%; } /* Show hamburger */
+            
             /* --- MOBILE LOGO CONTROL --- */
             .brand-text { 
-                font-size: 18px !important; /* <--- Change this to make the logo text bigger or smaller */
-                letter-spacing: -0.5px !important; /* <--- Optional: Change this to squeeze or spread the letters */
+                font-size: 18px !important; 
+                letter-spacing: -0.5px !important; 
             }
-            .top-bar { height: 55px !important; } /* <--- Controls the height of the actual top navigation bar */
+            .top-bar { height: 55px !important; } 
             
-            /* Responsive Notification & User Menu updates */
+            /* Responsive Notification updates */
             .nav-notif-btn { margin-left: auto; margin-right: 12px; }
             .user-menu-container { margin-left: 0; }
             .notification-panel { width: 85vw; right: -85vw; }
@@ -898,7 +943,7 @@
                 gap: 4px !important; 
                 border-width: 2px !important; 
                 border-radius: 9px !important; 
-                box-shadow: 0 6px 20px rgba(0,0,0,0.08) !important; /* Scaled down visible mobile shadow */
+                box-shadow: 0 6px 20px rgba(0,0,0,0.08) !important; 
             }
 
             .faithox-hero-animation .rating-pill .star { 
@@ -936,37 +981,35 @@
             }
 
             /* --- MOBILE SCROLLING REVIEWS CONTROL --- */
-            
-            /* 1. Move the entire scrolling section UP (Default laptop is 150px) */
+            /* 1. Move the entire scrolling section UP */
             .scrolling-reviews-container { 
-                margin-top: 70px !important; /* <--- Change this to push it higher or lower */
+                margin-top: 70px !important; 
             }
 
             /* 2. Proportionately shrink both loading skeletons and real review cards */
             .skeleton-card, 
             .review-item-main {
-                zoom: 0.80 !important; /* <--- 1.0 is normal size, 0.85 is 15% smaller */
+                zoom: 0.85 !important; 
             }
         }
         
         /* Make the Contact link look like a button */
-a.nav.link {
-  display: inline-block;
-  padding: 10px 20px; /* Adjusts the size of the button */
-  background-color: #ffffff; /* Blue background color */
-  color: rgb(22, 20, 20) !important; /* White text */
-  text-decoration: none; /* Removes the underline */
-  border-radius: 20px; /* Slightly rounded corners */
-  font-weight: normal;
-  text-align: center;
-  transition: background-color 0.3s ease;
-}
+        a.nav.link {
+          display: inline-block;
+          padding: 10px 20px; /* Adjusts the size of the button */
+          background-color: #ffffff; /* Blue background color */
+          color: rgb(22, 20, 20) !important; /* White text */
+          text-decoration: none; /* Removes the underline */
+          border-radius: 20px; /* Slightly rounded corners */
+          font-weight: normal;
+          text-align: center;
+          transition: background-color 0.3s ease;
+        }
 
-/* Add a hover effect so it reacts when the mouse is over it */
-a.nav.link:hover {
-  background-color: #0056b3; /* Darker blue on hover */
-  text-decoration: none;
-}
+        a.nav.link:hover {
+          background-color: #0056b3; /* Darker blue on hover */
+          text-decoration: none;
+        }
     
     </style>
 </head>
@@ -1057,8 +1100,31 @@ a.nav.link:hover {
                 <a class="nav-link" onclick="navigateTo('buisnesslogin.html')">Login</a>
                 <a class="nav-link for-business-btn" onclick="navigateTo('forbuisness.html')">For Business</a>
             </div>
+            
+            <!-- MOBILE MENU BUTTON (Only shows on mobile) -->
+            <button class="mobile-menu-btn" onclick="openMobileMenu()" aria-label="Menu">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
         </div>
     </nav>
+    
+    <!-- MOBILE SIDE PANEL & OVERLAY -->
+    <div id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+    <div id="mobile-menu-panel" class="mobile-menu-panel">
+        <div class="m-menu-header">
+            <h3>Menu</h3>
+            <button onclick="closeMobileMenu()">&times;</button>
+        </div>
+        <div class="m-menu-links">
+            <a onclick="closeMobileMenu(); navigateTo('contact.html')">Contact Us</a>
+            <a onclick="closeMobileMenu(); navigateTo('buisnesslogin.html')">Login</a>
+            <a onclick="closeMobileMenu(); navigateTo('forbuisness.html')" class="m-menu-business">For Business</a>
+        </div>
+    </div>
 
     <div class="app-card">
         <div class="content-wrapper">
@@ -1438,6 +1504,17 @@ a.nav.link:hover {
     </div>
 
     <script>
+        // --- MOBILE MENU FUNCTIONALITY ---
+        function openMobileMenu() {
+            document.getElementById('mobile-menu-panel').classList.add('active');
+            document.getElementById('mobile-menu-overlay').classList.add('active');
+        }
+
+        function closeMobileMenu() {
+            document.getElementById('mobile-menu-panel').classList.remove('active');
+            document.getElementById('mobile-menu-overlay').classList.remove('active');
+        }
+
         // --- XSS Protection Function ---
         function escapeHTML(str) {
             if (!str) return '';
