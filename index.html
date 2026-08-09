@@ -744,90 +744,6 @@
             opacity: 0; 
         }
         
-
-        @media (max-width: 900px) {
-            .business-banner { flex-direction: column; padding: 60px 30px; align-items: center; text-align: center; gap: 40px; }
-            .bb-left-col { max-width: 100%; align-items: center; text-align: center; }
-            .bb-right-col { width: 100%; justify-content: center; }
-            .bb-right-col svg { max-width: 100%; height: auto; }
-            .bb-trust { justify-content: center; flex-wrap: wrap; }
-        }
-
-        @media (max-width: 768px) {
-            .floating-hero-wrapper {
-                top: 65px;
-                left: 16px;
-                right: 16px;
-                height: 400px;
-                gap: 16px;
-            }
-            .floating-hero-bg {
-                border-radius: 24px;
-            }
-            .floating-hero-bg.side {
-                display: none;
-            }
-            .live-banner {
-                top: 485px;
-                left: 16px;
-            }
-            .search-bar {padding: 16px 60px 16px 24px;font-size: 15px;}
-            .search-icon {width: 38px; height: 38px; top: 7px; right: 8px; }
-            .nav-options { display: none; }
-            
-            /* Responsive Notification & User Menu updates */
-            .nav-notif-btn { margin-left: auto; margin-right: 12px; }
-            .user-menu-container { margin-left: 0; }
-            .notification-panel { width: 85vw; right: -85vw; }
-
-            .hero-heading { font-size: 32px; margin: 27px auto 20px auto; }
-            .company-grid { grid-template-columns: repeat(2, 1fr); }
-            
-            .bb-text h2 { font-size: 32px; }
-            .bb-text p { font-size: 15px; }
-            .bb-actions { flex-direction: column; width: 100%; gap: 10px; }
-            .bb-btn, .bb-btn-secondary { width: 100%; justify-content: center; padding: 14px 35px; font-size: 15px; }
-            
-            /* Footer Mobile */
-            .footer-top { grid-template-columns: 1fr; gap: 40px; }
-            .footer-brand-col { grid-column: span 1; padding-right: 0; }
-            .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
-
-            /* Hero adjustments for mobile */
-            .faithox-hero-animation { height: 180px !important; margin: 10px auto 10px auto !important; max-width: 100% !important; }
-            
-            .typewriter-container { font-size: 16px !important; }
-            .typewriter-container .cursor { height: 18px !important; width: 2px !important; margin-left: 3px !important; }
-            
-            /* Mobile scaled proportional starboxes - perfectly spaced */
-            .faithox-hero-animation .rating-pill { height: 22px !important; padding: 0 8px !important; gap: 4px !important; border-width: 1.5px !important; border-radius: 8px !important; }
-            .faithox-hero-animation .rating-pill .star { width: 11px !important; height: 11px !important; }
-            
-            .fsb-1 { top: 5% !important; left: 6% !important; bottom: auto !important; right: auto !important; }
-            .fsb-2 { bottom: 5% !important; left: 8% !important; top: auto !important; right: auto !important; }
-            .fsb-3 { top: 8% !important; right: 6% !important; bottom: auto !important; left: auto !important; }
-            .fsb-4 { bottom: 8% !important; right: 8% !important; top: auto !important; left: auto !important; display: inline-flex !important; }
-            .fsb-5 { top: -5% !important; left: 50% !important; transform: translateX(-50%) !important; bottom: auto !important; right: auto !important; display: inline-flex !important; }
-        }
-        
-        /* Make the Contact link look like a button */
-a.nav.link {
-  display: inline-block;
-  padding: 10px 20px; /* Adjusts the size of the button */
-  background-color: #ffffff; /* Blue background color */
-  color: rgb(22, 20, 20) !important; /* White text */
-  text-decoration: none; /* Removes the underline */
-  border-radius: 20px; /* Slightly rounded corners */
-  font-weight: normal;
-  text-align: center;
-  transition: background-color 0.3s ease;
-}
-
-/* Add a hover effect so it reacts when the mouse is over it */
-a.nav.link:hover {
-  background-color: #0056b3; /* Darker blue on hover */
-  text-decoration: none;
-}
     /* --- HERO STATIC ANIMATION AREA --- */
     .faithox-hero-animation {
       display: flex; align-items: center; justify-content: center;
@@ -914,6 +830,123 @@ a.nav.link:hover {
         0%, 100% { transform: translateX(-50%) translate(0, 0) rotate(5deg); }
         50% { transform: translateX(-50%) translate(0, -18px) rotate(-3deg); }
     }
+
+        @media (max-width: 900px) {
+            .business-banner { flex-direction: column; padding: 60px 30px; align-items: center; text-align: center; gap: 40px; }
+            .bb-left-col { max-width: 100%; align-items: center; text-align: center; }
+            .bb-right-col { width: 100%; justify-content: center; }
+            .bb-right-col svg { max-width: 100%; height: auto; }
+            .bb-trust { justify-content: center; flex-wrap: wrap; }
+        }
+
+        @media (max-width: 768px) {
+            .floating-hero-wrapper {
+                top: 65px;
+                left: 16px;
+                right: 16px;
+                height: 400px;
+                gap: 16px;
+            }
+            .floating-hero-bg {
+                border-radius: 24px;
+            }
+            .floating-hero-bg.side {
+                display: none;
+            }
+            .live-banner {
+                top: 485px;
+                left: 16px;
+            }
+            .search-bar {padding: 16px 60px 16px 24px;font-size: 15px;}
+            .search-icon {width: 38px; height: 38px; top: 7px; right: 8px; }
+            .nav-options { display: none; }
+            
+            /* Responsive Notification & User Menu updates */
+            .nav-notif-btn { margin-left: auto; margin-right: 12px; }
+            .user-menu-container { margin-left: 0; }
+            .notification-panel { width: 85vw; right: -85vw; }
+
+            .hero-heading { font-size: 32px; margin: 27px auto 20px auto; }
+            .company-grid { grid-template-columns: repeat(2, 1fr); }
+            
+            .bb-text h2 { font-size: 32px; }
+            .bb-text p { font-size: 15px; }
+            .bb-actions { flex-direction: column; width: 100%; gap: 10px; }
+            .bb-btn, .bb-btn-secondary { width: 100%; justify-content: center; padding: 14px 35px; font-size: 15px; }
+            
+            /* Footer Mobile */
+            .footer-top { grid-template-columns: 1fr; gap: 40px; }
+            .footer-brand-col { grid-column: span 1; padding-right: 0; }
+            .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+
+            /* Hero adjustments for mobile */
+            .faithox-hero-animation { height: 180px !important; margin: 10px auto 10px auto !important; max-width: 100% !important; }
+            
+            .typewriter-container { font-size: 40px !important; }
+            .typewriter-container .cursor { height: 40px !important; width: 2px !important; margin-left: 3px !important; }
+            
+            /* 100% Proportional Scaled Starboxes (66.6% of Laptop Size) */
+            .faithox-hero-animation .rating-pill { 
+                height: 28px !important; 
+                padding: 0 8px !important; 
+                gap: 4px !important; 
+                border-width: 2px !important; 
+                border-radius: 9px !important; 
+            }
+            .faithox-hero-animation .rating-pill .star { 
+                width: 20px !important; 
+                height: 20px !important; 
+            }
+            
+            /* Mobile Positions & Scaled Animations */
+            .fsb-1 { top: 5% !important; left: 6% !important; bottom: auto !important; right: auto !important; animation: floatMobile1 4s infinite ease-in-out !important; }
+            .fsb-2 { bottom: 5% !important; left: 8% !important; top: auto !important; right: auto !important; animation: floatMobile2 4.5s infinite ease-in-out !important; }
+            .fsb-3 { top: 8% !important; right: 6% !important; bottom: auto !important; left: auto !important; animation: floatMobile3 4.5s infinite ease-in-out !important; }
+            .fsb-4 { bottom: 8% !important; right: 8% !important; top: auto !important; left: auto !important; display: inline-flex !important; animation: floatMobile4 4.5s infinite ease-in-out !important; }
+            .fsb-5 { top: -25% !important; left: 50% !important; transform: translateX(-50%); bottom: auto !important; right: auto !important; display: inline-flex !important; animation: floatMobile5 5s infinite ease-in-out !important; }
+
+            /* 100% Proportional Float Distances (Movement reduced by 33%) */
+            @keyframes floatMobile1 {
+                0%, 100% { transform: translate(0, 0) rotate(-10deg); }
+                50% { transform: translate(3px, -10px) rotate(-8deg); }
+            }
+            @keyframes floatMobile2 {
+                0%, 100% { transform: translate(0, 0) rotate(12deg); }
+                50% { transform: translate(-3px, -8px) rotate(10deg); }
+            }
+            @keyframes floatMobile3 {
+                0%, 100% { transform: translate(0, 0) rotate(-15deg); }
+                50% { transform: translate(-5px, -7px) rotate(-13deg); }
+            }
+            @keyframes floatMobile4 {
+                0%, 100% { transform: translate(0, 0) rotate(8deg); }
+                50% { transform: translate(4px, -9px) rotate(10deg); }
+            }
+            @keyframes floatMobile5 {
+                0%, 100% { transform: translateX(-50%) translate(0, 0) rotate(5deg); }
+                50% { transform: translateX(-50%) translate(0, -12px) rotate(-3deg); }
+            }
+        }
+        
+        /* Make the Contact link look like a button */
+a.nav.link {
+  display: inline-block;
+  padding: 10px 20px; /* Adjusts the size of the button */
+  background-color: #ffffff; /* Blue background color */
+  color: rgb(22, 20, 20) !important; /* White text */
+  text-decoration: none; /* Removes the underline */
+  border-radius: 20px; /* Slightly rounded corners */
+  font-weight: normal;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+/* Add a hover effect so it reacts when the mouse is over it */
+a.nav.link:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  text-decoration: none;
+}
+    
     </style>
 </head>
 <body>
