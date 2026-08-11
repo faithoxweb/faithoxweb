@@ -58,7 +58,8 @@ export default async function handler(req, res) {
         if (topic === 'orders/paid') {
             console.log("🔔 [orders/paid] Webhook successfully caught!");
             
-            const customerEmail = payload.contact_email || payload.customer?.email;
+            const customerEmail = payload.email || payload.contact_email || payload.customer?.email;
+
             const lineItems = payload.line_items || [];
 
             console.log(`📧 Customer Email: ${customerEmail || "MISSING"}`);
