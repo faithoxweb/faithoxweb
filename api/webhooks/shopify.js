@@ -80,7 +80,7 @@ export default async function handler(req, res) {
                     const { data: product, error: findError } = await supabaseAdmin
                         .from('products')
                         .select('product_id, store_id, name, website')
-                        .eq('external_product_id', shopifyProductId)
+                        .eq('product_id', shopifyProductId)
                         .maybeSingle();
 
                     if (findError || !product) continue; 
