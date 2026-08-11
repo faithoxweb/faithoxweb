@@ -78,8 +78,8 @@ export default async function handler(req, res) {
     // 4.5. AUTOMATICALLY REGISTER WEBHOOKS WITH SHOPIFY
     // =============================================================
     const webhooksToRegister = [
-      { topic: "app/uninstalled", address: "https://faithox.com/api/webhooks/shopify" },
-      { topic: "orders/paid", address: "https://faithox.com/api/webhooks/shopify" }
+      { topic: "app/uninstalled", address: "https://faithox.com/api/webhooks/shopify.js" },
+      { topic: "orders/paid", address: "https://faithox.com/api/webhooks/shopify.js" }
     ];
 
     for (const hook of webhooksToRegister) {
