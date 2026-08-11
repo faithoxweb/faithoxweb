@@ -4,7 +4,7 @@
     { "src": "api/auth/index.js", "use": "@vercel/node" },
     { "src": "api/auth/callback.js", "use": "@vercel/node" },
     { "src": "api/razorpay.js", "use": "@vercel/node" },
-    { "src": "api/webhook/shopify.js", "use": "@vercel/node" },
+    { "src": "api/webhooks/shopify.js", "use": "@vercel/node" },
     { "src": "api/reviews.js", "use": "@vercel/node" },
     { "src": "**/*.html", "use": "@vercel/static" }
   ],
@@ -12,7 +12,7 @@
     { "src": "/api/auth", "dest": "api/auth/index.js" },
     { "src": "/api/auth/callback", "dest": "api/auth/callback.js" },
     { "src": "/api/razorpay", "dest": "api/razorpay.js" },
-    { "src": "/api/webhook/shopify", "dest": "api/webhook/shopify.js" },
+    { "src": "/api/webhooks/shopify", "dest": "api/webhook/shopify.js" },
     { "src": "/api/reviews", "dest": "api/reviews.js" }
   ],
   "headers": [
