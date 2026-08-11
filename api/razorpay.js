@@ -39,13 +39,33 @@ export default async function handler(req, res) {
 
     const paymentEntity = data.payload.payment.entity;
     
-    const storeName = paymentEntity.notes?.store_name;
-    const trueProductId = paymentEntity.notes?.faithox_product_id;
-    
+// =============================================================
+    // 3. SMART PAYLOAD CHECK (Shopify vs Custom Website)
+    // =============================================================
+    const notes = paymentEntity.notes || {};
+    const storeName = notes.store_name;
+    const trueProductId = notes.faithox_product_id;
+
+    // Detect if this payment originated from a Shopify order
+    const isShopifyOrder = 
+      notes.shopify_order_id || 
+      notes.order_id || 
+      (paymentEntity.description && paymentEntity.description.toLowerCase().includes('order #'));
+
     if (!storeName || !trueProductId) {
-      console.error("Rejected: Missing store_name or faithox_product_id in payload notes");
-      return res.status(400).send('Missing parameters');
+      if (isShopifyOrder) {
+        // 1. Normal Shopify Order -> Log informatively and return 200 OK
+        console.log("ℹ️ [SHOPIFY ORDER DETECTED]: Skipping Razorpay processing (handled by api/webhooks/shopify).");
+        return res.status(200).send('Skipped: Shopify Order');
+      } else {
+        // 2. Custom Website Bug -> Log CRITICAL ERROR in Vercel, but return 200 OK so Razorpay stays active
+        console.error("🚨 [CUSTOM WEBSITE BUG DETECTED]: Payment captured, but missing 'store_name' or 'faithox_product_id' in Razorpay notes!");
+        console.error("Received payload notes:", JSON.stringify(notes));
+        return res.status(200).send('Skipped: Missing custom website notes');
+      }
     }
+    // =============================================================
+
 
     // 3. Look up store secret
     const { data: storeData, error: storeError } = await supabase
