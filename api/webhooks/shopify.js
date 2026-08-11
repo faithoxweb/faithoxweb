@@ -57,6 +57,14 @@ export default async function handler(req, res) {
               // --- NEW: Handle Order Webhooks ---
         if (topic === 'orders/paid') {
             console.log("🔔 [orders/paid] Webhook successfully caught!");
+          
+            // --- DEBUG INSPECTOR ---
+            console.log("🔍 DEBUG - Email fields received:", JSON.stringify({
+                root_email: payload.email,
+                contact_email: payload.contact_email,
+                customer_obj: payload.customer,
+                billing: payload.billing_address
+            }, null, 2));
             
            const customerEmail = payload.email || payload.contact_email || payload.customer?.email || payload.billing_address?.email || payload.shipping_address?.email;
             const lineItems = payload.line_items || [];
