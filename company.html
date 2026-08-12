@@ -883,13 +883,14 @@
                 await loadReviews(companyData.product_id, companyData.name); 
             }
         }
-
-        async function loadCompanyDetails(searchParam) {
-            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(searchParam);
+        
+async function loadCompanyDetails(searchParam) {
+            // 🟢 FIX: Allow standard UUIDs OR purely numeric Shopify IDs
+            const isId = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(searchParam) || /^\d+$/.test(searchParam);
             
             // Updated to fetch from the new 'products' table
             let query = db.from('products').select('*');
-            if (isUuid) {
+            if (isId) {
                 // Use the new product_id column
                 query = query.eq('product_id', searchParam);
             } else {
@@ -905,6 +906,7 @@
             }
 
             const co = data[0];
+
 
             // --- UI Updates ---
             document.getElementById('img-frame').classList.remove('skeleton-anim');
