@@ -116,12 +116,16 @@ export default async function handler(req, res) {
                                 to: customerEmail,
                                 subject: `How are you liking your new ${product.name}?`,
                                 html: `
-                                    <div style="font-family: sans-serif; text-align: center; padding: 20px;">
-                                        <h2>We hope you love your new gear!</h2>
-                                        <p>As a verified buyer of the <strong>${product.name}</strong>, your opinion matters.</p>
-                                        <br>
-                                        <a href="${product.website}" style="padding: 12px 24px; background: #242424; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Write a Review</a>
-                                    </div>
+                                   html: `
+    <div style="font-family: sans-serif; text-align: center; padding: 20px;">
+        <h2>We hope you love your new gear!</h2>
+        <p>As a verified buyer of the <strong>${product.name}</strong>, your opinion matters.</p>
+        <br>
+        <!-- Updated link to redirect to Faithox with URL parameters -->
+        <a href="https://www.faithox.com/postareviewguest.html?product_id=${product.product_id}&email=${encodeURIComponent(customerEmail)}" style="padding: 12px 24px; background: #242424; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Write a Review</a>
+    </div>
+`
+
                                 `
                             });
                             console.log(`✉️ Automated review request sent to ${customerEmail}`);
