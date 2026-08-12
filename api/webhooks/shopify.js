@@ -31,8 +31,8 @@ export default async function handler(req, res) {
 
         // 2. Verify Shopify Signature
         const hmacHeader = req.headers['x-shopify-hmac-sha256'];
-        const shopDomain = req.headers['x-shopify-shop-domain']; // Domain of the store sending the event
-        const topic = req.headers['x-shopify-topic']; // NEW: Get the exact webhook event type
+        const shopDomain = req.headers['x-shopify-shop-domain']; 
+        const topic = req.headers['x-shopify-topic']; 
         const shopifySecret = process.env.SHOPIFY_WEBHOOK_SECRET || process.env.SHOPIFY_API_SECRET;
 
         if (!hmacHeader || !shopifySecret) {
@@ -40,7 +40,6 @@ export default async function handler(req, res) {
             return res.status(401).send('Unauthorized');
         }
 
-        // Pass rawBody Buffer directly to update() without specifying 'utf8'
         const generatedHash = crypto
             .createHmac('sha256', shopifySecret)
             .update(rawBody)
@@ -54,7 +53,7 @@ export default async function handler(req, res) {
         // 3. Parse JSON safely
         const payload = JSON.parse(rawBody.toString('utf8'));
 
-              // --- NEW: Handle Order Webhooks ---
+        // --- NEW: Handle Order Webhooks ---
         if (topic === 'orders/paid') {
             console.log("🔔 [orders/paid] Webhook successfully caught!");
           
@@ -66,7 +65,7 @@ export default async function handler(req, res) {
                 billing: payload.billing_address
             }, null, 2));
             
-           const customerEmail = payload.email || payload.contact_email || payload.customer?.email || payload.billing_address?.email || payload.shipping_address?.email;
+            const customerEmail = payload.email || payload.contact_email || payload.customer?.email || payload.billing_address?.email || payload.shipping_address?.email;
             const lineItems = payload.line_items || [];
 
             console.log(`📧 Customer Email: ${customerEmail || "MISSING"}`);
@@ -94,7 +93,7 @@ export default async function handler(req, res) {
 
                     if (findError || !product) continue; 
 
-                    // 5. Insert Eligibility
+                    // 5. RESTORED: Insert Eligibility to prevent duplicate emails
                     const { error: insertError } = await supabaseAdmin
                         .from('eligible_reviewers')
                         .insert({
@@ -109,28 +108,44 @@ export default async function handler(req, res) {
                     } else {
                         console.log(`✅ Authorized review for ${customerEmail}`);
                         
-                        try {
-                            // CRITICAL: We MUST await this on Vercel
-                            await resend.emails.send({
-                                from: 'Faithox Reviews <reviews@faithox.com>', 
-                                to: customerEmail,
-                                subject: `How are you liking your new ${product.name}?`,
-                                html: `
-                                   html: `
-    <div style="font-family: sans-serif; text-align: center; padding: 20px;">
-        <h2>We hope you love your new gear!</h2>
-        <p>As a verified buyer of the <strong>${product.name}</strong>, your opinion matters.</p>
-        <br>
-        <!-- Updated link to redirect to Faithox with URL parameters -->
-        <a href="https://www.faithox.com/postareviewguest.html?product_id=${product.product_id}&email=${encodeURIComponent(customerEmail)}" style="padding: 12px 24px; background: #242424; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Write a Review</a>
-    </div>
-`
+                        // 7. NEW: Generate and Insert Secure Token
+                        const reviewToken = crypto.randomBytes(16).toString('hex');
 
-                                `
+                        const { error: tokenError } = await supabaseAdmin
+                            .from('review_tokens')
+                            .insert({
+                                token: reviewToken,
+                                store_id: product.store_id,
+                                product_id: product.product_id,
+                                buyer_email: customerEmail,
+                                status: 'unused' 
                             });
-                            console.log(`✉️ Automated review request sent to ${customerEmail}`);
-                        } catch (emailError) {
-                            console.error('❌ Failed to send Resend email:', emailError);
+
+                        if (tokenError) {
+                            console.error(`❌ Failed to create review token:`, tokenError.message);
+                        } else {
+                            console.log(`✅ Secure token created for ${customerEmail}`);
+                            
+                            try {
+                                // 8. Send the Email with the Token Link
+                                await resend.emails.send({
+                                    from: 'Faithox Reviews <reviews@faithox.com>', 
+                                    to: customerEmail,
+                                    subject: `How are you liking your new ${product.name}?`,
+                                    html: `
+                                        <div style="font-family: sans-serif; text-align: center; padding: 20px;">
+                                            <h2>We hope you love your new gear!</h2>
+                                            <p>As a verified buyer of the <strong>${product.name}</strong>, your opinion matters.</p>
+                                            <br>
+                                            <!-- SECURE LINK: Only uses the unique token -->
+                                            <a href="https://www.faithox.com/postareviewguest.html?token=${reviewToken}" style="padding: 12px 24px; background: #242424; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Write a Review</a>
+                                        </div>
+                                    `
+                                });
+                                console.log(`✉️ Automated review request sent to ${customerEmail}`);
+                            } catch (emailError) {
+                                console.error('❌ Failed to send Resend email:', emailError);
+                            }
                         }
                     }
                 }
@@ -139,8 +154,7 @@ export default async function handler(req, res) {
             }
         }
 
-
-        // 7. Catch-All Success Response
+        // 9. Catch-All Success Response
         return res.status(200).send('Webhook Processed Successfully');
 
     } catch (error) {
