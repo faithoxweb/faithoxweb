@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Initialize Supabase
     const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-    const SUPABASE_KEY = 'YOUR_SUPABASE_KEY'; // PASTE YOUR KEY HERE
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o'; // PASTE YOUR KEY HERE
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     async function loadWidgetReviews() {
@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
         const seeMoreBtn = document.getElementById(`see-more-link-${blockId}`);
-        seeMoreBtn.href = `https://faithoxweb.vercel.app/company.html?id=${productId}`;
+        seeMoreBtn.href = `https://www.faithox.com/company?id=${productId}`;
         seeMoreBtn.style.display = 'flex';
         
         if (reviews.length > 1) {
