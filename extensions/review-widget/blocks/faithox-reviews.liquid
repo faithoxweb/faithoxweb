@@ -36,14 +36,14 @@
     outline: none; 
 }
 
-/* 2. Base styles applied to the root wrapper using your Shopify Settings! */
+/* 2. Base styles applied to the root wrapper using your Shopify Settings */
 #faithox-widget-{{ block.id }} { 
-    font-family: 'Inter', -apple-system, sans-serif; 
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
     color: #1e293b;
     -webkit-font-smoothing: antialiased;
     width: 100%;
-    margin: 0 auto; /* Keeps it perfectly centered */
-    max-width: {{ block.settings.widget_width }}px; /* Slider Width */
+    margin: 0 auto;
+    max-width: {{ block.settings.widget_width }}px;
     display: block;
 }
 
@@ -52,7 +52,7 @@
     flex-direction: column;
     width: 100%;
     padding: 20px; 
-    background: {{ block.settings.bg_color }}; /* Shopify BG Color */
+    background: {{ block.settings.bg_color }};
     border: 2px solid #2a2a2a; 
     border-radius: 16px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
@@ -84,6 +84,7 @@
     display: flex; 
     flex-direction: column; 
     gap: 12px; 
+    cursor: pointer; 
     text-align: left;
     position: relative; 
     overflow: hidden; 
@@ -93,7 +94,20 @@
 #faithox-widget-{{ block.id }} .review-item-main:hover { background: #f8fafc; }
 
 #faithox-widget-{{ block.id }} .rating-pill { 
-    position: absolute; top: 24px; right: 24px; display: inline-flex; align-items: center; gap: 4px; padding: 0 8px; height: 28px; border-radius: 9px; background: #fdfdfd; border: 2px solid #19bb42; width: fit-content; margin: 0; flex-shrink: 0; 
+    position: absolute; 
+    top: 24px; 
+    right: 24px; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 4px; 
+    padding: 0 8px; 
+    height: 28px; 
+    border-radius: 9px; 
+    background: #fdfdfd; 
+    border: 2px solid #19bb42; 
+    width: fit-content; 
+    margin: 0; 
+    flex-shrink: 0; 
 }
 #faithox-widget-{{ block.id }} .rating-pill .star { width: 20px; height: 20px; color: #e2e8f0; display: inline-flex; align-items: center; justify-content: center; }
 #faithox-widget-{{ block.id }} .rating-pill .star svg { width: 100%; height: 100%; fill: currentColor; }
@@ -151,12 +165,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function escapeHTML(str) {
         if (!str) return '';
-        return String(str).replace(/[&<>'"]/g, tag => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[tag]));
+        return String(str).replace(/[&<>'"]/g, tag => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        }[tag]));
     }
 
     // Initialize Supabase
     const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o'; // PASTE YOUR KEY HERE
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     async function loadWidgetReviews() {
@@ -186,13 +202,67 @@ document.addEventListener("DOMContentLoaded", function() {
                 : initials;
 
             let starsHtml = '';
-            for(let i=1; i<=5; i++) { starsHtml += `<span class="star ${i <= (r.rating || 5) ? 'filled' : ''}">${starSvg}</span>`; }
+            for(let i = 1; i <= 5; i++) { 
+                starsHtml += `<span class="star ${i <= (r.rating || 5) ? 'filled' : ''}">${starSvg}</span>`; 
+            }
 
-            let photoHtml = ''; // Simplified for snippet, handles photo logic here if needed
+            // Photo Parsing Logic
+            let photoUrls = [];
+            try {
+                if (r.photos) {
+                    if (Array.isArray(r.photos)) {
+                        photoUrls = r.photos;
+                    } else if (typeof r.photos === 'string') {
+                        const trimmed = r.photos.trim();
+                        if (trimmed.startsWith('[')) {
+                            photoUrls = JSON.parse(trimmed);
+                        } else if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                            photoUrls = trimmed.slice(1, -1).split(',').map(s => s.replace(/^"|"$/g, '').trim());
+                        } else if (trimmed.startsWith('http')) {
+                            photoUrls = [trimmed];
+                        } else {
+                            const extractedLinks = r.photos.match(/https?:\/\/[^\s"\]}]+/g);
+                            if (extractedLinks) photoUrls = extractedLinks;
+                        }
+                    }
+                }
+            } catch (e) {
+                photoUrls = [];
+            }
+            photoUrls = photoUrls.filter(u => u && typeof u === 'string' && u.startsWith('http'));
 
-            list.innerHTML += `
-                <div class="review-item-main">
-                    <div style="display: flex; flex-direction: column; flex: 1; height: 100%;">
+            let photoHtml = '';
+            if (photoUrls.length > 0) {
+                let imagesHtml = '';
+                if (photoUrls.length === 1) {
+                    imagesHtml = `<img src="${photoUrls[0]}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">`;
+                } else if (photoUrls.length === 2) {
+                    imagesHtml = `
+                    <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
+                        <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-6deg); z-index: 1;">
+                        <img src="${photoUrls[1]}" style="position: absolute; bottom: 0; right: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(6deg); z-index: 2; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
+                    </div>`;
+                } else {
+                    imagesHtml = `
+                    <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
+                        <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-12deg); z-index: 1;">
+                        <img src="${photoUrls[1]}" style="position: absolute; top: 12.5%; left: 12.5%; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(0deg); z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                        <img src="${photoUrls[2]}" style="position: absolute; bottom: 0; right: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(12deg); z-index: 3; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
+                    </div>`;
+                }
+                photoHtml = `
+                <div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 46px;">
+                    ${imagesHtml}
+                </div>`;
+            }
+
+            const div = document.createElement('div');
+            div.className = 'review-item-main';
+            div.onclick = () => window.open(`https://www.faithox.com/company?id=${productId}`, '_blank');
+            
+            div.innerHTML = `
+                <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
+                    <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
                             <div class="review-author" style="margin: 0; align-items: center;">
                                 <div class="author-avatar">${authorAvatarHtml}</div>
@@ -203,12 +273,14 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                             <div class="rating-pill rating-${r.rating || 5}">${starsHtml}</div>
                         </div>
-                        <div class="review-content-wrapper" style="padding: 0; margin-top: 12px;">
-                            <p class="review-body">${escapeHTML(r.comment || '')}</p>
+                        <div class="review-content-wrapper" style="padding: 0; flex: 1; height: auto; margin-top: 12px;">
+                            <p class="review-body" style="-webkit-line-clamp: 5; margin-bottom: 4px;">${escapeHTML(r.comment || '')}</p>
                         </div>
                     </div>
+                    ${photoHtml}
                 </div>
             `;
+            list.appendChild(div);
         });
 
         const seeMoreBtn = document.getElementById(`see-more-link-${blockId}`);
@@ -221,7 +293,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     
-    // Slight delay ensures Supabase library loads
     setTimeout(loadWidgetReviews, 150);
 });
 </script>
