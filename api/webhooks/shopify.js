@@ -53,7 +53,27 @@ export default async function handler(req, res) {
         // 3. Parse JSON safely
         const payload = JSON.parse(rawBody.toString('utf8'));
 
-        // --- NEW: Handle Order Webhooks ---
+        // =============================================================
+        // Handle App Uninstalled Webhook (Delete store from Supabase)
+        // =============================================================
+        if (topic === 'app/uninstalled') {
+            console.log(`🗑️ [app/uninstalled] Webhook received for ${shopDomain}. Deleting store data...`);
+
+            const { error: deleteError } = await supabaseAdmin
+                .from('shopify_stores')
+                .delete()
+                .eq('shop', shopDomain);
+
+            if (deleteError) {
+                console.error(`❌ Error deleting store ${shopDomain} from Supabase:`, deleteError.message);
+            } else {
+                console.log(`✅ Successfully deleted ${shopDomain} from shopify_stores table.`);
+            }
+        }
+
+        // =============================================================
+        // Handle Order Webhooks
+        // =============================================================
         if (topic === 'orders/paid') {
             console.log("🔔 [orders/paid] Webhook successfully caught!");
           
