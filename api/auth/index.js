@@ -22,7 +22,7 @@ export default async function handler(req, res) {
 
   if (existingStore && existingStore.access_token) {
     // The app is already installed! Send them to the dashboard instead of reinstalling.
-    return res.redirect(`https://www.faithox.com/dashboard?shop=${shop}`);
+    return res.redirect(`https://www.faithox.com/?shop=${shop}`);
   }
 
   // 3. If they are NOT installed, proceed with the normal installation flow
