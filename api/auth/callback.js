@@ -47,13 +47,21 @@ export default async function handler(req, res) {
       }),
     });
 
-    const tokenData = await tokenResponse.json();
+const tokenData = await tokenResponse.json();
     const accessToken = tokenData.access_token;
+    const refreshToken = tokenData.refresh_token; 
+    const expiresIn = tokenData.expires_in; 
 
     if (!accessToken) {
       console.error('Token fetch failed:', tokenData);
       return res.status(400).json({ error: 'Failed to obtain access token' });
     }
+
+    // Calculate exact expiration timestamps
+    const expiresAt = new Date(Date.now() + expiresIn * 1000).toISOString();
+    
+    // Refresh tokens are valid for 90 days
+    const refreshTokenExpiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString();
 
     // 4. Save store credentials in Supabase
     const { data, error } = await supabase
@@ -62,6 +70,9 @@ export default async function handler(req, res) {
         {
           shop: shop,
           access_token: accessToken,
+          refresh_token: refreshToken,
+          expires_at: expiresAt,
+          refresh_token_expires_at: refreshTokenExpiresAt,
           scopes: process.env.SHOPIFY_SCOPES,
           is_active: true,
           installed_at: new Date().toISOString(),
@@ -113,11 +124,11 @@ export default async function handler(req, res) {
     // =============================================================
 
     // 5. Redirect merchant to their modern Shopify Admin App interface
-    const shopName = shop.replace('.myshopify.com', '');
-    const redirectUri = `https://admin.shopify.com/store/${shopName}/apps/${process.env.SHOPIFY_API_KEY}`;
+    // 5. Redirect merchant to your custom app dashboard to break the loop
+    const redirectUri = `https://www.faithox.com/dashboard?shop=${shop}`;
     
     return res.redirect(redirectUri);
-
+    
   } catch (err) {
     console.error('OAuth Callback Error:', err);
     return res.status(500).send('Authentication failed.');
