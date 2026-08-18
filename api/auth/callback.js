@@ -43,6 +43,7 @@ export default async function handler(req, res) {
         client_id: process.env.SHOPIFY_API_KEY,
         client_secret: process.env.SHOPIFY_API_SECRET,
         code: code,
+        expiring: 1 // Request an expiring offline token per Shopify requirements
       }),
     });
 
