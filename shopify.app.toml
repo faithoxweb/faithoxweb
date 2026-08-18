@@ -2,11 +2,15 @@
 
 client_id = "2fab3cb6a774769f418c08f1e7c9de16"
 name = "Faithox"
-application_url = "https://faithox.com/api/auth"
+application_url = "https://www.faithox.com/api/auth"
 embedded = false
 
 [webhooks]
 api_version = "2026-07"
+
+  [[webhooks.subscriptions]]
+  compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
+  uri = "https://www.faithox.com/api/webhooks/gdpr"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
