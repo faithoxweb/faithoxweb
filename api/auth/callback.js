@@ -125,7 +125,7 @@ const tokenData = await tokenResponse.json();
 
     // 5. Redirect merchant to their modern Shopify Admin App interface
     // 5. Redirect merchant to your custom app dashboard to break the loop
-    const redirectUri = `https://www.faithox.com/dashboard?shop=${shop}`;
+    const redirectUri = `https://www.faithox.com/?shop=${shop}`;
     
     return res.redirect(redirectUri);
     
