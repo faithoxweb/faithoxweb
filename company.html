@@ -9,6 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* --- 1. BASE STYLES --- */
+        html {
+            overflow-y: scroll;
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
         
         body { 
@@ -16,6 +20,7 @@
             font-family: 'Inter', sans-serif; 
             min-height: 100vh; 
             width: 100%; 
+            overflow-x: hidden;
             display: flex; 
             flex-direction: column;
             color: #1e293b;
@@ -25,8 +30,8 @@
         /* --- NEW RECTANGULAR BOX --- */
         .top-rectangular-box {
             position: relative;
-            margin: 24px auto 0 auto;
-            width: calc(100% - 48px);
+            margin: 24px 24px 0 24px;
+            width: auto;
             min-height: 641px;
             background: #fdfdfd;
             border-radius: 32px;
@@ -455,13 +460,211 @@
             .rm-content { max-width: calc(100% - 130px); }
         }
 
+        /* --- MOBILE RESPONSIVE UPDATES --- */
         @media (max-width: 768px) {
-            .rectangular-hole { overflow-y: auto; overflow-x: hidden; }
-            .product-img-frame { border-right: none; border-bottom: 3px solid #cbd5e1; height: 234px; width: calc(100% - 16px); box-sizing: border-box; }
-            .hole-info-box { left: 8px; right: 8px; top: 250px; bottom: auto; padding: 20px; align-items: stretch; text-align: left; flex-direction: column; gap: 15px; }
+            .top-rectangular-box {
+                min-height: auto;
+                width: auto;
+                margin: 12px 12px 0 12px;
+                display: flex;
+                flex-direction: column;
+                padding-bottom: 24px;
+            }
+
+            .company-header {
+                position: relative;
+                height: 76px;
+                padding: 0 16px;
+            }
+
+            .header-search-container { max-width: 170px; }
+            .header-search-container .search-bar { padding: 10px 40px 10px 16px; font-size: 13px; }
+            .header-search-container .search-icon { width: 30px; height: 30px; top: 5px; right: 5px; }
+            .brand-text { font-size: 16px; }
+            .logo-container { gap: 8px; }
+
+            .rectangular-hole {
+                position: relative;
+                top: auto; left: auto;
+                width: calc(100% - 24px);
+                height: auto;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                padding: 8px;
+                box-sizing: border-box;
+                overflow: visible;
+            }
+
+            .product-img-frame {
+                position: relative;
+                top: auto; left: auto;
+                width: 100%;
+                height: auto;
+                aspect-ratio: 204 / 209;
+                border-radius: 20px;
+                border-bottom: none;
+            }
+
+            .hole-info-box {
+                position: relative;
+                top: auto; bottom: auto; left: auto; right: auto;
+                width: 100%;
+                padding: 16px;
+                margin-top: 8px;
+                align-items: stretch;
+                text-align: left;
+                flex-direction: column;
+                gap: 16px;
+                box-sizing: border-box;
+            }
+            
+            .hole-info-text-col { gap: 6px; }
+            .title-container { height: auto; min-height: 28px; margin-bottom: 2px; }
+
+            .top-rating-square {
+                width: 100%;
+                max-width: 100%;
+                padding: 16px;
+            }
+
+            .rating-overview {
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 12px;
+            }
+            .big-rating-val { font-size: 32px; }
+            .big-rating-stars { transform: scale(0.85); margin: 0; }
+
+            /* ========================================================
+               MODIFIED: VERTICAL REVIEWS HOLE & SCROLL BUTTONS
+               ======================================================== */
+            .reviews-hole {
+                position: relative;
+                top: auto; left: auto;
+                width: calc(100% - 24px);
+                height: 280px; 
+                margin: 16px auto 0 auto;
+                padding: 16px 54px 16px 16px; 
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: row; 
+            }
+
+            .reviews-section, .reviews-carousel-wrapper {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                padding: 0;
+                margin: 0;
+            }
+
+            #reviews-list {
+                display: flex;
+                flex-direction: column; 
+                overflow-y: auto;
+                overflow-x: hidden;
+                scroll-snap-type: y mandatory;
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                border-radius: 20px;
+            }
+            
+            #reviews-list > div:first-child { margin-top: 0; margin-left: 0; }
+            #reviews-list > div:last-child { margin-bottom: 0; margin-right: 0; }
+
+            /* Standardized smaller vertical cards (Same composition as laptop) */
+            .review-item-main, .skeleton-card {
+                width: 100%;
+                max-width: 100%;
+                height: 160px; 
+                min-height: 160px;
+                margin-right: 0;
+                margin-bottom: 12px; 
+                scroll-snap-align: start;
+                padding: 16px;
+                border-radius: 24px;
+            }
+
+            /* Guarantee no overlap with the absolute pill */
+            .review-item-main .rating-pill, .skeleton-card .skel-rating { 
+                top: 16px !important; 
+                right: 16px !important; 
+                transform: scale(0.8);
+                transform-origin: top right;
+            }
+
+            .review-author { max-width: 55%; }
+            .author-avatar { width: 26px !important; height: 26px !important; font-size: 10px !important; }
+            .author-name { font-size: 13px !important; }
+            .review-body { font-size: 12px !important; line-height: 1.4 !important; -webkit-line-clamp: 4 !important; }
+            
+            /* Adjust the photo margin so it aligns exactly under the scaled pill */
+            .review-item-main > div > div:nth-child(2), .skeleton-card > div > div:nth-child(2) {
+                margin-top: 32px !important; 
+            }
+
+            /* Vertical configuration for the scroll controls */
+            .carousel-controls {
+                position: absolute;
+                right: 8px;
+                top: 0;
+                bottom: 0;
+                width: 46px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                margin-top: 0;
+            }
+
+            .scroll-btn {
+                width: 38px; height: 38px;
+            }
+
+            #btn-left { transform: rotate(90deg); }
+            #btn-right { transform: rotate(90deg); }
+
+            .carousel-indicator {
+                writing-mode: vertical-rl;
+                transform: rotate(180deg);
+                height: auto;
+                min-height: 60px;
+                width: 32px;
+                padding: 12px 0;
+                font-size: 13px;
+                border-radius: 20px;
+            }
+
+            /* ========================================================
+               ADDED: RIGHT SIDE BOX (REGISTERED BY) TO MOBILE
+               ======================================================== */
+            .right-side-box {
+                display: flex !important; /* Overrides the display: none from 1224px */
+                position: relative;
+                top: auto; 
+                left: auto; 
+                right: auto;
+                width: calc(100% - 24px);
+                height: auto;
+                margin: 16px auto 0 auto;
+                padding: 24px;
+                box-sizing: border-box;
+            }
+            /* ======================================================== */
+
+            /* Footer Responsive */
+            .pro-footer { margin-top: 30px; padding: 40px 0 20px; }
+            .footer-wrapper { padding: 0 16px; }
+            .footer-top { display: flex; flex-direction: column; gap: 32px; padding-bottom: 30px; }
+            .footer-brand-col { padding-right: 0; }
+            .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
             
             /* Make Modal Stack on Mobile */
-            .rm-content { height: 75vh; padding: 30px 25px; }
+            .rm-content { height: 75vh; padding: 30px 20px; max-width: calc(100% - 20px); }
             .rm-header { flex-direction: column; align-items: flex-start; padding-right: 0; gap: 15px; }
             .rm-header-right { align-self: flex-start; }
             .rm-body-split { flex-direction: column; overflow-y: auto; display: block; gap: 20px; padding-right: 5px; }
@@ -688,7 +891,13 @@
         // --- SCROLLING & CAROUSEL LOGIC ---
         window.scrollReviews = function(direction) {
             const list = document.getElementById('reviews-list');
-            list.scrollBy({ left: direction * 390, behavior: 'smooth' });
+            if (window.innerWidth <= 768) {
+                // Vertical scrolling on Mobile (160px height + 12px margin = 172px)
+                list.scrollBy({ top: direction * 172, behavior: 'smooth' });
+            } else {
+                // Horizontal scrolling on Laptop
+                list.scrollBy({ left: direction * 390, behavior: 'smooth' });
+            }
         };
 
         function updateCarouselUI() {
@@ -699,13 +908,19 @@
             const btnRight = document.getElementById('btn-right');
             const indicator = document.getElementById('carousel-indicator');
             
-            const cardWidth = 390; 
+            const isMobile = window.innerWidth <= 768;
+            
+            const cardSize = isMobile ? 172 : 390; 
+            const scrollPos = isMobile ? list.scrollTop : list.scrollLeft;
+            const clientSize = isMobile ? list.clientHeight : list.clientWidth;
+            const scrollSize = isMobile ? list.scrollHeight : list.scrollWidth;
+            
             const total = loadedReviews.length;
             
-            const currentIndex = Math.round(list.scrollLeft / cardWidth) + 1;
+            const currentIndex = Math.round(scrollPos / cardSize) + 1;
             const displayIndex = Math.max(1, Math.min(currentIndex, total));
             
-            const visibleCards = Math.max(1, Math.round(list.clientWidth / cardWidth));
+            const visibleCards = Math.max(1, Math.round(clientSize / cardSize));
             const endIndex = Math.min(displayIndex + visibleCards - 1, total);
             
             if (displayIndex === endIndex) {
@@ -714,8 +929,8 @@
                 indicator.innerText = `${displayIndex}-${endIndex} / ${total}`;
             }
             
-            btnLeft.disabled = list.scrollLeft <= 5; 
-            btnRight.disabled = Math.ceil(list.scrollLeft + list.clientWidth) >= list.scrollWidth - 5; 
+            btnLeft.disabled = scrollPos <= 5; 
+            btnRight.disabled = Math.ceil(scrollPos + clientSize) >= scrollSize - 5; 
         }
 
         document.getElementById('reviews-list').addEventListener('scroll', () => {
@@ -884,7 +1099,7 @@
             }
         }
         
-async function loadCompanyDetails(searchParam) {
+        async function loadCompanyDetails(searchParam) {
             // 🟢 FIX: Allow standard UUIDs OR purely numeric Shopify IDs
             const isId = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(searchParam) || /^\d+$/.test(searchParam);
             
