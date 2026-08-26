@@ -47,7 +47,7 @@ export default async function handler(req, res) {
       }),
     });
 
-const tokenData = await tokenResponse.json();
+    const tokenData = await tokenResponse.json();
     const accessToken = tokenData.access_token;
     const refreshToken = tokenData.refresh_token; 
     const expiresIn = tokenData.expires_in; 
@@ -57,8 +57,8 @@ const tokenData = await tokenResponse.json();
       return res.status(400).json({ error: 'Failed to obtain access token' });
     }
 
-    // Calculate exact expiration timestamps
-    const expiresAt = new Date(Date.now() + expiresIn * 1000).toISOString();
+    // FIX: Renamed variable to shopifyTokenExpiresAt to prevent crashes
+    const shopifyTokenExpiresAt = new Date(Date.now() + expiresIn * 1000).toISOString();
     
     // Refresh tokens are valid for 90 days
     const refreshTokenExpiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString();
@@ -71,7 +71,7 @@ const tokenData = await tokenResponse.json();
           shop: shop,
           access_token: accessToken,
           refresh_token: refreshToken,
-          expires_at: expiresAt,
+          expires_at: shopifyTokenExpiresAt, // Updated to use the safe variable name
           refresh_token_expires_at: refreshTokenExpiresAt,
           scopes: process.env.SHOPIFY_SCOPES,
           is_active: true,
@@ -123,12 +123,21 @@ const tokenData = await tokenResponse.json();
     }
     // =============================================================
 
-    // 5. Redirect merchant to their modern Shopify Admin App interface
-    // 5. Redirect merchant to your custom app dashboard to break the loop
-    const redirectUri = `https://www.faithox.com/?shop=${shop}`;
+    // 5. Generate secure one-time login token
+    const sessionToken = crypto.randomBytes(32).toString('hex');
     
-    return res.redirect(redirectUri);
+    // FIX: Renamed variable to sessionExpiresAt to prevent duplicate declaration crashes
+    const sessionExpiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+
+    await supabase.from('merchant_sessions').insert({
+      token: sessionToken,
+      shop: shop,
+      expires_at: sessionExpiresAt // Updated to use the safe variable name
+    });
     
+    return res.redirect(`https://www.faithox.com/dashboard.html?token=${sessionToken}`);
+
+  // FIX: Restored the missing catch block to handle API errors properly
   } catch (err) {
     console.error('OAuth Callback Error:', err);
     return res.status(500).send('Authentication failed.');
