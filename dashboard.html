@@ -281,6 +281,11 @@
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                         Dashboard
                     </button>
+                    <!-- NEW REVIEWS BUTTON -->
+                    <button class="menu-btn" onclick="switchTab('reviews')" id="btn-reviews">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Customer Reviews
+                    </button>
                     <button class="menu-btn" onclick="switchTab('profile')" id="btn-profile">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         Business Profile
@@ -296,9 +301,16 @@
             <div id="tab-dashboard" class="tab-content active">
                 <div class="new-profile-card">
                     <h2 style="position: absolute; top: 24px; left: 32px; font-size: 28px; font-weight: 600; color: #2a2a2a; letter-spacing: -1px; margin: 0;">Overview</h2>
-                    <button class="edit-btn-top" onclick="openRegisterModal()">
-                        + Register New Product
-                    </button>
+                    
+                    <div style="position: absolute; top: 24px; right: 24px; display: flex; gap: 10px; z-index: 50;">
+                        <button class="btn-outline" onclick="syncShopifyProducts()" style="margin: 0; display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 20px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                            Sync Shopify
+                        </button>
+                        <button class="edit-btn-top" onclick="openRegisterModal()" style="position: relative; top: 0; right: 0;">
+                            + Register New Product
+                        </button>
+                    </div>
                     
                     <div class="profile-details-hole">
                         <div class="inner-floating-panel">
@@ -340,6 +352,19 @@
                     <h3 style="font-size: 18px; font-weight: 800; color: #242424; margin-bottom: 5px;">Your Product Portfolio</h3>
                     <div class="profile-recent-reviews" id="products-container" style="padding-right: 5px;">
                         <p style="color:#64748b; padding: 20px;">Loading your products...</p>
+                    </div>
+                </div>
+            </div>
+            <!-- NEW REVIEWS TAB HTML -->
+            <div id="tab-reviews" class="tab-content">
+                <div class="section-header">
+                    <h2 class="section-title">Customer Reviews</h2>
+                    <p class="section-desc">Manage your customer feedback and post official merchant replies.</p>
+                </div>
+                
+                <div class="profile-settings-card" style="max-width: 1000px; padding: 30px;">
+                    <div id="reviews-list-container" style="display: flex; flex-direction: column; gap: 20px;">
+                        <p style="color: #64748b;">Loading reviews...</p>
                     </div>
                 </div>
             </div>
@@ -475,12 +500,14 @@
     <div id="profile-status" class="status-msg"></div>
 
     <script>
-        // Exact Supabase configuration provided by you
+      
+    // Exact Supabase configuration provided by you
         const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentUser = null;
+        let activeShopifyDomain = sessionStorage.getItem('faithox_active_shop') || null;
 
         // --- TAB SWITCHING LOGIC ---
         function switchTab(tabId) {
@@ -492,7 +519,61 @@
 
         // --- INIT DASHBOARD & LOAD DATA ---
         async function initDashboard() {
-            // 1. Authenticate
+            // NEW: Handle incoming Shopify token
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (token) {
+                try {
+                    const res = await fetch('/api/auth/verify-session', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token })
+                    });
+                    const result = await res.json();
+                    
+                    if (res.ok && result.shop) {
+                        activeShopifyDomain = result.shop;
+                        sessionStorage.setItem('faithox_active_shop', activeShopifyDomain);
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } else {
+                        alert('Session expired. Please log in again.');
+                        window.location.href = 'buisnesslogin.html';
+                        return;
+                    }
+                } catch (e) {
+                    alert('Connection error.');
+                }
+            }
+
+            // NEW: Shopify Flow (Bypasses normal login)
+            if (activeShopifyDomain) {
+                currentUser = { 
+                    id: activeShopifyDomain,
+                    email: `admin@${activeShopifyDomain}`, 
+                    user_metadata: { 
+                        full_name: activeShopifyDomain.replace('.myshopify.com', ''), 
+                        role: 'business', 
+                        store_id: activeShopifyDomain 
+                    } 
+                };
+                // Hide manual features because Shopify handles this automatically
+                document.getElementById('webhook-settings-area').style.display = 'none';
+                
+                // --- ADD THESE 3 LINES ---
+                document.querySelector('.edit-btn-top').style.display = 'none'; // Hides '+ Register New Product'
+                document.getElementById('save-info-btn').style.display = 'none'; // Hides 'Save Changes'
+                document.getElementById('avatar-btn').style.display = 'none'; // Hides 'Upload Logo'
+                // -------------------------
+                updateSidebarAndProfileUI();
+                document.getElementById('sidebar-avatar').innerHTML = 'S';
+                document.getElementById('profile-avatar-display').innerHTML = 'S';
+                await fetchBusinessProducts();
+                await fetchReviews();
+                return;
+            }
+
+            // 1. Authenticate (ORIGINAL LOGIC)
             const { data: { session } } = await db.auth.getSession();
             if (!session) {
                 const currentUrl = encodeURIComponent(window.location.href);
@@ -500,7 +581,7 @@
                 return;
             }
 
-            // RESTRICT TO BUSINESS ONLY
+            // RESTRICT TO BUSINESS ONLY (ORIGINAL LOGIC)
             if (session.user.user_metadata?.role !== 'business') {
                 alert('Access Denied: This dashboard is for business accounts only.');
                 window.location.href = 'index.html';
@@ -515,6 +596,9 @@
             
             // Load their secret keys when dashboard opens
             await fetchWebhookCredentials();
+
+            // Load reviews
+            await fetchReviews();
         }
 
         function updateSidebarAndProfileUI() {
@@ -764,7 +848,7 @@
 
         // --- PRODUCT REGISTRATION MODALS ---
         function openRegisterModal() { document.getElementById('register-modal').classList.add('open'); }
-               function closeRegisterModal() { 
+        function closeRegisterModal() { 
             document.getElementById('register-modal').classList.remove('open');
             document.getElementById('reg-name').value = '';
             document.getElementById('reg-image-file').value = '';
@@ -772,7 +856,7 @@
             document.getElementById('reg-product-id').value = '';
         }
 
-                   async function submitNewProduct() {
+        async function submitNewProduct() {
             const name = document.getElementById('reg-name').value.trim();
             const website = document.getElementById('reg-website').value.trim();
             const productId = document.getElementById('reg-product-id').value.trim();
@@ -867,14 +951,19 @@
 
         async function logout() {
             await db.auth.signOut();
+            sessionStorage.removeItem('faithox_active_shop');
             window.location.href = 'index.html';
         }
 
         initDashboard();
+
         // --- BULLETPROOF STORE ID FETCHER ---
         async function getStoreIdSecurely() {
+            // NEW: Return Shopify Domain instantly
+            if (activeShopifyDomain) return activeShopifyDomain;
+
             // 1. Try to get it from the browser's current session memory
-            if (currentUser.user_metadata?.store_id) {
+            if (currentUser?.user_metadata?.store_id) {
                 return currentUser.user_metadata.store_id;
             }
 
@@ -903,6 +992,87 @@
             currentUser.user_metadata = currentUser.user_metadata || {};
             currentUser.user_metadata.store_id = newStoreId;
             return newStoreId;
+        }
+
+        // --- NEW: REVIEWS & SYNC LOGIC ---
+        async function fetchReviews() {
+            const storeId = await getStoreIdSecurely();
+            const { data: reviews, error } = await db
+                .from('reviews')
+                .select('*')
+                .or(`shop.eq.${storeId},store_id.eq.${storeId}`)
+                .order('created_at', { ascending: false });
+
+            const container = document.getElementById('reviews-list-container');
+            
+            if (error || !reviews || reviews.length === 0) {
+                container.innerHTML = '<p style="color:#64748b; padding:20px; background:#f8fafc; border-radius:12px; text-align:center;">No customer reviews collected yet.</p>';
+                return;
+            }
+
+            container.innerHTML = reviews.map(review => `
+                <div style="border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; background: #ffffff;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <h4 style="font-weight: 700; color: #242424; margin: 0; font-size: 15px;">
+                                ${escapeHTML(review.reviewer_name) || 'Verified Buyer'}
+                            </h4>
+                            <span style="color: #f59e0b; font-size: 14px;">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
+                        </div>
+                        <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">
+                            ${new Date(review.created_at).toLocaleDateString()}
+                        </span>
+                    </div>
+                    
+                    <p style="color: #475569; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">
+                        "${escapeHTML(review.body)}"
+                    </p>
+                    
+                    <div style="border-top: 1px dashed #e2e8f0; padding-top: 16px;">
+                        ${review.merchant_reply 
+                            ? `<div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px; border-radius: 10px;">
+                                 <span style="display:block; font-size:11px; font-weight:700; color:#166534; text-transform:uppercase; margin-bottom:4px;">Official Reply</span>
+                                 <p style="font-size:13px; color:#15803d; margin:0;">${escapeHTML(review.merchant_reply)}</p>
+                               </div>`
+                            : `<div style="display: flex; gap: 10px;">
+                                 <input type="text" id="reply-input-${review.id}" class="form-input" placeholder="Type a public reply..." style="padding: 10px; font-size: 13px;">
+                                 <button onclick="submitReply('${review.id}')" class="btn-primary" style="margin: 0; padding: 10px 20px; width: auto; font-size: 13px;">Post</button>
+                               </div>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function submitReply(reviewId) {
+            const replyInput = document.getElementById(`reply-input-${reviewId}`);
+            const replyText = replyInput.value.trim();
+            if (!replyText) return showStatus("Reply cannot be empty", true);
+
+            const { error } = await db.from('reviews').update({ merchant_reply: replyText }).eq('id', reviewId);
+
+            if (error) {
+                showStatus("Error saving reply: " + error.message, true);
+            } else {
+                showStatus("Reply published successfully!");
+                fetchReviews();
+            }
+        }
+
+        async function syncShopifyProducts() {
+            if (!activeShopifyDomain) {
+                return showStatus("You must be connected via Shopify to use auto-sync.", true);
+            }
+            showStatus("Pinging Shopify to sync latest products...");
+            
+            fetch(`/api/merchant/sync?shop=${activeShopifyDomain}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) throw new Error(data.error);
+                    showStatus("Sync Complete! " + (data.count || 0) + " products updated.");
+                    fetchBusinessProducts(); 
+                })
+                .catch(err => showStatus("Error syncing products: " + err.message, true));
         }
     </script>
 </body>
