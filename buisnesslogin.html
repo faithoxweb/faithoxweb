@@ -198,7 +198,7 @@
                     <img src="https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/my-logo.png" alt="Logo">
                 </div>
 
-                <h2 id="page-title">Login to Faithox Buisness</h2>
+                <h2 id="page-title">Login to Faithox Business</h2>
                 <p class="sub-text" id="page-subtext">Manage your review analytics.</p>
                 
                 <div id="form-message" class="message-box"></div>
@@ -217,6 +217,19 @@
                             <img src="https://www.svgrepo.com/show/512317/github-142.svg" alt="GitHub"> GitHub
                         </button>
                     </div>
+
+                    <!-- NEW: SHOPIFY LOGIN SECTION -->
+                    <div style="display: flex; align-items: center; text-align: center; color: #9ca3af; font-size: 13px; margin-bottom: 24px;">
+                        <div style="flex: 1; border-top: 1px solid #e5e7eb;"></div>
+                        <span style="padding: 0 10px; font-weight: 500;">OR SHOPIFY MERCHANTS</span>
+                        <div style="flex: 1; border-top: 1px solid #e5e7eb;"></div>
+                    </div>
+
+                    <div class="input-group" style="margin-bottom: 8px;">
+                        <input type="text" id="shopify-login-url" class="auth-input" placeholder="e.g. your-store.myshopify.com">
+                    </div>
+                    <button class="primary-btn" onclick="loginWithShopify()" style="background: #95bf47; color: white;">Log in with Shopify</button>
+                    <!-- END SHOPIFY LOGIN SECTION -->
                 </div>
 
                 <div id="login-step-2" style="display: none;">
@@ -373,6 +386,17 @@
                 showMessage("Login successful! Redirecting...", "success");
                 setTimeout(() => navigateTo('dashboard.html'), 1500);
             }
+        }
+
+        // NEW: SHOPIFY LOGIN LOGIC
+        function loginWithShopify() {
+            let shopUrl = document.getElementById('shopify-login-url').value.trim().toLowerCase();
+            if (!shopUrl) return showMessage("Please enter your Shopify domain.", "error");
+            
+            shopUrl = shopUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            if (!shopUrl.endsWith('.myshopify.com')) shopUrl += '.myshopify.com';
+
+            window.location.href = `/api/auth?shop=${shopUrl}`;
         }
     </script>
 </body>
