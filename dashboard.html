@@ -525,7 +525,7 @@
 
             if (token) {
                 try {
-                    const res = await fetch('/api/auth/verify-session', {
+                    const res = await fetch('/api/auth/check-session', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ token })
