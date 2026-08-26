@@ -248,6 +248,19 @@
         .ft-btn { background: #2a2a2a; color: #fdfdfd; border: none; padding: 0 16px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
         .ft-btn:hover { background: #636363; }
 
+        /* --- REAL PROGRESS BAR (NProgress Style) --- */
+        .nprogress-bar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 0%; 
+            height: 5px; 
+            background: #2a2a2a; 
+            z-index: 9999999; 
+            pointer-events: none; 
+            opacity: 0; 
+        }
+
         /* --- SKELETON LOADER STYLES --- */
         .skeleton-anim { 
             background: #e2e8f0; 
@@ -684,16 +697,18 @@
 </head>
 <body>
     
-    <div id="pro-progress-bar" style="position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: #0f172a; z-index: 999999; transition: width 0.3s ease-out, opacity 0.3s ease; opacity: 0; box-shadow: 0 0 10px rgba(15,23,42,0.5);"></div>
+    <div id="pro-progress-bar" class="nprogress-bar">
+        <div class="nprogress-peg"></div>
+    </div>
 
     <div class="top-rectangular-box">
         
         <div class="company-header">
-            <div class="logo-container" onclick="window.location.href='index.html'">
+            <div class="logo-container" onclick="navigateTo('index.html')">
                 <span class="brand-text">faithox</span>
             </div>
             
-            <div class="header-search-container" onclick="window.location.href='index.html#main-search'">
+            <div class="header-search-container" onclick="navigateTo('index.html#main-search')">
                 <input type="text" class="search-bar" placeholder="Search for company or product" readonly style="pointer-events: none;">
                 <span class="search-icon">
                     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -837,10 +852,10 @@
                 <div class="footer-col">
                     <h4>Legal</h4>
                     <div class="footer-links">
-                        <!-- REMOVED THE CUSTOM JS OVERRIDE HERE -->
-                        <a href="legal.html#privacy" class="footer-link">Privacy Policy</a>
-                        <a href="legal.html#tos" class="footer-link">Terms of Service</a>
-                        <a href="legal.html#moderation" class="footer-link">Review Moderation</a>
+                        <!-- PROGRESS BAR NAVIGATE FUNCTIONS RESTORED -->
+                        <a href="legal.html#privacy" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#privacy');">Privacy Policy</a>
+                        <a href="legal.html#tos" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#tos');">Terms of Service</a>
+                        <a href="legal.html#moderation" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#moderation');">Review Moderation</a>
                         <a href="#" class="footer-link">Cookie Policy</a>
                         <a href="#" class="footer-link">Security</a>
                     </div>
@@ -890,6 +905,59 @@
     </div>
 
     <script>
+        // --- PROGRESS BAR GLOBALS & ROUTING ---
+        let progressInterval;
+        window.navigateTo = (url) => {
+            const bar = document.getElementById('pro-progress-bar');
+            if (!bar) { window.location.href = url; return; }
+
+            clearInterval(progressInterval);
+            
+            // 1. Reset and Show immediately
+            bar.style.transition = 'none';
+            bar.style.opacity = '1';
+            bar.style.width = '0%';
+            void bar.offsetWidth; // Force DOM repaint
+
+            // 2. Initial Fast Jump
+            bar.style.transition = 'width 0.2s ease-out';
+            let currentWidth = Math.random() * 15 + 15; // 15% to 30%
+            bar.style.width = currentWidth + '%';
+
+            // 3. Trickle (simulate network loading)
+            progressInterval = setInterval(() => {
+                currentWidth += Math.random() * 5 + 2; // Add 2% to 7%
+                if (currentWidth > 85) currentWidth = 85; 
+                bar.style.transition = 'width 0.2s ease';
+                bar.style.width = currentWidth + '%';
+            }, 200);
+
+            // 4. Snap to 100% and redirect
+            setTimeout(() => {
+                clearInterval(progressInterval);
+                bar.style.transition = 'width 0.15s ease-out';
+                bar.style.width = '100%';
+                
+                // Wait for the 100% animation to finish before destroying the page
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 150);
+            }, 300); // Fake delay to allow trickle to be seen
+        };
+
+        // BFCache reset for progress bar (when user clicks 'back' button)
+        window.addEventListener('pageshow', function(event) {
+            const bar = document.getElementById('pro-progress-bar');
+            if (bar) {
+                clearInterval(progressInterval);
+                bar.style.transition = 'none';
+                bar.style.opacity = '0';
+                bar.style.width = '0%';
+            }
+        });
+
+        window.goHome = () => navigateTo('index.html');
+
         // --- SCROLLING & CAROUSEL LOGIC ---
         window.scrollReviews = function(direction) {
             const list = document.getElementById('reviews-list');
