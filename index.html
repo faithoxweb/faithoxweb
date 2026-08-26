@@ -1132,15 +1132,16 @@
 
     /* --- PROFESSIONAL FOOTER --- */
     .pro-footer { 
-      width: 1465px; 
-      max-width: calc(100% - 48px); 
+      width: 100%; 
+      max-width: 100%; 
       background-color: #fdfdfd; 
       color: #2a2a2a; 
       font-family: 'Inter', sans-serif; 
       padding: 80px 0 30px; 
-      margin: 120px auto 30px auto; 
-      border-radius: 32px; 
-      border: 1px solid #ededed; 
+      margin: 120px 0 0 0; 
+      border-radius: 0; 
+      border: none; 
+      border-top: 1px solid #ededed; 
       position: relative; 
       z-index: 10; 
     }
@@ -1148,7 +1149,7 @@
     .footer-wrapper { 
       max-width: 1300px; 
       margin: 0 auto; 
-      padding: 0 10px; 
+      padding: 0 40px; 
     }
 
     .footer-top { 
@@ -1517,8 +1518,10 @@
       .bb-btn, .bb-btn-secondary { width: 100%; justify-content: center; padding: 14px 35px; font-size: 15px; }
       
       /* Footer Mobile */
-      .footer-top { grid-template-columns: 1fr; gap: 40px; }
-      .footer-brand-col { grid-column: span 1; padding-right: 0; }
+      .pro-footer { margin-top: 60px; padding: 40px 0 20px; }
+      .footer-wrapper { padding: 0 16px; }
+      .footer-top { display: flex; flex-direction: column; gap: 32px; padding-bottom: 30px; }
+      .footer-brand-col { padding-right: 0; }
       .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
 
       /* Hero adjustments for mobile */
