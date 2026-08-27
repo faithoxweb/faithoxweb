@@ -6,53 +6,79 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle preflight request
   if (req.method === 'OPTIONS') return res.status(200).end();
-  
-  // This route uses GET because the frontend passes the shop as a URL parameter (?shop=...)
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method Not Allowed' });
 
   const { shop } = req.query;
   if (!shop) return res.status(400).json({ error: 'Missing shop parameter' });
 
   try {
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      return res.status(500).json({ error: 'Missing Supabase ENV variables' });
-    }
-
     const supabaseAdmin = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
-    // 1. Fetch the merchant's data from your Supabase table
-    // NOTE: If your table is named something else (like 'shops' or 'users'), change 'merchants' below!
-    const { data: merchant, error } = await supabaseAdmin
-      .from('merchants') 
-      .select('*')
-      .eq('shop', shop)
+    // 1. Get the Shopify Access Token from your shopify_stores table
+    const { data: storeData, error: storeError } = await supabaseAdmin
+      .from('shopify_stores') 
+      .select('access_token') 
+      .eq('shop', shop) 
       .single();
 
-    // 2. If no data is found yet, return safe defaults so the UI stops loading
-    if (error || !merchant) {
-      console.log("No merchant found for shop:", shop);
-      return res.status(200).json({
-        success: true,
-        email: "No email on file",
-        products: [],
-        totalReviews: 0,
-        averageRating: 0.0
-      });
+    if (storeError || !storeData || !storeData.access_token) {
+      console.error("Token lookup failed for:", shop);
+      return res.status(400).json({ error: 'Shopify access token not found in database.' });
     }
 
-    // 3. If data IS found, return the real data!
-    return res.status(200).json({
-      success: true,
-      email: merchant.email || 'N/A',
-      products: merchant.products || [], 
-      totalReviews: merchant.total_reviews || 0,
-      averageRating: merchant.average_rating || 0.0
+    // 2. Ask Shopify for the products using the secure token
+    const shopifyRes = await fetch(`https://${shop}/admin/api/2024-01/products.json?status=active`, {
+      method: 'GET',
+      headers: {
+        'X-Shopify-Access-Token': storeData.access_token,
+        'Content-Type': 'application/json',
+      },
     });
+
+    if (!shopifyRes.ok) {
+       console.error("Shopify API rejected the request.");
+       return res.status(500).json({ error: 'Failed to fetch from Shopify API' });
+    }
+
+    const shopifyData = await shopifyRes.json();
+    const shopifyProducts = shopifyData.products || [];
+
+    let syncedCount = 0;
+
+    // 3. Save products safely into your Supabase database
+    for (const sp of shopifyProducts) {
+      const productPayload = {
+        store_id: shop,
+        product_id: sp.id.toString(),
+        name: sp.title,
+        image_url: sp.images && sp.images.length > 0 ? sp.images[0].src : 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/Grade%20Grey.jpg',
+        website: `https://${shop}/products/${sp.handle}`,
+        is_product: true
+      };
+
+      // Check if product already exists in your DB to avoid duplicates
+      const { data: existing } = await supabaseAdmin
+        .from('products')
+        .select('id')
+        .eq('product_id', sp.id.toString())
+        .single();
+
+      if (existing) {
+        // Update existing product
+        await supabaseAdmin.from('products').update(productPayload).eq('id', existing.id);
+      } else {
+        // Insert new product
+        await supabaseAdmin.from('products').insert([productPayload]);
+      }
+      
+      syncedCount++;
+    }
+
+    return res.status(200).json({ success: true, count: syncedCount });
 
   } catch (err) {
     console.error('Sync error:', err);
