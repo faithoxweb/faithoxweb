@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     { "src": "api/auth/index.js", "use": "@vercel/node" },
-    { "src": "api/auth/callback.js", "use": "@vercel/node" },
+    { "src": "api/auth/callback.js", "use": "@vercel/node" }, 
     { "src": "api/razorpay.js", "use": "@vercel/node" },
     { "src": "api/webhooks/shopify.js", "use": "@vercel/node" },
     { "src": "api/reviews.js", "use": "@vercel/node" },
