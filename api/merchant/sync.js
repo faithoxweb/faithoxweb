@@ -30,8 +30,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Shopify access token not found in database.' });
     }
 
-    // 2. Ask Shopify for the products using the secure token
-    const shopifyRes = await fetch(`https://${shop}/admin/api/2024-01/products.json?status=active`, {
+   // 2. Ask Shopify for the products using a modern API version
+    const shopifyRes = await fetch(`https://${shop}/admin/api/2026-04/products.json?status=active`, {
       method: 'GET',
       headers: {
         'X-Shopify-Access-Token': storeData.access_token,
@@ -40,10 +40,11 @@ export default async function handler(req, res) {
     });
 
     if (!shopifyRes.ok) {
-       console.error("Shopify API rejected the request.");
-       return res.status(500).json({ error: 'Failed to fetch from Shopify API' });
+       // Catch the EXACT error message Shopify sends back
+       const errorText = await shopifyRes.text();
+       console.error("Shopify API rejected the request. Status:", shopifyRes.status, "Details:", errorText);
+       return res.status(500).json({ error: `Shopify Error: ${errorText}` });
     }
-
     const shopifyData = await shopifyRes.json();
     const shopifyProducts = shopifyData.products || [];
 
