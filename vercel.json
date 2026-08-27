@@ -7,6 +7,7 @@
     { "src": "api/webhooks/shopify.js", "use": "@vercel/node" },
     { "src": "api/reviews.js", "use": "@vercel/node" },
     { "src": "api/verify.js", "use": "@vercel/node" },
+    { "src": "api/merchant/sync.js", "use": "@vercel/node" }
     { "src": "**/*.html", "use": "@vercel/static" }
   ],
   "routes": [
@@ -16,6 +17,7 @@
     { "src": "/api/webhooks/shopify", "dest": "api/webhooks/shopify.js" },
     { "src": "/api/reviews", "dest": "api/reviews.js" },
     { "src": "/api/verify", "dest": "api/verify.js" }
+    { "src": "/api/merchant/sync", "dest": "api/merchant/sync.js" }
   ],
   "headers": [
     {
