@@ -30,7 +30,7 @@ export default async function handler(req, res) {
   }
 
   const clientId = process.env.SHOPIFY_API_KEY;
- const scopes = 'read_products'; 
+const scopes = 'read_products,read_orders'; 
   const redirectUri = `https://www.faithox.com/api/auth/callback`; 
   const installUrl = `https://${shop}/admin/oauth/authorize?client_id=${clientId}&scope=${scopes}&redirect_uri=${redirectUri}`;
 
