@@ -85,7 +85,23 @@ export default async function handler(req, res) {
       console.error('SUPABASE DB ERROR:', error.message, error.details);
       throw new Error(`Database error: ${error.message}`);
     }
+// =============================================================
+    // 4.1. ADD TO MASTER 'STORES' TABLE FOR FOREIGN KEY INTEGRITY
+    // =============================================================
+    const { error: masterStoreError } = await supabase
+      .from('stores')
+      .upsert(
+        {
+          store_id: shop, 
+          email: `admin@${shop}`, 
+          domain_name: shop
+        },
+        { onConflict: 'store_id' } 
+      );
 
+    if (masterStoreError) {
+      console.error('Failed to add to master stores table:', masterStoreError.message);
+    }
     // =============================================================
     // 4.5. AUTOMATICALLY REGISTER WEBHOOKS WITH SHOPIFY
     // =============================================================
