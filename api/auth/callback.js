@@ -73,7 +73,7 @@ export default async function handler(req, res) {
           refresh_token: refreshToken,
           expires_at: shopifyTokenExpiresAt, // Updated to use the safe variable name
           refresh_token_expires_at: refreshTokenExpiresAt,
-          scopes: process.env.SHOPIFY_SCOPES,
+          scopes: 'read_products,read_orders',
           is_active: true,
           installed_at: new Date().toISOString(),
         },
@@ -90,8 +90,8 @@ export default async function handler(req, res) {
     // 4.5. AUTOMATICALLY REGISTER WEBHOOKS WITH SHOPIFY
     // =============================================================
     const webhooksToRegister = [
-      { topic: "app/uninstalled", address: "https://www.faithox.com/api/webhooks/shopify.js" },
-      { topic: "orders/paid", address: "https://www.faithox.com/api/webhooks/shopify.js" }
+      { topic: "app/uninstalled", address: "https://www.faithox.com/api/webhooks/shopify"},
+      { topic: "orders/paid", address: "https://www.faithox.com/api/webhooks/shopify" }
     ];
 
     for (const hook of webhooksToRegister) {
