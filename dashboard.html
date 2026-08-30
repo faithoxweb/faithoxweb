@@ -993,18 +993,26 @@
             return newStoreId;
         }
 
-        // --- NEW: REVIEWS & SYNC LOGIC ---
+       // --- NEW: REVIEWS & SYNC LOGIC ---
         async function fetchReviews() {
             const storeId = await getStoreIdSecurely();
+            
+            // Query exactly by store_id
             const { data: reviews, error } = await db
                 .from('reviews')
                 .select('*')
-                .or(`shop.eq.${storeId},store_id.eq.${storeId}`)
+                .eq('store_id', storeId)
                 .order('created_at', { ascending: false });
 
             const container = document.getElementById('reviews-list-container');
             
-            if (error || !reviews || reviews.length === 0) {
+            if (error) {
+                console.error("Database Error fetching reviews:", error);
+                container.innerHTML = `<p style="color:#ef4444; text-align:center; padding: 20px;">Error loading reviews: ${error.message}</p>`;
+                return;
+            }
+
+            if (!reviews || reviews.length === 0) {
                 container.innerHTML = '<p style="color:#64748b; padding:20px; background:#f8fafc; border-radius:12px; text-align:center;">No customer reviews collected yet.</p>';
                 return;
             }
