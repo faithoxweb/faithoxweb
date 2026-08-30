@@ -53,21 +53,25 @@ export default async function handler(req, res) {
         // 3. Parse JSON safely
         const payload = JSON.parse(rawBody.toString('utf8'));
 
-        // =============================================================
-        // Handle App Uninstalled Webhook (Delete store from Supabase)
+       // =============================================================
+        // Handle App Uninstalled Webhook (Shopify Compliance Wipe)
         // =============================================================
         if (topic === 'app/uninstalled') {
-            console.log(`🗑️ [app/uninstalled] Webhook received for ${shopDomain}. Deleting store data...`);
+            console.log(`🗑️ [app/uninstalled] Webhook received for ${shopDomain}. Initiating full data wipe...`);
 
+            // 1. Remove from the Shopify connection table
+            await supabaseAdmin.from('shopify_stores').delete().eq('shop', shopDomain);
+
+            // 2. Remove from the Master stores table (This triggers the CASCADE wipe for all reviews/products!)
             const { error: deleteError } = await supabaseAdmin
-                .from('shopify_stores')
+                .from('stores')
                 .delete()
-                .eq('shop', shopDomain);
+                .eq('store_id', shopDomain);
 
             if (deleteError) {
-                console.error(`❌ Error deleting store ${shopDomain} from Supabase:`, deleteError.message);
+                console.error(`❌ Error wiping store ${shopDomain} from Supabase:`, deleteError.message);
             } else {
-                console.log(`✅ Successfully deleted ${shopDomain} from shopify_stores table.`);
+                console.log(`✅ Successfully wiped ${shopDomain} and ALL associated data (Reviews, Products, etc.) to comply with Shopify policies.`);
             }
         }
 
