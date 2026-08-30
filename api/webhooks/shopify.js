@@ -74,7 +74,28 @@ export default async function handler(req, res) {
                 console.log(`✅ Successfully wiped ${shopDomain} and ALL associated data (Reviews, Products, etc.) to comply with Shopify policies.`);
             }
         }
+        // =============================================================
+        // Handle MANDATORY Shopify Privacy & GDPR Webhooks
+        // =============================================================
+        if (topic === 'customers/data_request') {
+            // Shopify is asking to view a customer's data.
+            console.log(`[GDPR] Data request received for store: ${shopDomain}`);
+            return res.status(200).send('Webhook processed');
+        }
 
+        if (topic === 'customers/redact') {
+            // Shopify is asking to delete a specific customer's data.
+            console.log(`[GDPR] Customer redact request for store: ${shopDomain}`);
+            return res.status(200).send('Webhook processed');
+        }
+
+        if (topic === 'shop/redact') {
+            // Shopify is asking to delete all store data (similar to uninstall).
+            console.log(`[GDPR] Shop redact request for store: ${shopDomain}`);
+            await supabaseAdmin.from('stores').delete().eq('store_id', shopDomain);
+            return res.status(200).send('Webhook processed');
+        }
+        // =============================================================
         // =============================================================
         // Handle Order Webhooks
         // =============================================================
