@@ -18,7 +18,7 @@
     { "src": "/api/webhooks/shopify", "dest": "api/webhooks/shopify.js" },
     { "src": "/api/reviews", "dest": "api/reviews.js" },
     { "src": "/api/verify", "dest": "api/verify.js" },
-    { "src": "/api/merchant/sync", "dest": "api/merchant/sync.js" }
+    { "src": "/api/merchant/sync", "dest": "api/merchant/sync.js" },
     { "src": "/api/merchant/reply", "dest": "api/merchant/reply.js" }
   ],
   "headers": [
