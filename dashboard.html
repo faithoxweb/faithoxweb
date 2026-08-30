@@ -1051,20 +1051,6 @@
             `).join('');
         }
 
-        async function submitReply(reviewId) {
-            const replyInput = document.getElementById(`reply-input-${reviewId}`);
-            const replyText = replyInput.value.trim();
-            if (!replyText) return showStatus("Reply cannot be empty", true);
-
-            const { error } = await db.from('reviews').update({ merchant_reply: replyText }).eq('id', reviewId);
-
-            if (error) {
-                showStatus("Error saving reply: " + error.message, true);
-            } else {
-                showStatus("Reply published successfully!");
-                fetchReviews();
-            }
-        }
 
         async function syncShopifyProducts() {
             if (!activeShopifyDomain) {
