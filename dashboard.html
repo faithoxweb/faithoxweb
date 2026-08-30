@@ -1068,7 +1068,8 @@
                 .catch(err => showStatus("Error syncing products: " + err.message, true));
         }
         // --- SUBMIT MERCHANT REPLY ---
-        async function submitReply(reviewId) {
+       // --- SECURE SUBMIT MERCHANT REPLY (VIA VERCEL BACKEND) ---
+        window.submitReply = async function(reviewId) {
             const inputField = document.getElementById(`reply-input-${reviewId}`);
             const replyText = inputField.value.trim();
 
@@ -1082,22 +1083,32 @@
             btn.innerText = "Posting...";
             btn.disabled = true;
 
-            const { error } = await db
-                .from('reviews')
-                .update({ merchant_reply: replyText })
-                .eq('id', reviewId);
+            try {
+                // Get the merchant's store ID for security validation
+                const storeId = await getStoreIdSecurely();
 
-            if (error) {
-                console.error("Error saving reply:", error);
-                alert("Failed to post reply. Check the console.");
+                // Send the payload to your secure Vercel backend
+                const response = await fetch('/api/merchant/reply', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reviewId, replyText, storeId })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to post reply. The backend rejected it.");
+                }
+
+                // Reload the reviews to instantly show the new reply UI
+                await fetchReviews();
+
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
                 btn.innerText = "Post";
                 btn.disabled = false;
-                return;
             }
-
-            // Reload the reviews to instantly show the new reply UI
-            await fetchReviews();
-        }
+        };
+        
     </script>
 </body>
 </html>
