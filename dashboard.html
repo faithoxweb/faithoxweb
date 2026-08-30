@@ -1081,6 +1081,37 @@
                 })
                 .catch(err => showStatus("Error syncing products: " + err.message, true));
         }
+        // --- SUBMIT MERCHANT REPLY ---
+        async function submitReply(reviewId) {
+            const inputField = document.getElementById(`reply-input-${reviewId}`);
+            const replyText = inputField.value.trim();
+
+            if (!replyText) {
+                alert("Please type a reply first!");
+                return;
+            }
+
+            // Disable button while saving to prevent double-clicks
+            const btn = inputField.nextElementSibling;
+            btn.innerText = "Posting...";
+            btn.disabled = true;
+
+            const { error } = await db
+                .from('reviews')
+                .update({ merchant_reply: replyText })
+                .eq('id', reviewId);
+
+            if (error) {
+                console.error("Error saving reply:", error);
+                alert("Failed to post reply. Check the console.");
+                btn.innerText = "Post";
+                btn.disabled = false;
+                return;
+            }
+
+            // Reload the reviews to instantly show the new reply UI
+            await fetchReviews();
+        }
     </script>
 </body>
 </html>
