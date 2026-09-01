@@ -1107,9 +1107,12 @@
                     <div class="rm-header">
                         <div class="rm-header-left">
                             <div class="author-avatar" style="width:56px; height:56px; font-size:18px;">${authorAvatarHtml}</div>
-                            <div class="author-info">
-                                <div class="author-name" style="font-size: 18px; font-weight: 700;">${escapeHTML(reviewerName)}</div>
-                                <div class="author-date" style="font-size: 13px; color: #64748b; margin-top: 4px;">${date}</div>
+                            <div class="author-info" style="display: flex; flex-direction: column; justify-content: center;">
+                                ${r.merchant_reply ? `<span style="background: #f0fdf4; color: #166534; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 6px; border: 1px solid #bbf7d0; margin-bottom: 6px; width: fit-content;">Company Replied</span>` : ''}
+                                <div class="author-name" style="font-size: 18px; font-weight: 700; line-height: 1.1;">${escapeHTML(reviewerName)}</div>
+                                <div class="author-date" style="font-size: 13px; color: #64748b; margin-top: 4px;">
+                                    ${date}
+                                </div>
                             </div>
                         </div>
                         <div class="rm-header-right">
@@ -1118,7 +1121,12 @@
                     </div>
                     <div class="rm-body-split">
                         <div class="rm-text-col" style="${!hasPhotos ? 'flex: 1; max-width: 100%;' : ''}">
-                            ${escapeHTML(r.comment)}
+                            <p style="margin-bottom: 12px;">${escapeHTML(r.comment)}</p>
+                            ${r.merchant_reply ? `
+                            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px; border-radius: 10px; margin-top: 16px;">
+                                <span style="display:block; font-size:11px; font-weight:800; color:#166534; text-transform:uppercase; margin-bottom:4px;">Official Reply</span>
+                                <p style="font-size:14px; color:#15803d; margin:0;">${escapeHTML(r.merchant_reply)}</p>
+                            </div>` : ''}
                         </div>
                         ${photosHtml}
                     </div>
@@ -1380,8 +1388,11 @@
                                 <div class="review-author" style="margin: 0; align-items: center;">
                                     <div class="author-avatar">${authorAvatarHtml}</div>
                                     <div style="display: flex; flex-direction: column; justify-content: center;">
+                                        ${r.merchant_reply ? `<span style="background: #f0fdf4; color: #166534; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 4px; border: 1px solid #bbf7d0; margin-bottom: 4px; width: fit-content;">Company Replied</span>` : ''}
                                         <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
-                                        <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">${date}</div>
+                                        <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">
+                                            ${date}
+                                        </div>
                                     </div>
                                 </div>
                                 ${ratingPill}
