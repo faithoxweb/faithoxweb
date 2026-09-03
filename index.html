@@ -2353,13 +2353,13 @@
         // =========================================================================
         html += `
           <div class="review-item-main" onclick="navigateTo('company.html?id=${r.product_id}')">
+           ${r.merchant_reply ? `<span style="position: absolute; bottom: 10px; left: 24px; color: #16a34a; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; display: inline-flex; align-items: center; gap: 5px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"></polyline><path d="M4 4v7a4 4 0 0 0 4 4h12"></path></svg>Company Replied</span>` : ''}
             <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
               <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
                   <div class="review-author" style="margin: 0; align-items: center;">
                     <div class="author-avatar">${authorAvatarHtml}</div>
                     <div style="display: flex; flex-direction: column; justify-content: center;">
-                      ${r.merchant_reply ? `<span style="background: #f0fdf4; color: #166534; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 4px; border: 1px solid #bbf7d0; margin-bottom: 4px; width: fit-content;">Company Replied</span>` : ''}
                       <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
                       <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">
                         ${date}
