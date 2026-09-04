@@ -1278,30 +1278,32 @@
             }
 
             // --- 2. FETCH & RENDER STORE OWNER & STORE ANALYTICS (SIDE BOX) ---
-            if (co.owner_id) {
-                const { data: ownerName } = await db.rpc('get_owner_name', { owner_uid: co.owner_id });
-                if (ownerName) {
+            if (co.store_id) {
+                const { data: storeData } = await db.from('stores').select('domain_name').eq('store_id', co.store_id).single();
+                
+                if (storeData && storeData.domain_name) {
+                    const ownerName = storeData.domain_name;
                     document.getElementById('side-box-skel').style.display = 'none';
                     document.getElementById('side-box-content').style.display = 'flex';
                     document.getElementById('side-comp-name-display').innerText = ownerName;
                     document.getElementById('top-left-brand').innerText = `product from ${ownerName}`;
                     
-                    if (co.store_id) {
-                        const { data: storeAnalytics } = await db.from('store_analytics').select('*').eq('store_id', co.store_id).single();
+                    const { data: storeAnalytics } = await db.from('store_analytics').select('*').eq('store_id', co.store_id).single();
+                    
+                    if (storeAnalytics) {
+                        document.getElementById('store-analytics-badges').style.display = 'flex';
+                        document.getElementById('store-trust-text').innerText = `Store Trust: ${storeAnalytics.store_trust_score || 400}`;
+                        document.getElementById('store-velocity-text').innerText = `+${storeAnalytics.review_velocity_30d || 0} store reviews/mo`;
                         
-                        if (storeAnalytics) {
-                            document.getElementById('store-analytics-badges').style.display = 'flex';
-                            document.getElementById('store-trust-text').innerText = `Store Trust: ${storeAnalytics.store_trust_score || 400}`;
-                            document.getElementById('store-velocity-text').innerText = `+${storeAnalytics.review_velocity_30d || 0} store reviews/mo`;
-                            
-                            if(storeAnalytics.response_rate > 0) {
-                                document.getElementById('store-response-badge').style.display = 'inline-flex';
-                                document.getElementById('store-response-text').innerText = `${storeAnalytics.response_rate}% reply rate`;
-                            } else {
-                                document.getElementById('store-response-badge').style.display = 'none';
-                            }
+                        if(storeAnalytics.response_rate > 0) {
+                            document.getElementById('store-response-badge').style.display = 'inline-flex';
+                            document.getElementById('store-response-text').innerText = `${storeAnalytics.response_rate}% reply rate`;
+                        } else {
+                            document.getElementById('store-response-badge').style.display = 'none';
                         }
                     }
+                } else {
+                    document.getElementById('side-box-skel').style.display = 'none';
                 }
             } else {
                 document.getElementById('side-box-skel').style.display = 'none';
