@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faithox | More Info</title>
+  
+  <link rel="icon" href="https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/my-logo.png" sizes="any" type="image/png"> 
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- 1. BASE STYLES --- */
+    html { overflow-y: scroll; }
+    
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      outline: none; 
+      font-family: 'Inter', sans-serif; 
+    }
+    
+    body { 
+      background-color: #f0f1f1;
+      font-family: 'Inter', sans-serif; 
+      min-height: 100vh; 
+      width: 100%; 
+      overflow-x: hidden; 
+      display: flex;
+      flex-direction: column;
+      color: #2a2a2a; 
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* --- 2. TOP BAR & NAV --- */
+    .top-bar { 
+      width: 100%; 
+      height: 65px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      padding: 0 40px; 
+      background: #f0f1f1; 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      z-index: 2000; 
+    }
+    
+    .logo-container { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      cursor: pointer; 
+    }
+    
+    .brand-text { 
+      font-size: 20px; 
+      font-weight: 800; 
+      letter-spacing: -0.5px; 
+      text-transform: uppercase; 
+      color: #2a2a2a; 
+    } 
+
+    .nav-right-section {
+      display: flex;
+      align-items: center;
+      gap: 10px; 
+    }
+
+    .nav-options { 
+      display: flex; 
+      gap: 10px; 
+      align-items: center; 
+      height: 100%; 
+    }
+    
+    .nav-link { 
+      background-color: #fdfdfd; 
+      border-radius: 50px; 
+      padding: 0 12px; 
+      color: #2a2a2a; 
+      text-decoration: none; 
+      font-size: 13px; 
+      font-weight: 500; 
+      cursor: pointer; 
+      height: 35px; 
+      display: flex; 
+      align-items: center;
+      justify-content: center; 
+      transition: all 0.2s ease;
+    }
+
+    .nav-link:hover { 
+      background-color: #dcdcdc; 
+    }
+
+    .nav-link.for-business-btn {
+      background-color: #2a2a2a;
+      color: #fdfdfd;
+    }
+
+    .nav-link.for-business-btn:hover {
+      background-color: #404040;
+    }
+
+    /* --- MOBILE MENU BUTTON --- */
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      color: #2a2a2a;
+      cursor: pointer;
+      padding: 5px;
+    }
+    
+    /* --- MOBILE SIDE PANEL --- */
+    #mobile-menu-overlay {
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%;
+      background: rgba(0,0,0,0.4); 
+      z-index: 3999; 
+      backdrop-filter: blur(2px);
+      opacity: 0; 
+      visibility: hidden; 
+      transition: all 0.3s ease;
+    }
+
+    #mobile-menu-overlay.active { 
+      opacity: 1; 
+      visibility: visible; 
+    }
+    
+    .mobile-menu-panel {
+      position: fixed; 
+      top: 0; 
+      right: -100%; 
+      width: 230px; 
+      max-width: 80vw; 
+      height: 100vh;
+      background: #fdfdfd; 
+      box-shadow: -5px 0 30px rgba(0,0,0,0.1);
+      z-index: 4000; 
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; 
+      flex-direction: column; 
+    }
+
+    .mobile-menu-panel.active { right: 0; }
+    
+    .m-menu-header { 
+      display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; 
+    }
+
+    .m-menu-header h3 { 
+      font-size: 18px; font-weight: 700; margin: 0; letter-spacing: -0.5px; text-transform: uppercase;
+    }
+
+    .m-menu-header button { 
+      background: none; border: none; font-size: 28px; cursor: pointer; color: #2a2a2a; transition: color 0.2s; line-height: 1; margin-top: -4px;
+    }
+    
+    .m-menu-links { display: flex; flex-direction: column; padding: 25px; gap: 15px; }
+
+    .m-menu-links a { 
+      padding: 15px 20px; font-size: 15px; font-weight: 600; color: #2a2a2a; text-decoration: none; border-radius: 50px; background: #f0f1f1; transition: all 0.2s; cursor: pointer; text-align: center;
+    }
+
+    .m-menu-links a:hover { background: #e2e8f0; }
+    .m-menu-links a.m-menu-business { background: #2a2a2a; color: #fdfdfd; }
+    .m-menu-links a.m-menu-business:hover { background: #404040; }
+
+    /* --- REAL PROGRESS BAR (NProgress Style) --- */
+    .nprogress-bar { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 0%; 
+      height: 5px; 
+      background: #2a2a2a; 
+      z-index: 9999999; 
+      pointer-events: none; 
+      opacity: 0; 
+    }
+
+    /* --- PERKS SPECIFIC CONTENT --- */
+    .app-card { flex-grow: 1; position: relative; padding-top: 65px; }
+
+    .perks-container {
+      max-width: 1200px;
+      margin: 100px auto 60px;
+      padding: 0 24px;
+    }
+
+    .perk-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .perk-header h1 {
+      font-size: 48px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -1.5px;
+      margin-bottom: 15px;
+    }
+
+    .perk-header p {
+      font-size: 18px;
+      color: #64748b;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .perks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+    }
+
+    .perk-card {
+      background: #fdfdfd;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      border: 1px solid #ededed;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .perk-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .perk-icon {
+      width: 54px;
+      height: 54px;
+      background: #2a2a2a;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .perk-icon svg {
+      stroke: #fdfdfd;
+      width: 26px;
+      height: 26px;
+      stroke-width: 2;
+    }
+
+    .perk-card h3 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .perk-card p {
+      font-size: 15px;
+      color: #64748b;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    /* --- PROFESSIONAL FOOTER --- */
+    .pro-footer { 
+      width: 100%; max-width: 100%; background-color: #fdfdfd; padding: 80px 0 30px; border-top: 1px solid #ededed; 
+    }
+    .footer-wrapper { max-width: 1300px; margin: 0 auto; padding: 0 40px; }
+    .footer-top { display: grid; grid-template-columns: repeat(6, 1fr); gap: 40px; padding-bottom: 60px; border-bottom: 1px solid rgba(0, 0, 0, 0.15); margin-bottom: 40px; }
+    .footer-brand-col { grid-column: span 2; padding-right: 40px; }
+    .footer-logo { font-size: 24px; font-weight: 800; color: #2a2a2a; letter-spacing: -1px; margin-bottom: 20px; display: inline-block; text-transform: uppercase; }
+    .footer-desc { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 30px; }
+    .footer-col h4 { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 24px; letter-spacing: 0.5px; }
+    .footer-links { display: flex; flex-direction: column; gap: 16px; }
+    .footer-link { font-size: 14px; color: #64748b; text-decoration: none; transition: color 0.2s ease; font-weight: 500; }
+    .footer-link:hover { color: #2a2a2a; }
+    .footer-badge { background: #2a2a2a; color: #fdfdfd; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 6px; font-weight: 700; text-transform: uppercase; }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #64748b; }
+    .footer-socials { display: flex; gap: 20px; }
+    .social-icon { color: #64748b; cursor: pointer; transition: color 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+    .social-icon:hover { color: #2a2a2a; }
+
+    @media (max-width: 768px) {
+      .top-bar { height: 55px !important; } 
+      .nav-options { display: none; } 
+      .mobile-menu-btn { display: flex !important; align-items: center; justify-content: center; width: 35px; height: 35px; background: #fdfdfd; border-radius: 50%; } 
+      .brand-text { font-size: 18px !important; }
+      
+      .perk-header h1 { font-size: 36px; }
+      .perk-header p { font-size: 16px; }
+      
+      .pro-footer { padding: 40px 0 20px; }
+      .footer-wrapper { padding: 0 16px; }
+      .footer-top { display: flex; flex-direction: column; gap: 32px; padding-bottom: 30px; }
+      .footer-brand-col { padding-right: 0; }
+      .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="pro-progress-bar" class="nprogress-bar"></div>
+  
+  <nav class="top-bar">
+    <div class="logo-container" onclick="goHome()">
+      <span class="brand-text">faithox</span>
+    </div>
+    
+    <div class="nav-right-section">
+      <div class="nav-options">
+        <a class="nav-link" onclick="navigateTo('contact.html')">Contact Us</a>
+        <a class="nav-link" onclick="navigateTo('buisnesslogin.html')">Login</a>
+        <a class="nav-link for-business-btn" onclick="navigateTo('forbuisness.html')">For Business</a>
+      </div>
+      
+      <button class="mobile-menu-btn" onclick="openMobileMenu()" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </nav>
+  
+  <div id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <div id="mobile-menu-panel" class="mobile-menu-panel">
+    <div class="m-menu-header">
+      <h3>Menu</h3>
+      <button onclick="closeMobileMenu()">&times;</button>
+    </div>
+    <div class="m-menu-links">
+      <a onclick="closeMobileMenu(); navigateTo('forbuisness.html')" class="m-menu-business">For Business</a>
+      <a onclick="closeMobileMenu(); navigateTo('buisnesslogin.html')">Login</a>
+      <a onclick="closeMobileMenu(); navigateTo('contact.html')">Contact Us</a>
+    </div>
+  </div>
+
+  <div class="app-card">
+    <div class="perks-container">
+      <div class="perk-header">
+        <h1>Welcome to a smarter, safer internet.</h1>
+        <p>Faithox isn't just another review site. It's a fortified ecosystem designed to bridge the gap between businesses and consumers securely, weeding out fraudulent data to offer pure transparency.</p>
+      </div>
+
+      <div class="perks-grid">
+        <div class="perk-card">
+          <div class="perk-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <h3>AI Fraud Protection</h3>
+          <p>We deploy continuous algorithms that monitor submission anomalies 24/7. This guarantees bots, spam, and incentivized fake reviews are blocked instantly, keeping the platform clean.</p>
+        </div>
+
+        <div class="perk-card">
+          <div class="perk-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+          </div>
+          <h3>Unmatched SEO Growth</h3>
+          <p>For businesses, verified Faithox reviews are indexed beautifully. Enhance your search engine visibility dynamically with rich snippets and a soaring digital reputation.</p>
+        </div>
+
+        <div class="perk-card">
+          <div class="perk-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <h3>Community Trust</h3>
+          <p>Consumers no longer need to spend hours guessing if a product is legitimate. Read detailed media-rich reviews from real people who have genuinely tested the services.</p>
+        </div>
+
+        <div class="perk-card">
+          <div class="perk-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </div>
+          <h3>Live Analytics Dashboard</h3>
+          <p>Track exactly how trust impacts your bottom line. We provide businesses with transparent data maps detailing conversion analytics directly stemming from their review engagement.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="pro-footer">
+    <div class="footer-wrapper">
+      <div class="footer-top">
+        <div class="footer-brand-col">
+          <span class="footer-logo">FAITHOX</span>
+          <p class="footer-desc">
+            Faithox connects consumers and businesses to build trust and transparency. 
+            Our platform empowers you to make informed decisions.
+          </p>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Product</h4>
+          <div class="footer-links">
+            <a href="#" class="footer-link">Overview</a>
+            <a href="#" class="footer-link">For Business</a>
+            <a href="#" class="footer-link">Trust Score</a>
+            <a href="#" class="footer-link">Pricing</a>
+          </div>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Company</h4>
+          <div class="footer-links">
+            <a href="#" class="footer-link">About Us</a>
+            <a href="#" class="footer-link">Careers <span class="footer-badge">Hiring</span></a>
+            <a href="#" class="footer-link">Press</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <div class="footer-links">
+            <a href="#" class="footer-link">Help Center</a>
+            <a href="#" class="footer-link">Guidelines</a>
+            <a href="#" class="footer-link">API Docs</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <div class="footer-links">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link">Cookie Policy</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Faithox Limited. All rights reserved.</p>
+        <div class="footer-socials">
+          <a class="social-icon" aria-label="X (Twitter)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/company/faithox" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // --- MOBILE MENU FUNCTIONALITY ---
+    function openMobileMenu() {
+      document.getElementById('mobile-menu-panel').classList.add('active');
+      document.getElementById('mobile-menu-overlay').classList.add('active');
+    }
+
+    function closeMobileMenu() {
+      document.getElementById('mobile-menu-panel').classList.remove('active');
+      document.getElementById('mobile-menu-overlay').classList.remove('active');
+    }
+
+    // --- PROGRESS BAR GLOBALS & ROUTING ---
+    let progressInterval;
+    window.navigateTo = (url) => {
+      const bar = document.getElementById('pro-progress-bar');
+      if (!bar) { window.location.href = url; return; }
+
+      clearInterval(progressInterval);
+      
+      bar.style.transition = 'none';
+      bar.style.opacity = '1';
+      bar.style.width = '0%';
+      void bar.offsetWidth; 
+
+      bar.style.transition = 'width 0.2s ease-out';
+      let currentWidth = Math.random() * 15 + 15; 
+      bar.style.width = currentWidth + '%';
+
+      progressInterval = setInterval(() => {
+        currentWidth += Math.random() * 5 + 2; 
+        if (currentWidth > 85) currentWidth = 85; 
+        bar.style.transition = 'width 0.2s ease';
+        bar.style.width = currentWidth + '%';
+      }, 200);
+
+      setTimeout(() => {
+        clearInterval(progressInterval);
+        bar.style.transition = 'width 0.15s ease-out';
+        bar.style.width = '100%';
+        
+        setTimeout(() => {
+          window.location.href = url;
+        }, 150);
+      }, 300); 
+    };
+
+    window.addEventListener('pageshow', function(event) {
+      const bar = document.getElementById('pro-progress-bar');
+      if (bar) {
+        clearInterval(progressInterval);
+        bar.style.transition = 'none';
+        bar.style.opacity = '0';
+        bar.style.width = '0%';
+      }
+    });
+
+    window.goHome = () => navigateTo('index.html');
+  </script>
+</body>
+</html>
