@@ -225,23 +225,46 @@
             border-top: 1px solid #ededed; 
             position: relative; 
             z-index: 10; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        .footer-wrapper { max-width: 1300px; margin: 0 auto; padding: 0 40px; }
-        .footer-top { display: grid; grid-template-columns: repeat(6, 1fr); gap: 40px; padding-bottom: 60px; border-bottom: 1px solid rgba(0, 0, 0, 0.15); margin-bottom: 40px; }
-        .footer-brand-col { grid-column: span 2; padding-right: 40px; }
+        .footer-wrapper { 
+            max-width: 1300px; 
+            margin: 0 auto; 
+            padding: 0 40px; 
+            display: flex; 
+            flex-direction: column; 
+            flex: 1; 
+            width: 100%; 
+        }
+        .footer-top { 
+            display: grid; 
+            grid-template-columns: repeat(6, 1fr); 
+            gap: 40px; 
+            padding-bottom: 60px; 
+            border-bottom: 1px solid rgba(0, 0, 0, 0.15); 
+            margin-bottom: 40px; 
+            flex: 1; 
+        }
+        .footer-brand-col { 
+            grid-column: span 2; 
+            padding-right: 40px; 
+            display: flex; 
+            flex-direction: column; 
+        }
         .footer-logo { font-size: 24px; font-weight: 800; color: #2a2a2a; letter-spacing: -1px; margin-bottom: 20px; display: inline-block; text-transform: uppercase; }
         .footer-desc { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 30px; }
-        .footer-col h4 { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 24px; letter-spacing: 0.5px; }
-        .footer-links { display: flex; flex-direction: column; gap: 16px; }
+        .footer-col { display: flex; flex-direction: column; }
+        .footer-col h4 { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 24px; letter-spacing: 0.5px; }
+        .footer-links { display: flex; flex-direction: column; gap: 35px; flex: 1; justify-content: flex-start; }
         .footer-link { font-size: 14px; color: #64748b; text-decoration: none; transition: color 0.2s ease; font-weight: 500; }
         .footer-link:hover { color: #2a2a2a; }
         .footer-badge { background: #2a2a2a; color: #fdfdfd; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 6px; font-weight: 700; text-transform: uppercase; }
         .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #64748b; }
         .footer-socials { display: flex; gap: 20px; }
-        .social-icon { color: #64748b; cursor: pointer; transition: color 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; }
-        .social-icon:hover { color: #2a2a2a; }
         
-        .newsletter-form { position: relative; margin-top: 10px; display: flex; gap: 10px; }
+        .newsletter-form { position: relative; margin-top: 20px; display: flex; gap: 10px; }
         .ft-input { background: #f0f1f1; border: 1px solid #e2e8f0; color: #0f172a; padding: 12px 16px; border-radius: 8px; font-size: 14px; width: 100%; outline: none; transition: 0.2s; }
         .ft-input::placeholder { color: #94a3b8; }
         .ft-input:focus { border-color: #ededed; background: #ededed; }
@@ -736,7 +759,6 @@
                                 <span id="top-review-count-text">0 reviews</span>
                             </div>
 
-                            <!-- PRODUCT ANALYTICS BADGES -->
                             <div class="top-review-count-badge skeleton-anim skel-exact-rating" id="trust-score-badge" style="border-color: #3b82f6;">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                                 <span id="trust-score-text" style="color: #1d4ed8;">Trust Score: --</span>
@@ -811,7 +833,6 @@
                 
                 <h3 id="side-comp-name-display" style="font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 24px; word-break: break-all;"></h3>
                 
-                <!-- STORE ANALYTICS BADGES (Right Box) -->
                 <div id="store-analytics-badges" style="display: none; flex-direction: column; gap: 8px; margin-bottom: 24px; width: 100%; align-items: center;">
                     <div class="top-review-count-badge" style="border-color: #3b82f6; width: 100%; justify-content: center;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
@@ -881,7 +902,6 @@
                 <div class="footer-col">
                     <h4>Legal</h4>
                     <div class="footer-links">
-                        <!-- PROGRESS BAR NAVIGATE FUNCTIONS RESTORED -->
                         <a href="legal.html#privacy" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#privacy');">Privacy Policy</a>
                         <a href="legal.html#tos" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#tos');">Terms of Service</a>
                         <a href="legal.html#moderation" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#moderation');">Review Moderation</a>
