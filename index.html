@@ -1136,7 +1136,7 @@
       border-color: #fff; 
     }
 
-    /* --- PROFESSIONAL FOOTER --- */
+   /* --- PROFESSIONAL FOOTER --- */
     .pro-footer { 
       width: 100%; 
       max-width: 100%; 
@@ -1144,20 +1144,26 @@
       color: #2a2a2a; 
       font-family: 'Inter', sans-serif; 
       padding: 80px 0 30px; 
-      margin: 120px 0 0 0; 
+      margin: auto 0 0 0;
+      margin-top: 40px;
       border-radius: 0; 
       border: none; 
       border-top: 1px solid #ededed; 
       position: relative; 
       z-index: 10; 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-
     .footer-wrapper { 
       max-width: 1300px; 
       margin: 0 auto; 
       padding: 0 40px; 
+      display: flex; 
+      flex-direction: column; 
+      flex: 1; 
+      width: 100%; 
     }
-
     .footer-top { 
       display: grid; 
       grid-template-columns: repeat(6, 1fr); 
@@ -1165,137 +1171,31 @@
       padding-bottom: 60px; 
       border-bottom: 1px solid rgba(0, 0, 0, 0.15); 
       margin-bottom: 40px; 
+      flex: 1; 
     }
-
     .footer-brand-col { 
       grid-column: span 2; 
       padding-right: 40px; 
-    }
-
-    .footer-logo { 
-      font-size: 24px; 
-      font-weight: 800; 
-      color: #2a2a2a; 
-      letter-spacing: -1px; 
-      margin-bottom: 20px; 
-      display: inline-block; 
-      text-transform: uppercase; 
-    }
-
-    .footer-desc { 
-      font-size: 14px; 
-      color: #64748b; 
-      line-height: 1.6; 
-      margin-bottom: 30px; 
-    }
-
-    .footer-col h4 { 
-      font-size: 14px; 
-      font-weight: 700; 
-      color: #0f172a; 
-      margin-bottom: 24px; 
-      letter-spacing: 0.5px; 
-    }
-
-    .footer-links { 
       display: flex; 
       flex-direction: column; 
-      gap: 16px; 
     }
-
-    .footer-link { 
-      font-size: 14px; 
-      color: #64748b; 
-      text-decoration: none; 
-      transition: color 0.2s ease; 
-      font-weight: 500; 
-    }
-
-    .footer-link:hover { 
-      color: #2a2a2a; 
-    }
-
-    .footer-badge { 
-      background: #2a2a2a; 
-      color: #fdfdfd; 
-      font-size: 10px; 
-      padding: 2px 8px; 
-      border-radius: 4px; 
-      margin-left: 6px; 
-      font-weight: 700; 
-      text-transform: uppercase; 
-    }
-
-    .footer-bottom { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      font-size: 13px; 
-      color: #64748b; 
-    }
-
-    .footer-socials { 
-      display: flex; 
-      gap: 20px; 
-    }
-
-    .social-icon { 
-      color: #64748b; 
-      cursor: pointer; 
-      transition: color 0.2s; 
-      text-decoration: none; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-    }
-
-    .social-icon:hover { 
-      color: #2a2a2a; 
-    }
+    .footer-logo { font-size: 24px; font-weight: 800; color: #2a2a2a; letter-spacing: -1px; margin-bottom: 20px; display: inline-block; text-transform: uppercase; }
+    .footer-desc { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 30px; }
+    .footer-col { display: flex; flex-direction: column; }
+    .footer-col h4 { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 24px; letter-spacing: 0.5px; }
+    .footer-links { display: flex; flex-direction: column; gap: 35px; flex: 1; justify-content: flex-start; }
+    .footer-link { font-size: 14px; color: #64748b; text-decoration: none; transition: color 0.2s ease; font-weight: 500; }
+    .footer-link:hover { color: #2a2a2a; }
+    .footer-badge { background: #2a2a2a; color: #fdfdfd; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 6px; font-weight: 700; text-transform: uppercase; }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #64748b; }
+    .footer-socials { display: flex; gap: 20px; }
     
-    .newsletter-form { 
-      position: relative; 
-      margin-top: 10px; 
-      display: flex; 
-      gap: 10px; 
-    }
-
-    .ft-input { 
-      background: #f0f1f1; 
-      border: 1px solid #e2e8f0; 
-      color: #0f172a; 
-      padding: 12px 16px; 
-      border-radius: 8px; 
-      font-size: 14px; 
-      width: 100%; 
-      outline: none; 
-      transition: 0.2s; 
-    }
-
-    .ft-input::placeholder { 
-      color: #94a3b8; 
-    }
-
-    .ft-input:focus { 
-      border-color: #ededed; 
-      background: #ededed; 
-    }
-
-    .ft-btn { 
-      background: #2a2a2a; 
-      color: #fdfdfd; 
-      border: none; 
-      padding: 0 16px; 
-      border-radius: 8px; 
-      font-weight: 700; 
-      font-size: 13px; 
-      cursor: pointer; 
-      transition: 0.2s; 
-    }
-
-    .ft-btn:hover { 
-      background: #636363; 
-    }
+    .newsletter-form { position: relative; margin-top: 20px; display: flex; gap: 10px; }
+    .ft-input { background: #f0f1f1; border: 1px solid #e2e8f0; color: #0f172a; padding: 12px 16px; border-radius: 8px; font-size: 14px; width: 100%; outline: none; transition: 0.2s; }
+    .ft-input::placeholder { color: #94a3b8; }
+    .ft-input:focus { border-color: #ededed; background: #ededed; }
+    .ft-btn { background: #2a2a2a; color: #fdfdfd; border: none; padding: 0 16px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
+    .ft-btn:hover { background: #636363; }
 
     /* --- OVERLAYS --- */
     #search-overlay { 
@@ -2015,82 +1915,80 @@
 
       <footer class="pro-footer">
         <div class="footer-wrapper">
-          <div class="footer-top">
-            <div class="footer-brand-col">
-              <span class="footer-logo">FAITHOX</span>
-              <p class="footer-desc">
-                Faithox connects consumers and businesses to build trust and transparency. 
-                Our platform empowers you to make informed decisions.
-              </p>
-              <div class="newsletter-form">
-                <input type="email" placeholder="Enter your email" class="ft-input">
-                <button class="ft-btn">Subscribe</button>
-              </div>
-            </div>
-            
-            <div class="footer-col">
-              <h4>Product</h4>
-              <div class="footer-links">
-                <a href="#" class="footer-link">Overview</a>
-                <a href="#" class="footer-link">For Business</a>
-                <a href="#" class="footer-link">Trust Score</a>
-                <a href="#" class="footer-link">Pricing</a>
-              </div>
-            </div>
-            
-            <div class="footer-col">
-              <h4>Company</h4>
-              <div class="footer-links">
-                <a href="#" class="footer-link">About Us</a>
-                <a href="#" class="footer-link">Careers <span class="footer-badge">Hiring</span></a>
-                <a href="#" class="footer-link">Press</a>
-                <a href="#" class="footer-link">Blog</a>
-              </div>
+            <div class="footer-top">
+                <div class="footer-brand-col">
+                    <span class="footer-logo">FAITHOX</span>
+                    <p class="footer-desc">
+                        Faithox connects consumers and businesses to build trust and transparency. 
+                        Our platform empowers you to make informed decisions.
+                    </p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Enter your email" class="ft-input">
+                        <button class="ft-btn">Subscribe</button>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Overview</a>
+                        <a href="#" class="footer-link">For Business</a>
+                        <a href="#" class="footer-link">Trust Score</a>
+                        <a href="#" class="footer-link">Pricing</a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">About Us</a>
+                        <a href="#" class="footer-link">Careers <span class="footer-badge">Hiring</span></a>
+                        <a href="#" class="footer-link">Press</a>
+                        <a href="#" class="footer-link">Blog</a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Help Center</a>
+                        <a href="#" class="footer-link">Guidelines</a>
+                        <a href="#" class="footer-link">API Docs</a>
+                        <a href="#" class="footer-link">System Status</a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <div class="footer-links">
+                        <a href="legal.html#privacy" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#privacy');">Privacy Policy</a>
+                        <a href="legal.html#tos" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#tos');">Terms of Service</a>
+                        <a href="legal.html#moderation" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#moderation');">Review Moderation</a>
+                        <a href="#" class="footer-link">Cookie Policy</a>
+                        <a href="#" class="footer-link">Security</a>
+                    </div>
+                </div>
             </div>
 
-            <div class="footer-col">
-              <h4>Resources</h4>
-              <div class="footer-links">
-                <a href="#" class="footer-link">Help Center</a>
-                <a href="#" class="footer-link">Guidelines</a>
-                <a href="#" class="footer-link">API Docs</a>
-                <a href="#" class="footer-link">System Status</a>
-              </div>
+            <div class="footer-bottom">
+                <p>© 2026 Faithox Private Limited. All rights reserved.</p>
+                <div class="footer-socials">
+                    <a class="social-icon" aria-label="X (Twitter)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+                    </a>
+                    <a class="social-icon" aria-label="LinkedIn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                    </a>
+                    <a class="social-icon" aria-label="Instagram">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                    <a class="social-icon" aria-label="Facebook">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                    </a>
+                </div>
             </div>
-
-            <div class="footer-col">
-              <h4>Legal</h4>
-              <div class="footer-links">
-                <a href="legal.html#privacy" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#privacy');">Privacy Policy</a>
-                <a href="legal.html#tos" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#tos');">Terms of Service</a>
-                <a href="legal.html#moderation" class="footer-link" onclick="event.preventDefault(); navigateTo('legal.html#moderation');">Review Moderation</a>
-                <a href="#" class="footer-link">Cookie Policy</a>
-                <a href="#" class="footer-link">Security</a>
-              </div>
-            </div>
-          </div>
-  
-          <div class="footer-bottom">
-            <p>© 2026 Faithox Limited. All rights reserved.</p>
-            <div class="footer-socials">
-              <a class="social-icon" aria-label="X (Twitter)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
-              </a>
-              <a href="https://www.linkedin.com/company/faithox" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-              </a>
-              <a class="social-icon" aria-label="Instagram">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-              </a>
-              <a class="social-icon" aria-label="Facebook">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-              </a>
-            </div>
-          </div>
         </div>
       </footer>
-    </div>
-  </div>
 
   <script>
     // --- MOBILE MENU FUNCTIONALITY ---
