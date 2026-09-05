@@ -15,7 +15,7 @@
   <style>
     /* --- 1. BASE STYLES --- */
     html {
-      overflow-y: scroll; /* Fixes layout shift by permanently reserving scrollbar space */
+      overflow-y: scroll; 
     }
     
     * { 
@@ -30,7 +30,7 @@
       background-color: #f0f1f1;
       font-family: 'Inter', sans-serif; 
       min-height: 100vh; 
-      width: 100%; /* Changed from 100vw to prevent horizontal overflow */
+      width: 100%; 
       overflow-x: hidden; 
       display: flex;
       flex-direction: column;
@@ -46,7 +46,7 @@
       left: 24px;
       right: 24px;
       height: 520px;
-      z-index: 0;
+      /* Removed z-index: 0 so it stops trapping the side boxes underneath the app-card */
       display: flex;
       gap: 10px;
       justify-content: center;
@@ -81,6 +81,15 @@
       color: #2a2a2a;
       text-align: left;
       overflow: hidden; 
+      /* Added these to pop the side boxes above the transparent app-card shield */
+      position: relative;
+      z-index: 10;
+    }
+
+    .left-points-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 36px; /* <--- CHANGE THIS VALUE to adjust spacing between left points */
     }
 
     .why-us-title {
@@ -118,8 +127,8 @@
     }
 
     .trust-score-circle {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       background: conic-gradient(#10B981 0% 99%, #e2e8f0 99% 100%);
       display: flex;
@@ -127,14 +136,14 @@
       justify-content: center;
       position: relative;
       flex-shrink: 0;
-      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.5);
     }
 
     .trust-score-circle::before {
       content: '';
       position: absolute;
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       background: #fdfdfd; 
       border-radius: 50%;
     }
@@ -1391,7 +1400,6 @@
       position: absolute;
     }
 
-    /* Make hero stars bigger proportionally without affecting scrolling cards */
     .faithox-hero-animation .rating-pill {
       height: 42px !important;
       padding: 0 12px !important;
@@ -1549,7 +1557,6 @@
       .fsb-4 { bottom: 15% !important; right: 8% !important; top: auto !important; left: auto !important; display: inline-flex !important; animation: floatMobile4 4.5s infinite ease-in-out !important; }
       .fsb-5 { top: -30% !important; left: 50% !important; transform: translateX(-50%); bottom: auto !important; right: auto !important; display: inline-flex !important; animation: floatMobile5 5s infinite ease-in-out !important; }
 
-      /* 100% Proportional Float Distances (Movement reduced by 33%) */
       @keyframes floatMobile1 {
         0%, 100% { transform: translate(0, 0) rotate(-10deg); }
         50% { transform: translate(3px, -10px) rotate(-8deg); }
@@ -1572,12 +1579,10 @@
       }
 
       /* --- MOBILE SCROLLING REVIEWS CONTROL --- */
-      /* 1. Move the entire scrolling section UP */
       .scrolling-reviews-container { 
         margin-top: 70px !important; 
       }
 
-      /* 2. Proportionately shrink both loading skeletons and real review cards */
       .skeleton-card, 
       .review-item-main {
         zoom: 0.85 !important; 
@@ -1589,32 +1594,35 @@
   
   <div class="floating-hero-wrapper">
     <div class="floating-hero-bg side left-feature-box">
-      <h3 class="why-us-title">Why us ?</h3>
-      <div class="why-us-item">
-        <strong>Real reviews only</strong>
-        <p>Say goodbye to fake reviews</p>
-      </div>
-      <div class="why-us-item">
-        <strong>Smarter decisions</strong>
-        <p>Compare products easily and choose what truly fits your needs</p>
-      </div>
-      <div class="why-us-item">
-        <strong>Save time instantly</strong>
-        <p>No endless searching - everything in one place</p>
-      </div>
-      <div class="why-us-item">
-        <strong>Support small businesses</strong>
-        <p>Discover and trust growing brands, not just big names</p>
-      </div>
-      <button class="hero-side-btn">
-        see more
-        <span class="btn-arrow">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-          </svg>
-        </span>
-      </button>
+  <h3 class="why-us-title">Why us ?</h3>
+  
+  <div class="left-points-wrapper">
+    <div class="why-us-item">
+      <strong>Real reviews only</strong>
+      <p>Say goodbye to fake reviews</p>
     </div>
+    <div class="why-us-item">
+      <strong>Smarter decisions</strong>
+      <p>Compare products easily and choose what truly fits your needs</p>
+    </div>
+    <div class="why-us-item">
+      <strong>Save time instantly</strong>
+      <p>No endless searching - everything in one place</p>
+    </div>
+    <div class="why-us-item">
+      <strong>Support small businesses</strong>
+      <p>Discover and trust growing brands, not just big names</p>
+    </div>
+  </div>
+  <button class="hero-side-btn" onclick="navigateTo('moreinfo.html')">
+    see more
+    <span class="btn-arrow">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+      </svg>
+    </span>
+  </button>
+</div>
     <div class="floating-hero-bg center"></div>
     <div class="floating-hero-bg side right-feature-box">
       <h3 class="why-us-title">Insights</h3>
@@ -1644,7 +1652,8 @@
         </svg>
         <span>Continuous review authentication running 24/7.</span>
       </div>
-      <button class="hero-side-btn">
+      
+      <button class="hero-side-btn" onclick="navigateTo('moreinfo.html')">
         learn more
         <span class="btn-arrow">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
