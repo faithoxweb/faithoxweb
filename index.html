@@ -1084,58 +1084,6 @@
       align-items: center; 
     }
 
-    /* --- COMPANIES SECTION --- */
-    .section-title-badge { 
-      align-self: center; 
-      margin-right: auto; 
-      margin-left: calc(50% - 50vw); 
-      background: #242424; 
-      padding: 9px 10px 9px 15px; 
-      border-radius: 0 8px 8px 0; 
-      display: inline-flex; 
-      align-items: center; 
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
-      border: 1px solid rgba(0,0,0,0.05); 
-      border-left: none; 
-      margin-bottom: 30px; 
-      font-size: 13px; 
-      font-weight: 600; 
-      text-transform: uppercase; 
-      letter-spacing: 0.5px; 
-      color: #f8f8f8; 
-    }
-    
-    .company-grid { 
-      display: grid; 
-      grid-template-columns: repeat(4, 1fr); 
-      gap: 20px; 
-      width: 1400px; 
-      max-width: 95vw; 
-      margin-bottom: 30px; 
-    }
-
-    .company-card { 
-      background: rgba(255, 255, 255, 0.4); 
-      border: 1px solid rgba(255,255,255,0.5); 
-      padding: 25px; 
-      border-radius: 16px; 
-      text-align: left; 
-      cursor: pointer; 
-      transition: all 0.2s ease-in-out; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 6px; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-      text-decoration: none; 
-      color: inherit; 
-    }
-
-    .company-card:hover { 
-      background: rgba(255, 255, 255, 0.8); 
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04); 
-      border-color: #fff; 
-    }
-
    /* --- PROFESSIONAL FOOTER --- */
     .pro-footer { 
       width: 100%; 
@@ -1415,7 +1363,6 @@
         letter-spacing: -0.5px !important; 
       }
       .top-bar { height: 55px !important; } 
-      .company-grid { grid-template-columns: repeat(2, 1fr); }
       
       .bb-text h2 { font-size: 32px; }
       .bb-text p { font-size: 15px; }
@@ -1906,12 +1853,6 @@
           </div>
         </div>
 
-        <div class="section-title-badge">some performing stores</div>
-        
-        <div class="company-grid" id="top-companies-grid">
-          <p style="padding:20px; color:#64748b;">Loading companies...</p>
-        </div>
-        
       </div> 
 
       <footer class="pro-footer">
@@ -2102,59 +2043,6 @@
           }
         }
       } catch (e) { console.error(e); }
-    }
-
-    // --- FETCH DATA FOR COMPANY GRID ---
-    async function loadCompaniesGrid() {
-      if (!db) return;
-      const grid = document.getElementById('top-companies-grid');
-      if (!grid) return; 
-
-      // 1. Fetch the 4 newest products actually registered in your database
-      const { data: products, error } = await db.from('products')
-        .select('*')
-        .eq('is_featured', true) //magic new line
-        .order('created_at', { ascending: false })
-        .limit(4);
-
-      if (error || !products || products.length === 0) {
-        grid.innerHTML = `<p style="padding:20px; color:#64748b; width: 100%; grid-column: span 4;">No products available yet. Register your first product!</p>`;
-        return;
-      }
-
-      // 2. Clear the "Loading..." text
-      grid.innerHTML = '';
-
-      // 3. Loop through the real database products and create their cards
-      let html = '';
-      products.forEach(co => {
-        // Get the first two letters of the company for the avatar circle
-        const initials = co.name ? co.name.substring(0, 2).toUpperCase() : 'FX';
-        
-        // Use the uploaded image, or a gray placeholder if they didn't upload one
-        const imgUrl = co.image_url || co.logo_url || co.image || 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/Grade%20Grey.jpg';
-        
-        // Use the website or category, fallback to 'Faithox Verified'
-        const subText = co.website || co.category || 'Faithox Verified';
-
-        html += `
-          <a href="company.html?id=${co.product_id}" onclick="event.preventDefault(); navigateTo('company.html?id=${co.product_id}');" class="lr-card" style="text-decoration: none; width: 100%; display: flex; flex-direction: column; box-sizing: border-box;">
-            <img src="${imgUrl}" alt="${escapeHTML(co.name)}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; flex-shrink: 0;">
-            <div class="lr-header">
-              <div class="lr-avatar">${initials}</div>
-              <div class="lr-meta">
-                <div class="lr-name">${escapeHTML(co.name)}</div>
-                <div class="lr-company">${escapeHTML(subText)}</div>
-              </div>
-            </div>
-            <div class="lr-stars">★★★★★</div>
-            <div class="lr-comment" style="margin-top: auto;">Click to view official details and community reviews for ${escapeHTML(co.name)}.</div>
-          </a>
-        `;
-      });
-
-      // 4. Inject the real products into the page
-      grid.innerHTML = html;
     }
 
     // --- FETCH DATA FOR LATEST REVIEWS SCROLLER ---
@@ -2442,9 +2330,8 @@
     // --- INITIALIZATION ---
     checkUser();
     
-    // Load companies and reviews only if specific grid exists (index.html)
-    if(document.getElementById('top-companies-grid')) {
-      loadCompaniesGrid();
+    // Load reviews only if specific scroller exists (index.html)
+    if(document.getElementById('scroll-content-1')) {
       loadLatestReviews();
     }
     
