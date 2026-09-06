@@ -472,7 +472,7 @@
     .search-bar { 
       width: 100%; 
       background: #f0f1f1; 
-      border: 3px solid #ececec; 
+      border: 3px solid transparent; 
       padding: 22px 70px 22px 30px; 
       border-radius: 50px; 
       color: #0f172a; 
@@ -536,33 +536,52 @@
     .search-container.active .search-bar { 
       background: #fdfdfd !important; 
       color: #2a2a2a; 
-      box-shadow: none; 
-      border: 3px solid #cbd5e1 !important; 
-      border-radius: 50px !important; 
+      /* Rounded top, flat bottom to connect to the dropdown */
+      border-radius: 18px 18px 0 0 !important; 
+      border: 3px solid transparent!important; 
+      /* Subtle inner divider line instead of a thick bottom border */
+      border-bottom: 1px solid #e2e8f0 !important; 
+      /* Light shadow for the top half */
+      box-shadow: 0 -4px 30px rgba(0,0,0,0.05); 
+      padding: 14px 30px 14px 50px !important;
     }
 
     .search-container.active .search-icon { 
-      background: #242424; 
-      transform: scale(1.05); 
+      display: none; 
     }
 
-    .search-container.active .search-icon svg { 
-      stroke: #fdfdfd; 
-      transform: rotate(90deg); 
+    .active-left-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%); /* Perfectly centers it vertically */
+      z-index: 5;
+      display: none; /* Hidden by default */
+      pointer-events: none; /* Prevents the icon from blocking text selection/clicks */
+    }
+
+    .search-container.active .active-left-icon {
+      display: flex; /* Reveals the icon when the search bar is clicked */
     }
 
     .results-dropdown { 
       position: absolute; 
-      top: calc(100% + 10px); 
+      /* Snap perfectly flush against the bottom of the search bar */
+      top: 100%; 
       left: 0; 
       width: 100%; 
       background: #fdfdfd; 
-      border-radius: 8px; 
+      /* Flat top, rounded bottom to complete the box */
+      border-radius: 0 0 18px 18px; 
       display: none; 
       overflow: hidden; 
       margin-top: 0; 
-      padding: 10px 0; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12); 
+      padding: 10px 0 15px 0; 
+      /* Continue the outer border, but remove the top so they merge */
+      border: 3px solid transparent; 
+      border-top: none; 
+      /* Deep shadow for the floating effect */
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12); 
     }
 
     .search-container.active .results-dropdown { 
@@ -1605,6 +1624,12 @@
         </div>
 
         <div class="search-container">
+          <span class="active-left-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
           <input type="text" class="search-bar" placeholder="Search for company or product" id="main-search">
           <div class="search-loader" style="display:none; position:absolute; right:70px; top:50%; transform:translateY(-50%); z-index:4;">
             <div class="spinner"></div>
