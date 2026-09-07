@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Profile | Faithox</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background: #f0f1f1; font-family: 'Inter', sans-serif; color: #1e293b; padding: 40px; margin: 0; }
+        .store-header { background: #fdfdfd; padding: 40px; border-radius: 24px; display: flex; align-items: center; gap: 24px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .store-logo { width: 100px; height: 100px; border-radius: 20%; object-fit: cover; background: #e2e8f0; border: 3px solid #fff; }
+        .store-info h1 { margin: 0 0 8px 0; font-size: 32px; font-weight: 800; }
+        .store-stats { display: flex; gap: 16px; margin-top: 12px; }
+        .stat-badge { background: #f0f1f1; padding: 8px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; }
+        
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .product-card { background: #fdfdfd; padding: 20px; border-radius: 16px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 12px; transition: 0.2s; border: 1px solid #e2e8f0; }
+        .product-card:hover { transform: translateY(-3px); border-color: #cbd5e1; }
+        .product-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="store-header" id="store-header" style="display: none;">
+        <img id="store-logo" class="store-logo" src="" alt="Store Logo">
+        <div class="store-info">
+            <h1 id="store-name">Loading...</h1>
+            <p id="store-domain" style="color: #64748b; margin: 0;"></p>
+            <div class="store-stats">
+                <div class="stat-badge"><span id="product-count">0</span> Registered Products</div>
+                <div class="stat-badge"><span id="review-count">0</span> Total Reviews</div>
+            </div>
+        </div>
+    </div>
+
+    <h2 style="margin-bottom: 20px;">Products & Services</h2>
+    <div class="products-grid" id="products-grid">
+        <p>Loading products...</p>
+    </div>
+
+    <script>
+        const db = supabase.createClient('https://fdjcvpsqossuiljuadkk.supabase.co', 'YOUR_ANON_KEY_HERE'); // Insert your key
+        
+        async function loadStoreProfile() {
+            const params = new URLSearchParams(window.location.search);
+            const storeId = params.get('id');
+            if (!storeId) return document.body.innerHTML = '<h2>Store ID not found</h2>';
+
+            // 1. Fetch Store Details
+            const { data: store } = await db.from('stores').select('*').eq('store_id', storeId).single();
+            if (!store) return document.body.innerHTML = '<h2>Store not found</h2>';
+
+            document.getElementById('store-header').style.display = 'flex';
+            document.getElementById('store-name').innerText = store.display_name || store.domain_name;
+            document.getElementById('store-domain').innerText = store.domain_name;
+            document.getElementById('store-logo').src = store.logo_url || 'https://via.placeholder.com/100';
+            document.title = (store.display_name || store.domain_name) + " | Faithox";
+
+            // 2. Fetch Store Products
+            const { data: products } = await db.from('products').select('*').eq('store_id', storeId);
+            document.getElementById('product-count').innerText = products ? products.length : 0;
+            
+            const grid = document.getElementById('products-grid');
+            if (!products || products.length === 0) {
+                grid.innerHTML = '<p>No products registered yet.</p>';
+            } else {
+                grid.innerHTML = products.map(p => `
+                    <a href="company.html?id=${p.product_id}" class="product-card">
+                        <img src="${p.image_url || 'https://via.placeholder.com/250'}" alt="${p.name}">
+                        <h3 style="margin: 0; font-size: 16px;">${p.name}</h3>
+                        <span style="font-size: 13px; color: #64748b;">★ ${p.rating || '0.0'}</span>
+                    </a>
+                `).join('');
+            }
+
+            // 3. Fetch Total Reviews for this store
+            const { count } = await db.from('reviews').select('*', { count: 'exact', head: true }).eq('store_id', storeId);
+            document.getElementById('review-count').innerText = count || 0;
+        }
+
+        loadStoreProfile();
+    </script>
+</body>
+</html>
