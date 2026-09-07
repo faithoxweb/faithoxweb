@@ -1306,6 +1306,8 @@
                     document.getElementById('side-box-skel').style.display = 'none';
                     document.getElementById('side-box-content').style.display = 'flex';
                     document.getElementById('side-comp-name-display').innerText = ownerName;
+                    // This links the button to the new store profile page, passing the store_id in the URL
+                    document.getElementById('side-comp-profile').href = `storeprofile.html?id=${co.store_id}`;
                     document.getElementById('top-left-brand').innerText = `product from ${ownerName}`;
                     
                     const { data: storeAnalytics } = await db.from('store_analytics').select('*').eq('store_id', co.store_id).single();
