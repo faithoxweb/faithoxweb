@@ -558,11 +558,6 @@
                     } 
                 };
                
-                
-                // --- ADD THESE 3 LINES ---
-                document.querySelector('.edit-btn-top').style.display = 'none'; // Hides '+ Register New Product'
-                document.getElementById('save-info-btn').style.display = 'none'; // Hides 'Save Changes'
-                document.getElementById('avatar-btn').style.display = 'none'; // Hides 'Upload Logo'
                 // -------------------------
                 updateSidebarAndProfileUI();
                 document.getElementById('sidebar-avatar').innerHTML = 'S';
@@ -710,67 +705,64 @@
         }
 
         async function uploadCompanyLogo(event) {
-            const file = event.target.files[0];
-            const btn = document.getElementById('avatar-btn');
-            if (!file) return;
+    const file = event.target.files[0];
+    const btn = document.getElementById('avatar-btn');
+    if (!file) return;
 
-            btn.innerText = "Uploading...";
-            
-            const fileExt = file.name.split('.').pop();
-            const fileName = `logo-${currentUser.id}-${Math.random()}.${fileExt}`; 
-            
-            const { error: uploadError } = await db.storage
-                .from('avatars')
-                .upload(fileName, file, { upsert: true });
+    btn.innerText = "Uploading...";
+    const storeId = await getStoreIdSecurely(); // Works for BOTH Shopify and Custom!
+    const fileExt = file.name.split('.').pop();
+    const fileName = `logo-${storeId}-${Math.random()}.${fileExt}`; 
+    
+    const { error: uploadError } = await db.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
 
-            if (uploadError) {
-                btn.innerText = "Upload Company Logo";
-                return showStatus("Error uploading image: " + uploadError.message, true);
-            }
+    if (uploadError) {
+        btn.innerText = "Upload Company Logo";
+        return showStatus("Error uploading image: " + uploadError.message, true);
+    }
 
-            const { data: publicUrlData } = db.storage.from('avatars').getPublicUrl(fileName);
-            const avatarUrl = publicUrlData.publicUrl;
+    const { data: publicUrlData } = db.storage.from('avatars').getPublicUrl(fileName);
+    const avatarUrl = publicUrlData.publicUrl;
 
-            const { data, error: updateError } = await db.auth.updateUser({
-                data: { avatar_url: avatarUrl }
-            });
+    // Save the URL to the public stores table instead of auth metadata
+    const { error: updateError } = await db.from('stores')
+        .update({ logo_url: avatarUrl })
+        .eq('store_id', storeId);
 
-            btn.innerText = "Upload Company Logo";
-            if (updateError) {
-                showStatus(updateError.message, true);
-            } else {
-                currentUser = data.user;
-                updateSidebarAndProfileUI();
-                showStatus("Company Logo successfully updated!");
-            }
-        }
+    btn.innerText = "Upload Company Logo";
+    if (updateError) {
+        showStatus(updateError.message, true);
+    } else {
+        document.getElementById('sidebar-avatar').innerHTML = `<img src="${avatarUrl}">`;
+        document.getElementById('profile-avatar-display').innerHTML = `<img src="${avatarUrl}">`;
+        showStatus("Company Logo successfully updated!");
+    }
+}
 
         async function updateProfileInfo() {
-            let newDomain = document.getElementById('profile-name').value.trim().toLowerCase();
-            const btn = document.getElementById('save-info-btn');
-            
-            if (!newDomain) return showStatus("Business Domain cannot be empty.", true);
-            
-            const domainRegex = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            if (!domainRegex.test(newDomain)) {
-                return showStatus("please type domain of buisness and not the name", true);
-            }
-            
-            btn.innerText = "Saving...";
-            
-            const { data, error } = await db.auth.updateUser({
-                data: { full_name: newDomain }
-            });
+    let newDomain = document.getElementById('profile-name').value.trim();
+    const btn = document.getElementById('save-info-btn');
+    const storeId = await getStoreIdSecurely();
+    
+    if (!newDomain) return showStatus("Business Name cannot be empty.", true);
+    
+    btn.innerText = "Saving...";
+    
+    // Save to the stores table
+    const { error } = await db.from('stores')
+        .update({ display_name: newDomain })
+        .eq('store_id', storeId);
 
-            btn.innerText = "Save Changes";
-            if (error) {
-                showStatus(error.message, true);
-            } else {
-                currentUser = data.user;
-                updateSidebarAndProfileUI();
-                showStatus("Business Domain saved successfully!");
-            }
-        }
+    btn.innerText = "Save Changes";
+    if (error) {
+        showStatus(error.message, true);
+    } else {
+        document.getElementById('user-fullname').innerText = newDomain;
+        showStatus("Business Profile saved successfully!");
+    }
+}
 
         // --- SAAS WEBHOOK LOGIC ---
         async function fetchWebhookCredentials() {
