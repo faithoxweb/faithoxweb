@@ -3,6 +3,56 @@
 
 <div class="faithox-widget-root" id="faithox-widget-{{ block.id }}">
     <div class="widget-wrapper">
+        
+        <!-- NEW PRODUCT INFO BOX SECTION -->
+        <div class="hole-info-box" id="embed-info-box-{{ block.id }}">
+            <div class="hole-info-text-col">
+                <span id="top-left-brand-{{ block.id }}" style="font-size: 14px; font-weight: 600; color: #1e293b; z-index: 20; display: block;"></span>
+                <div class="title-container"><h1 id="dynamic-company-name-{{ block.id }}" class="skeleton-anim sk-title"></h1></div>
+                
+                <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <div class="product-exact-rating-row skeleton-anim skel-exact-rating" id="exact-rating-box-{{ block.id }}">
+                            <div id="exact-stars-container-{{ block.id }}" class="stars-container-flex"></div><span id="exact-rating-text-{{ block.id }}">0.0</span>
+                        </div>
+                        
+                        <div class="top-review-count-badge skeleton-anim skel-exact-rating" id="top-review-count-badge-{{ block.id }}">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                            <span id="top-review-count-text-{{ block.id }}">0 reviews</span>
+                        </div>
+
+                        <div class="top-review-count-badge skeleton-anim skel-exact-rating" id="trust-score-badge-{{ block.id }}" style="border-color: #3b82f6;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            <span id="trust-score-text-{{ block.id }}" style="color: #1d4ed8;">Trust Score: --</span>
+                        </div>
+
+                        <div class="top-review-count-badge skeleton-anim skel-exact-rating" id="velocity-badge-{{ block.id }}" style="border-color: #8b5cf6;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                            <span id="velocity-text-{{ block.id }}" style="color: #5b21b6;">-- recent</span>
+                        </div>
+                    </div>
+
+                    <a id="dynamic-company-link-{{ block.id }}" href="#" target="_blank">
+                        View product on store
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="top-rating-square skeleton-anim skel-rating-square" id="rating-square-box-{{ block.id }}">
+                <div class="top-rating-square-header">Rating Breakdown</div>
+                <div class="rating-overview">
+                    <div class="big-rating">
+                        <div class="big-rating-val" id="big-rating-val-{{ block.id }}">—</div>
+                        <div class="big-rating-stars" id="big-rating-stars-{{ block.id }}"></div>
+                        <div class="big-rating-count" id="big-rating-count-{{ block.id }}">0 reviews</div>
+                    </div>
+                    <div class="rating-bars" id="rating-bars-{{ block.id }}"></div>
+                </div>
+            </div>
+        </div>
+        <!-- END PRODUCT INFO BOX SECTION -->
+
         <div class="reviews-scroll-container" id="widget-reviews-list-{{ block.id }}">
             <p style="text-align:center; color:#64748b; font-size:13px; padding: 20px; font-weight: 500;">Loading reviews...</p>
         </div>
@@ -58,6 +108,78 @@
     box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
     overflow: hidden; 
 }
+
+/* --- NEW STYLES FOR PRODUCT INFO BOX --- */
+#faithox-widget-{{ block.id }} .hole-info-box {
+    background: #fdfdfd; border-radius: 24px; display: flex; flex-direction: row;
+    justify-content: space-between; align-items: center; padding: 24px; gap: 20px; 
+    margin-bottom: 20px; flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+#faithox-widget-{{ block.id }} .hole-info-text-col { display: flex; flex-direction: column; justify-content: flex-start; gap: 12px; flex: 1; min-width: 0; }
+#faithox-widget-{{ block.id }} .title-container { width: 100%; height: auto; min-height: 50px; display: flex; flex-direction: column; justify-content: flex-start; }
+
+#faithox-widget-{{ block.id }} h1.skeleton-anim { margin: 0; padding: 0; }
+#faithox-widget-{{ block.id }} h1:not(.skeleton-anim) {
+    font-size: 18px; font-weight: 600; color: #2a2a2a; background: transparent; margin: 0; padding: 0;
+    width: 100%; position: relative; z-index: 10; line-height: 1.4; display: -webkit-box;
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word; 
+}
+
+#faithox-widget-{{ block.id }} .product-exact-rating-row {
+    display: inline-flex; align-items: center; gap: 6px; background: #fdfdfd; border: 2px solid #e2e8f0; 
+    padding: 0 8px; height: 28px; margin: 0; border-radius: 9px; width: fit-content; transition: border-color 0.3s ease;
+}
+#faithox-widget-{{ block.id }} .stars-container-flex { display: flex; gap: 4px; align-items: center; justify-content: center; }
+#faithox-widget-{{ block.id }} [id^="exact-rating-text-"] { font-size: 16px; font-weight: 800; color: #94a3b8; line-height: 1; margin-top: 1px; transition: color 0.3s ease; }
+
+#faithox-widget-{{ block.id }} .top-review-count-badge {
+    display: inline-flex; align-items: center; justify-content: center; height: 28px;
+    padding: 0 10px; background: #fdfdfd; border-radius: 9px; color: #475569;
+    font-size: 13px; font-weight: 700; border: 2px solid #e2e8f0; transition: all 0.3s ease;
+}
+
+#faithox-widget-{{ block.id }} [id^="dynamic-company-link-"] {
+    background: #fdfdfd; color: #2a2a2a; padding: 0 10px; height: 28px; border-radius: 9px; 
+    border: 2px solid #dcdcdc; text-decoration: none; font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; 
+    white-space: nowrap; width: fit-content; margin-top: 5px;
+}
+#faithox-widget-{{ block.id }} [id^="dynamic-company-link-"]:hover { border-color: #2a2a2a; }
+
+#faithox-widget-{{ block.id }} .top-rating-square {
+    width: 350px; max-height: 200px; background: #f0f1f1; border-radius: 16px; display: flex; flex-direction: column;
+    justify-content: center; padding: 22px; flex-shrink: 0; 
+}
+#faithox-widget-{{ block.id }} .top-rating-square-header { font-size: 12px; font-weight: 800; color: #2a2a2a; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 16px; }
+#faithox-widget-{{ block.id }} .rating-overview { display: flex; flex-direction: row; align-items: center; gap: 24px; flex: 1; justify-content: flex-start; }
+#faithox-widget-{{ block.id }} .big-rating { text-align: center; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
+#faithox-widget-{{ block.id }} .big-rating-val { font-size: 42px; font-weight: 800; color: #2a2a2a; line-height: 1; letter-spacing: -1.5px; transition: color 0.3s ease; }
+#faithox-widget-{{ block.id }} .big-rating-stars { font-size: 16px; letter-spacing: 2px; margin: 4px 0; display: flex; justify-content: center; gap: 2px; }
+#faithox-widget-{{ block.id }} .big-rating-count { font-size: 11px; color: #94a3b8; font-weight: 600; }
+#faithox-widget-{{ block.id }} .rating-bars { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+#faithox-widget-{{ block.id }} .rating-bar-row { display: flex; align-items: center; gap: 8px; }
+#faithox-widget-{{ block.id }} .rating-bar-label { font-size: 11px; font-weight: 700; color: #64748b; width: 12px; text-align: right; flex-shrink: 0; }
+#faithox-widget-{{ block.id }} .rating-bar-track { flex: 1; height: 5px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
+#faithox-widget-{{ block.id }} .rating-bar-fill { height: 100%; background: #10B981; border-radius: 10px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+#faithox-widget-{{ block.id }} .rating-bar-pct { font-size: 10px; font-weight: 700; color: #94a3b8; width: 24px; text-align: right; flex-shrink: 0; }
+
+/* Skeleton loader styles */
+#faithox-widget-{{ block.id }} .skeleton-anim { 
+    background: #e2e8f0; background-image: linear-gradient(90deg, #e2e8f0 0px, #f8fafc 40px, #e2e8f0 80px); 
+    background-size: 600px; animation: shine-lines 1.6s infinite linear; border-radius: 8px; pointer-events: none;
+}
+@keyframes shine-lines { 0% { background-position: -300px; } 100% { background-position: 300px; } }
+#faithox-widget-{{ block.id }} .sk-title { width: 100%; height: 50px; border-radius: 8px; color: transparent !important; }
+#faithox-widget-{{ block.id }} .skel-exact-rating { width: 140px !important; height: 28px !important; border-color: transparent !important; box-shadow: none !important; padding: 0 !important; }
+#faithox-widget-{{ block.id }} .skel-exact-rating > * { opacity: 0 !important; visibility: hidden !important; }
+#faithox-widget-{{ block.id }} .skel-rating-square { border-color: transparent !important; box-shadow: none !important; }
+#faithox-widget-{{ block.id }} .skel-rating-square > * { opacity: 0 !important; visibility: hidden !important; }
+
+@media (max-width: 850px) {
+    #faithox-widget-{{ block.id }} .hole-info-box { flex-direction: column; align-items: stretch; gap: 15px; }
+    #faithox-widget-{{ block.id }} .top-rating-square { width: 100%; max-width: 100%; }
+}
+/* --- END NEW STYLES --- */
 
 #faithox-widget-{{ block.id }} .reviews-scroll-container {
     flex: 1;
@@ -175,6 +297,105 @@ document.addEventListener("DOMContentLoaded", function() {
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    /* --- NEW INFO BOX LOGIC --- */
+    async function loadProductInfo() {
+        const { data: prodData, error: prodErr } = await db.from('products').select('*').eq('product_id', productId);
+        if (!prodErr && prodData && prodData.length > 0) {
+            const co = prodData[0];
+            
+            document.getElementById(`dynamic-company-name-${blockId}`).classList.remove('skeleton-anim', 'sk-title');
+            document.getElementById(`exact-rating-box-${blockId}`).classList.remove('skeleton-anim', 'skel-exact-rating');
+            document.getElementById(`top-review-count-badge-${blockId}`).classList.remove('skeleton-anim', 'skel-exact-rating');
+            document.getElementById(`rating-square-box-${blockId}`).classList.remove('skeleton-anim', 'skel-rating-square');
+            
+            document.getElementById(`dynamic-company-name-${blockId}`).innerText = co.name;
+            if(co.website) {
+                document.getElementById(`dynamic-company-link-${blockId}`).href = co.website;
+            }
+
+            const trustBadge = document.getElementById(`trust-score-badge-${blockId}`);
+            const velocityBadge = document.getElementById(`velocity-badge-${blockId}`);
+            trustBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
+            velocityBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
+
+            const { data: prodAnalytics } = await db.from('product_analytics').select('*').eq('product_id', productId).single();
+            if (prodAnalytics) {
+                trustBadge.style.display = 'inline-flex';
+                document.getElementById(`trust-score-text-${blockId}`).innerText = `Trust Score: ${prodAnalytics.product_trust_score || 400}`;
+                velocityBadge.style.display = 'inline-flex';
+                document.getElementById(`velocity-text-${blockId}`).innerText = `+${prodAnalytics.review_velocity_30d || 0} this month`;
+            } else {
+                trustBadge.style.display = 'none';
+                velocityBadge.style.display = 'none';
+            }
+            
+            if (co.store_id) {
+                const { data: storeData } = await db.from('stores').select('domain_name').eq('store_id', co.store_id).single();
+                if (storeData && storeData.domain_name) {
+                    document.getElementById(`top-left-brand-${blockId}`).innerText = `product from ${storeData.domain_name}`;
+                }
+            }
+        }
+    }
+
+    function updateVisualRatings(ratingValue, totalReviews) {
+        const formatted = ratingValue.toFixed(1);
+        let activeColor = "#10B981"; 
+        if (ratingValue === 0) activeColor = "#cbd5e1"; 
+        else if (ratingValue < 1.5) activeColor = "#EF4444"; 
+        else if (ratingValue < 2.5) activeColor = "#F97316"; 
+        else if (ratingValue < 3.5) activeColor = "#F59E0B"; 
+        else if (ratingValue < 4.5) activeColor = "#84CC16"; 
+        
+        const bigValEl = document.getElementById(`big-rating-val-${blockId}`);
+        if (bigValEl) bigValEl.innerText = formatted;
+        renderExactStars(ratingValue, `big-rating-stars-${blockId}`, 20, activeColor);
+
+        const exactTextEl = document.getElementById(`exact-rating-text-${blockId}`);
+        const exactBoxEl = document.getElementById(`exact-rating-box-${blockId}`);
+        if (exactTextEl) { exactTextEl.innerText = formatted; exactTextEl.style.color = activeColor; }
+        if (exactBoxEl) { exactBoxEl.style.borderColor = activeColor; }
+        renderExactStars(ratingValue, `exact-stars-container-${blockId}`, 20, activeColor); 
+        
+        const countStr = totalReviews + (totalReviews === 1 ? ' review' : ' reviews');
+        document.getElementById(`big-rating-count-${blockId}`).innerText = countStr;
+        document.getElementById(`top-review-count-text-${blockId}`).innerText = countStr;
+    }
+
+    function renderExactStars(rating, containerId, size = 20, fillColor = "#10B981") {
+        const container = document.getElementById(containerId);
+        if(!container) return;
+        container.innerHTML = ''; 
+        let useEmpty = "#e2e8f0";
+        for (let i = 1; i <= 5; i++) {
+            let fillPercent = rating >= i ? 100 : (rating > i - 1 ? (rating - (i - 1)) * 100 : 0);
+            const starId = `grad-${containerId}-${i}-${Math.random().toString(36).substr(2,5)}`;
+            container.innerHTML += `
+            <svg width="${size}" height="${size}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="${starId}" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="${fillPercent}%" stop-color="${fillColor}" /><stop offset="${fillPercent}%" stop-color="${useEmpty}" /></linearGradient></defs>
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" fill="url(#${starId})"/>
+            </svg>`;
+        }
+    }
+
+    function buildRatingBars(reviews) {
+        const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        reviews.forEach(r => { if (counts[r.rating] !== undefined) counts[r.rating]++; });
+        const total = reviews.length || 1;
+        const barsEl = document.getElementById(`rating-bars-${blockId}`);
+        if(!barsEl) return;
+        barsEl.innerHTML = '';
+        [5, 4, 3, 2, 1].forEach(star => {
+            const pct = Math.round((counts[star] / total) * 100);
+            const row = document.createElement('div');
+            row.className = 'rating-bar-row';
+            row.innerHTML = `<span class="rating-bar-label">${star}</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-target="${pct}%"></div></div><span class="rating-bar-pct">${pct}%</span>`;
+            barsEl.appendChild(row);
+        });
+        setTimeout(() => { barsEl.querySelectorAll('.rating-bar-fill').forEach(el => { el.style.width = el.dataset.target; }); }, 100);
+    }
+    /* --- END NEW INFO BOX LOGIC --- */
+
     async function loadWidgetReviews() {
         const { data: reviews, error } = await db
             .from('reviews')
@@ -185,8 +406,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (error || !reviews || reviews.length === 0) {
             list.innerHTML = "<p style='text-align:center; color:#64748b; font-size:13px; padding: 20px; font-weight: 500;'>No reviews yet. Be the first to review!</p>";
+            updateVisualRatings(0, 0);
+            buildRatingBars([]);
             return;
         }
+
+        // Generate analytics for Info box based on reviews
+        const totalRatingSum = reviews.reduce((sum, rev) => sum + (rev.rating || 0), 0);
+        updateVisualRatings((totalRatingSum / reviews.length), reviews.length);
+        buildRatingBars(reviews);
 
         list.innerHTML = '';
         const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
@@ -293,6 +521,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     
+    // Call both fetch functions
+    loadProductInfo();
     setTimeout(loadWidgetReviews, 150);
 });
 </script>
