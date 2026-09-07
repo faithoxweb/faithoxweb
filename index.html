@@ -1719,31 +1719,6 @@
                 </div>
               </div>
 
-              <div class="skeleton-card">
-                <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                  <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                      <div class="review-author" style="margin: 0; align-items: center; gap: 8px;">
-                        <div class="skel-avatar skeleton-anim"></div>
-                        <div style="display: flex; flex-direction: column; justify-content: center; gap: 6px;">
-                          <div class="skel-name skeleton-anim"></div>
-                          <div class="skel-sub skeleton-anim"></div>
-                        </div>
-                      </div>
-                      <div class="skel-rating skeleton-anim"></div>
-                    </div>
-                    <div class="skel-body">
-                      <div class="skel-line skeleton-anim"></div>
-                      <div class="skel-line skeleton-anim"></div>
-                      <div class="skel-line skeleton-anim"></div>
-                      <div class="skel-line skeleton-anim"></div>
-                      <div class="skel-line short skeleton-anim"></div>
-                    </div>
-                  </div>
-                  <div class="skel-photo skeleton-anim"></div>
-                </div>
-              </div>
-
             </div>
             <div class="scrolling-content" id="scroll-content-2"></div>
           </div>
@@ -2305,28 +2280,77 @@
         }
         
         searchTimeout = setTimeout(async () => {
-          // LIVE SUPABASE QUERY!
-          const { data: matches, error } = await db.from('products')
-            .select('product_id, name, parent_company, is_product, category, rating')
-            .or(`name.ilike.%${term}%,parent_company.ilike.%${term}%`)
-            .limit(4); // Limit to exactly 4 maximum
+          // LIVE SUPABASE QUERY FOR BOTH PRODUCTS AND STORES!
+          const [productsRes, storesRes] = await Promise.all([
+            db.from('products')
+              .select('product_id, name, parent_company, is_product, category, rating')
+              .or(`name.ilike.%${term}%,parent_company.ilike.%${term}%`)
+              .limit(4),
+            db.from('stores')
+              .select('store_id, display_name, domain_name')
+              .or(`display_name.ilike.%${term}%,domain_name.ilike.%${term}%`)
+              .limit(4)
+          ]);
+
+          let combinedMatches = [];
+
+          // 1. Add Store Matches First (Prioritize Company Profiles)
+          if (!storesRes.error && storesRes.data) {
+            storesRes.data.forEach(store => {
+              combinedMatches.push({
+                type: 'store',
+                id: store.store_id,
+                name: store.display_name || store.domain_name,
+                subtitle: 'Official Store Page'
+              });
+            });
+          }
+
+          // 2. Add Product Matches
+          if (!productsRes.error && productsRes.data) {
+            productsRes.data.forEach(prod => {
+              const parentText = prod.is_product 
+                ? `product by ${prod.parent_company || 'Unknown'}` 
+                : (prod.category || '');
+              
+              combinedMatches.push({
+                type: 'product',
+                id: prod.product_id,
+                name: prod.name,
+                subtitle: parentText
+              });
+            });
+          }
+
+          // 3. Limit to exactly 4 maximum results total
+          combinedMatches = combinedMatches.slice(0, 4);
 
           let newHTML = "";
-          let resultsCount = 0;
+          let resultsCount = combinedMatches.length;
           
-          if(!error && matches && matches.length > 0) {
-            matches.forEach((co) => {
-              resultsCount++;
-              // Format the "( product by --- )" or category layout
-              const parentText = co.is_product ? `( product by ${escapeHTML(co.parent_company || 'Unknown')} )` : (co.category ? `(${escapeHTML(co.category)})` : '');
+          if (resultsCount > 0) {
+            combinedMatches.forEach((item) => {
+              
+              // Set the correct link destination based on the type
+              const linkUrl = item.type === 'store' 
+                ? `storeprofile.html?id=${item.id}` 
+                : `company.html?id=${item.id}`;
+
+              // Add a nice visual badge if it's an entire store
+              const storeBadge = item.type === 'store' 
+                ? `<span style="background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; font-size:10px; padding:2px 6px; border-radius:6px; font-weight:700; text-transform:uppercase; margin-left:4px;">Store</span>` 
+                : '';
+
+              const subtitleHtml = item.subtitle ? `<span style="font-size: 12px; color: #64748b; font-weight: 500; line-height: 1;">( ${escapeHTML(item.subtitle)} )</span>` : '';
               
               newHTML += `
-                <div class="result-item" onclick="navigateTo('company.html?id=${co.product_id}')">
+                <div class="result-item" onclick="navigateTo('${linkUrl}')">
                   <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
                     ${searchIconSVG}
                     <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                      <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">${escapeHTML(co.name)}</span>
-                      ${parentText ? `<span style="font-size: 12px; color: #64748b; font-weight: 500; line-height: 1;">${parentText}</span>` : ''}
+                      <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">${escapeHTML(item.name)}</span>
+                      ${storeBadge}
+                      ${subtitleHtml}
                     </div>
                   </div>
                 </div>
