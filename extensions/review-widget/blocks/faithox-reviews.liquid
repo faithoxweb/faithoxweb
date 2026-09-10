@@ -1,5 +1,5 @@
 <!-- Load Supabase Library securely -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <div class="faithox-widget-root" id="faithox-widget-{{ block.id }}">
     <div class="widget-wrapper">
@@ -87,26 +87,33 @@
 }
 
 /* 2. Base styles applied to the root wrapper using your Shopify Settings */
+/* 1. The Viewport Breakout (Forces Edge-to-Edge) */
 #faithox-widget-{{ block.id }} { 
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; 
     color: #1e293b;
     -webkit-font-smoothing: antialiased;
-    width: 100%;
-    margin: 0 auto;
-  max-width:100%; /* CHANGED: Forces full horizontal width */
-    display: block;
+    display: block !important;
+    
+    /* Bypasses the 1200px slider and the Shopify Theme margins */
+    width: 100vw !important;
+    max-width: 100vw !important;
+    position: relative !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
+/* 2. Remove the curves and outer borders */
 #faithox-widget-{{ block.id }} .widget-wrapper {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 20px; 
+    padding: 20px 5%; /* Adds a little breathing room for the text on the edges */
     background: {{ block.settings.bg_color }};
-    border: 2px solid #2a2a2a; 
-    border-radius: 16px; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-    overflow: hidden; 
+    border: none !important; 
+    border-radius: 0 !important; 
+    box-shadow: none !important;
 }
 
 /* --- NEW STYLES FOR PRODUCT INFO BOX --- */
@@ -258,273 +265,284 @@
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const productId = "{{ product.id }}";
-    const blockId = "{{ block.id }}";
-    const list = document.getElementById(`widget-reviews-list-${blockId}`);
-
-    if (!productId) {
-        list.innerHTML = "<p style='text-align:center; color:#ef4444; font-size:13px; padding: 20px; font-weight: 600;'>Error: Product ID missing.</p>";
-        return;
-    }
-
-    // Carousel Global Functions
-    window.scrollWidgetReviews = function(direction, bId) {
-        const carousel = document.getElementById(`widget-reviews-list-${bId}`);
-        if(carousel) carousel.scrollBy({ left: direction * 1170, behavior: 'smooth' });
-    };
-
-    function updateWidgetCarouselUI() {
-        const btnLeft = document.getElementById(`btn-left-${blockId}`);
-        const btnRight = document.getElementById(`btn-right-${blockId}`);
-        if (list && btnLeft && btnRight) {
-            btnLeft.disabled = list.scrollLeft <= 5;
-            btnRight.disabled = Math.ceil(list.scrollLeft + list.clientWidth) >= list.scrollWidth - 5;
-        }
-    }
-
-    list.addEventListener('scroll', () => { requestAnimationFrame(updateWidgetCarouselUI); });
-
-    function escapeHTML(str) {
-        if (!str) return '';
-        return String(str).replace(/[&<>'"]/g, tag => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-        }[tag]));
-    }
-
-    // Initialize Supabase
-    const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
-    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    /* --- NEW INFO BOX LOGIC --- */
-    async function loadProductInfo() {
-        const { data: prodData, error: prodErr } = await db.from('products').select('*').eq('product_id', productId);
-        if (!prodErr && prodData && prodData.length > 0) {
-            const co = prodData[0];
-            
-            document.getElementById(`dynamic-company-name-${blockId}`).classList.remove('skeleton-anim', 'sk-title');
-            document.getElementById(`exact-rating-box-${blockId}`).classList.remove('skeleton-anim', 'skel-exact-rating');
-            document.getElementById(`top-review-count-badge-${blockId}`).classList.remove('skeleton-anim', 'skel-exact-rating');
-            document.getElementById(`rating-square-box-${blockId}`).classList.remove('skeleton-anim', 'skel-rating-square');
-            
-            document.getElementById(`dynamic-company-name-${blockId}`).innerText = co.name;
-            if(co.website) {
-                document.getElementById(`dynamic-company-link-${blockId}`).href = co.website;
-            }
-
-            const trustBadge = document.getElementById(`trust-score-badge-${blockId}`);
-            const velocityBadge = document.getElementById(`velocity-badge-${blockId}`);
-            trustBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
-            velocityBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
-
-            const { data: prodAnalytics } = await db.from('product_analytics').select('*').eq('product_id', productId).single();
-            if (prodAnalytics) {
-                trustBadge.style.display = 'inline-flex';
-                document.getElementById(`trust-score-text-${blockId}`).innerText = `Trust Score: ${prodAnalytics.product_trust_score || 400}`;
-                velocityBadge.style.display = 'inline-flex';
-                document.getElementById(`velocity-text-${blockId}`).innerText = `+${prodAnalytics.review_velocity_30d || 0} this month`;
-            } else {
-                trustBadge.style.display = 'none';
-                velocityBadge.style.display = 'none';
-            }
-            
-            if (co.store_id) {
-                const { data: storeData } = await db.from('stores').select('domain_name').eq('store_id', co.store_id).single();
-                if (storeData && storeData.domain_name) {
-                    document.getElementById(`top-left-brand-${blockId}`).innerText = `product from ${storeData.domain_name}`;
-                }
-            }
-        }
-    }
-
-    function updateVisualRatings(ratingValue, totalReviews) {
-        const formatted = ratingValue.toFixed(1);
-        let activeColor = "#10B981"; 
-        if (ratingValue === 0) activeColor = "#cbd5e1"; 
-        else if (ratingValue < 1.5) activeColor = "#EF4444"; 
-        else if (ratingValue < 2.5) activeColor = "#F97316"; 
-        else if (ratingValue < 3.5) activeColor = "#F59E0B"; 
-        else if (ratingValue < 4.5) activeColor = "#84CC16"; 
-        
-        const bigValEl = document.getElementById(`big-rating-val-${blockId}`);
-        if (bigValEl) bigValEl.innerText = formatted;
-        renderExactStars(ratingValue, `big-rating-stars-${blockId}`, 20, activeColor);
-
-        const exactTextEl = document.getElementById(`exact-rating-text-${blockId}`);
-        const exactBoxEl = document.getElementById(`exact-rating-box-${blockId}`);
-        if (exactTextEl) { exactTextEl.innerText = formatted; exactTextEl.style.color = activeColor; }
-        if (exactBoxEl) { exactBoxEl.style.borderColor = activeColor; }
-        renderExactStars(ratingValue, `exact-stars-container-${blockId}`, 20, activeColor); 
-        
-        const countStr = totalReviews + (totalReviews === 1 ? ' review' : ' reviews');
-        document.getElementById(`big-rating-count-${blockId}`).innerText = countStr;
-        document.getElementById(`top-review-count-text-${blockId}`).innerText = countStr;
-    }
-
-    function renderExactStars(rating, containerId, size = 20, fillColor = "#10B981") {
-        const container = document.getElementById(containerId);
-        if(!container) return;
-        container.innerHTML = ''; 
-        let useEmpty = "#e2e8f0";
-        for (let i = 1; i <= 5; i++) {
-            let fillPercent = rating >= i ? 100 : (rating > i - 1 ? (rating - (i - 1)) * 100 : 0);
-            const starId = `grad-${containerId}-${i}-${Math.random().toString(36).substr(2,5)}`;
-            container.innerHTML += `
-            <svg width="${size}" height="${size}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <defs><linearGradient id="${starId}" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="${fillPercent}%" stop-color="${fillColor}" /><stop offset="${fillPercent}%" stop-color="${useEmpty}" /></linearGradient></defs>
-                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" fill="url(#${starId})"/>
-            </svg>`;
-        }
-    }
-
-    function buildRatingBars(reviews) {
-        const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-        reviews.forEach(r => { if (counts[r.rating] !== undefined) counts[r.rating]++; });
-        const total = reviews.length || 1;
-        const barsEl = document.getElementById(`rating-bars-${blockId}`);
-        if(!barsEl) return;
-        barsEl.innerHTML = '';
-        [5, 4, 3, 2, 1].forEach(star => {
-            const pct = Math.round((counts[star] / total) * 100);
-            const row = document.createElement('div');
-            row.className = 'rating-bar-row';
-            row.innerHTML = `<span class="rating-bar-label">${star}</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-target="${pct}%"></div></div><span class="rating-bar-pct">${pct}%</span>`;
-            barsEl.appendChild(row);
-        });
-        setTimeout(() => { barsEl.querySelectorAll('.rating-bar-fill').forEach(el => { el.style.width = el.dataset.target; }); }, 100);
-    }
-    /* --- END NEW INFO BOX LOGIC --- */
-
-    async function loadWidgetReviews() {
-        const { data: reviews, error } = await db
-            .from('reviews')
-            .select('*')
-            .eq('product_id', productId) 
-            .order('created_at', { ascending: false })
-            .limit(10);
-
-        if (error || !reviews || reviews.length === 0) {
-            list.innerHTML = "<p style='text-align:center; color:#64748b; font-size:13px; padding: 20px; font-weight: 500;'>No reviews yet. Be the first to review!</p>";
-            updateVisualRatings(0, 0);
-            buildRatingBars([]);
+(function() {
+    function initFaithoxWidget() {
+        // 1. Safety Net: If Shopify is being slow and hasn't loaded Supabase yet, wait 100ms and try again
+        if (!window.supabase) {
+            setTimeout(initFaithoxWidget, 100);
             return;
         }
 
-        // Generate analytics for Info box based on reviews
-        const totalRatingSum = reviews.reduce((sum, rev) => sum + (rev.rating || 0), 0);
-        updateVisualRatings((totalRatingSum / reviews.length), reviews.length);
-        buildRatingBars(reviews);
+        const productId = "{{ product.id }}";
+        const blockId = "{{ block.id }}";
+        const list = document.getElementById(`widget-reviews-list-${blockId}`);
 
-        list.innerHTML = '';
-        const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
+        if (!productId) {
+            list.innerHTML = "<p style='text-align:center; color:#ef4444; font-size:13px; padding: 20px; font-weight: 600;'>Error: Product ID missing.</p>";
+            return;
+        }
 
-        reviews.forEach(r => {
-            const reviewerName = r.reviewer_name || 'Verified User';
-            const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-            
-            const avatarUrl = r.avatar_url;
-            const authorAvatarHtml = avatarUrl 
-                ? `<img src="${escapeHTML(avatarUrl)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` 
-                : initials;
+        // Carousel Global Functions
+        window.scrollWidgetReviews = function(direction, bId) {
+            const carousel = document.getElementById(`widget-reviews-list-${bId}`);
+            if(carousel) carousel.scrollBy({ left: direction * 1170, behavior: 'smooth' });
+        };
 
-            let starsHtml = '';
-            for(let i = 1; i <= 5; i++) { 
-                starsHtml += `<span class="star ${i <= (r.rating || 5) ? 'filled' : ''}">${starSvg}</span>`; 
+        function updateWidgetCarouselUI() {
+            const btnLeft = document.getElementById(`btn-left-${blockId}`);
+            const btnRight = document.getElementById(`btn-right-${blockId}`);
+            if (list && btnLeft && btnRight) {
+                btnLeft.disabled = list.scrollLeft <= 5;
+                btnRight.disabled = Math.ceil(list.scrollLeft + list.clientWidth) >= list.scrollWidth - 5;
             }
+        }
 
-            // Photo Parsing Logic
-            let photoUrls = [];
-            try {
-                if (r.photos) {
-                    if (Array.isArray(r.photos)) {
-                        photoUrls = r.photos;
-                    } else if (typeof r.photos === 'string') {
-                        const trimmed = r.photos.trim();
-                        if (trimmed.startsWith('[')) {
-                            photoUrls = JSON.parse(trimmed);
-                        } else if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
-                            photoUrls = trimmed.slice(1, -1).split(',').map(s => s.replace(/^"|"$/g, '').trim());
-                        } else if (trimmed.startsWith('http')) {
-                            photoUrls = [trimmed];
-                        } else {
-                            const extractedLinks = r.photos.match(/https?:\/\/[^\s"\]}]+/g);
-                            if (extractedLinks) photoUrls = extractedLinks;
-                        }
+        list.addEventListener('scroll', () => { requestAnimationFrame(updateWidgetCarouselUI); });
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag]));
+        }
+
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        /* --- NEW INFO BOX LOGIC --- */
+        async function loadProductInfo() {
+            const { data: prodData, error: prodErr } = await db.from('products').select('*').eq('product_id', productId);
+            if (!prodErr && prodData && prodData.length > 0) {
+                const co = prodData[0];
+                
+                document.getElementById(`dynamic-company-name-${blockId}`).classList.remove('skeleton-anim', 'sk-title');
+                document.getElementById(`exact-rating-box-${blockId}`).classList.remove('skeleton-anim', 'skel-exact-rating');
+                document.getElementById(`top-review-count-badge-${blockId}`).classList.remove('skeleton-anim', 'skel-exact-rating');
+                document.getElementById(`rating-square-box-${blockId}`).classList.remove('skeleton-anim', 'skel-rating-square');
+                
+                document.getElementById(`dynamic-company-name-${blockId}`).innerText = co.name;
+                if(co.website) {
+                    document.getElementById(`dynamic-company-link-${blockId}`).href = co.website;
+                }
+
+                const trustBadge = document.getElementById(`trust-score-badge-${blockId}`);
+                const velocityBadge = document.getElementById(`velocity-badge-${blockId}`);
+                trustBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
+                velocityBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
+
+                const { data: prodAnalytics } = await db.from('product_analytics').select('*').eq('product_id', productId).single();
+                if (prodAnalytics) {
+                    trustBadge.style.display = 'inline-flex';
+                    document.getElementById(`trust-score-text-${blockId}`).innerText = `Trust Score: ${prodAnalytics.product_trust_score || 400}`;
+                    velocityBadge.style.display = 'inline-flex';
+                    document.getElementById(`velocity-text-${blockId}`).innerText = `+${prodAnalytics.review_velocity_30d || 0} this month`;
+                } else {
+                    trustBadge.style.display = 'none';
+                    velocityBadge.style.display = 'none';
+                }
+                
+                if (co.store_id) {
+                    const { data: storeData } = await db.from('stores').select('domain_name').eq('store_id', co.store_id).single();
+                    if (storeData && storeData.domain_name) {
+                        document.getElementById(`top-left-brand-${blockId}`).innerText = `product from ${storeData.domain_name}`;
                     }
                 }
-            } catch (e) {
-                photoUrls = [];
             }
-            photoUrls = photoUrls.filter(u => u && typeof u === 'string' && u.startsWith('http'));
+        }
 
-            let photoHtml = '';
-            if (photoUrls.length > 0) {
-                let imagesHtml = '';
-                if (photoUrls.length === 1) {
-                    imagesHtml = `<img src="${photoUrls[0]}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">`;
-                } else if (photoUrls.length === 2) {
-                    imagesHtml = `
-                    <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
-                        <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-6deg); z-index: 1;">
-                        <img src="${photoUrls[1]}" style="position: absolute; bottom: 0; right: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(6deg); z-index: 2; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
-                    </div>`;
-                } else {
-                    imagesHtml = `
-                    <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
-                        <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-12deg); z-index: 1;">
-                        <img src="${photoUrls[1]}" style="position: absolute; top: 12.5%; left: 12.5%; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(0deg); z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                        <img src="${photoUrls[2]}" style="position: absolute; bottom: 0; right: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(12deg); z-index: 3; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
+        function updateVisualRatings(ratingValue, totalReviews) {
+            const formatted = ratingValue.toFixed(1);
+            let activeColor = "#10B981"; 
+            if (ratingValue === 0) activeColor = "#cbd5e1"; 
+            else if (ratingValue < 1.5) activeColor = "#EF4444"; 
+            else if (ratingValue < 2.5) activeColor = "#F97316"; 
+            else if (ratingValue < 3.5) activeColor = "#F59E0B"; 
+            else if (ratingValue < 4.5) activeColor = "#84CC16"; 
+            
+            const bigValEl = document.getElementById(`big-rating-val-${blockId}`);
+            if (bigValEl) bigValEl.innerText = formatted;
+            renderExactStars(ratingValue, `big-rating-stars-${blockId}`, 20, activeColor);
+
+            const exactTextEl = document.getElementById(`exact-rating-text-${blockId}`);
+            const exactBoxEl = document.getElementById(`exact-rating-box-${blockId}`);
+            if (exactTextEl) { exactTextEl.innerText = formatted; exactTextEl.style.color = activeColor; }
+            if (exactBoxEl) { exactBoxEl.style.borderColor = activeColor; }
+            renderExactStars(ratingValue, `exact-stars-container-${blockId}`, 20, activeColor); 
+            
+            const countStr = totalReviews + (totalReviews === 1 ? ' review' : ' reviews');
+            document.getElementById(`big-rating-count-${blockId}`).innerText = countStr;
+            document.getElementById(`top-review-count-text-${blockId}`).innerText = countStr;
+        }
+
+        function renderExactStars(rating, containerId, size = 20, fillColor = "#10B981") {
+            const container = document.getElementById(containerId);
+            if(!container) return;
+            container.innerHTML = ''; 
+            let useEmpty = "#e2e8f0";
+            for (let i = 1; i <= 5; i++) {
+                let fillPercent = rating >= i ? 100 : (rating > i - 1 ? (rating - (i - 1)) * 100 : 0);
+                const starId = `grad-${containerId}-${i}-${Math.random().toString(36).substr(2,5)}`;
+                container.innerHTML += `
+                <svg width="${size}" height="${size}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <defs><linearGradient id="${starId}" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="${fillPercent}%" stop-color="${fillColor}" /><stop offset="${fillPercent}%" stop-color="${useEmpty}" /></linearGradient></defs>
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" fill="url(#${starId})"/>
+                </svg>`;
+            }
+        }
+
+        function buildRatingBars(reviews) {
+            const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+            reviews.forEach(r => { if (counts[r.rating] !== undefined) counts[r.rating]++; });
+            const total = reviews.length || 1;
+            const barsEl = document.getElementById(`rating-bars-${blockId}`);
+            if(!barsEl) return;
+            barsEl.innerHTML = '';
+            [5, 4, 3, 2, 1].forEach(star => {
+                const pct = Math.round((counts[star] / total) * 100);
+                const row = document.createElement('div');
+                row.className = 'rating-bar-row';
+                row.innerHTML = `<span class="rating-bar-label">${star}</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-target="${pct}%"></div></div><span class="rating-bar-pct">${pct}%</span>`;
+                barsEl.appendChild(row);
+            });
+            setTimeout(() => { barsEl.querySelectorAll('.rating-bar-fill').forEach(el => { el.style.width = el.dataset.target; }); }, 100);
+        }
+
+        async function loadWidgetReviews() {
+            const { data: reviews, error } = await db
+                .from('reviews')
+                .select('*')
+                .eq('product_id', productId) 
+                .order('created_at', { ascending: false })
+                .limit(10);
+
+            if (error || !reviews || reviews.length === 0) {
+                list.innerHTML = "<p style='text-align:center; color:#64748b; font-size:13px; padding: 20px; font-weight: 500;'>No reviews yet. Be the first to review!</p>";
+                updateVisualRatings(0, 0);
+                buildRatingBars([]);
+                return;
+            }
+
+            const totalRatingSum = reviews.reduce((sum, rev) => sum + (rev.rating || 0), 0);
+            updateVisualRatings((totalRatingSum / reviews.length), reviews.length);
+            buildRatingBars(reviews);
+
+            list.innerHTML = '';
+            const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
+
+            reviews.forEach(r => {
+                const reviewerName = r.reviewer_name || 'Verified User';
+                const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                
+                const avatarUrl = r.avatar_url;
+                const authorAvatarHtml = avatarUrl 
+                    ? `<img src="${escapeHTML(avatarUrl)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` 
+                    : initials;
+
+                let starsHtml = '';
+                for(let i = 1; i <= 5; i++) { 
+                    starsHtml += `<span class="star ${i <= (r.rating || 5) ? 'filled' : ''}">${starSvg}</span>`; 
+                }
+
+                let photoUrls = [];
+                try {
+                    if (r.photos) {
+                        if (Array.isArray(r.photos)) {
+                            photoUrls = r.photos;
+                        } else if (typeof r.photos === 'string') {
+                            const trimmed = r.photos.trim();
+                            if (trimmed.startsWith('[')) {
+                                photoUrls = JSON.parse(trimmed);
+                            } else if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                                photoUrls = trimmed.slice(1, -1).split(',').map(s => s.replace(/^"|"$/g, '').trim());
+                            } else if (trimmed.startsWith('http')) {
+                                photoUrls = [trimmed];
+                            } else {
+                                const extractedLinks = r.photos.match(/https?:\/\/[^\s"\]}]+/g);
+                                if (extractedLinks) photoUrls = extractedLinks;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    photoUrls = [];
+                }
+                photoUrls = photoUrls.filter(u => u && typeof u === 'string' && u.startsWith('http'));
+
+                let photoHtml = '';
+                if (photoUrls.length > 0) {
+                    let imagesHtml = '';
+                    if (photoUrls.length === 1) {
+                        imagesHtml = `<img src="${photoUrls[0]}" style="width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; flex-shrink: 0;">`;
+                    } else if (photoUrls.length === 2) {
+                        imagesHtml = `
+                        <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
+                            <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-6deg); z-index: 1;">
+                            <img src="${photoUrls[1]}" style="position: absolute; bottom: 0; right: 0; width: 85%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(6deg); z-index: 2; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
+                        </div>`;
+                    } else {
+                        imagesHtml = `
+                        <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
+                            <img src="${photoUrls[0]}" style="position: absolute; top: 0; left: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(-12deg); z-index: 1;">
+                            <img src="${photoUrls[1]}" style="position: absolute; top: 12.5%; left: 12.5%; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(0deg); z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                            <img src="${photoUrls[2]}" style="position: absolute; bottom: 0; right: 0; width: 75%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; transform: rotate(12deg); z-index: 3; box-shadow: -2px 2px 6px rgba(0,0,0,0.1);">
+                        </div>`;
+                    }
+                    photoHtml = `
+                    <div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 46px;">
+                        ${imagesHtml}
                     </div>`;
                 }
-                photoHtml = `
-                <div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 46px;">
-                    ${imagesHtml}
-                </div>`;
-            }
 
-            const div = document.createElement('div');
-            div.className = 'review-item-main';
-            div.onclick = () => window.open(`https://www.faithox.com/company?id=${productId}`, '_blank');
-            
-            div.innerHTML = `
-                <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                    <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                            <div class="review-author" style="margin: 0; align-items: center;">
-                                <div class="author-avatar">${authorAvatarHtml}</div>
-                                <div style="display: flex; flex-direction: column; justify-content: center;">
-                                    <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
-                                    <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">${date}</div>
+                const div = document.createElement('div');
+                div.className = 'review-item-main';
+                div.onclick = () => window.open(`https://www.faithox.com/company?id=${productId}`, '_blank');
+                
+                div.innerHTML = `
+                    <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
+                        <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                                <div class="review-author" style="margin: 0; align-items: center;">
+                                    <div class="author-avatar">${authorAvatarHtml}</div>
+                                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                                        <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
+                                        <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">${date}</div>
+                                    </div>
                                 </div>
+                                <div class="rating-pill rating-${r.rating || 5}">${starsHtml}</div>
                             </div>
-                            <div class="rating-pill rating-${r.rating || 5}">${starsHtml}</div>
+                            <div class="review-content-wrapper" style="padding: 0; flex: 1; height: auto; margin-top: 12px;">
+                                <p class="review-body" style="-webkit-line-clamp: 5; margin-bottom: 4px;">${escapeHTML(r.comment || '')}</p>
+                            </div>
                         </div>
-                        <div class="review-content-wrapper" style="padding: 0; flex: 1; height: auto; margin-top: 12px;">
-                            <p class="review-body" style="-webkit-line-clamp: 5; margin-bottom: 4px;">${escapeHTML(r.comment || '')}</p>
-                        </div>
+                        ${photoHtml}
                     </div>
-                    ${photoHtml}
-                </div>
-            `;
-            list.appendChild(div);
-        });
+                `;
+                list.appendChild(div);
+            });
 
-        const seeMoreBtn = document.getElementById(`see-more-link-${blockId}`);
-        seeMoreBtn.href = `https://www.faithox.com/company?id=${productId}`;
-        seeMoreBtn.style.display = 'flex';
-        
-        if (reviews.length > 1) {
-            document.getElementById(`carousel-controls-${blockId}`).style.display = 'flex';
-            setTimeout(updateWidgetCarouselUI, 100);
+            const seeMoreBtn = document.getElementById(`see-more-link-${blockId}`);
+            seeMoreBtn.href = `https://www.faithox.com/company?id=${productId}`;
+            seeMoreBtn.style.display = 'flex';
+            
+            if (reviews.length > 1) {
+                document.getElementById(`carousel-controls-${blockId}`).style.display = 'flex';
+                setTimeout(updateWidgetCarouselUI, 100);
+            }
         }
+        
+        loadProductInfo();
+        setTimeout(loadWidgetReviews, 150);
     }
-    
-    // Call both fetch functions
-    loadProductInfo();
-    setTimeout(loadWidgetReviews, 150);
-});
+
+    // 2. The Smart Trigger: Checks if the page is already loaded (for Shopify Theme Editor)
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initFaithoxWidget);
+    } else {
+        initFaithoxWidget();
+    }
+})();
 </script>
 
 {% schema %}
