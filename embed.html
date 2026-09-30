@@ -387,19 +387,20 @@ async function loadProductInfo() {
         }
 
         async function loadWidgetReviews() {
-            const list = document.getElementById('widget-reviews-list');
+    const list = document.getElementById('widget-reviews-list');
 
-            if (!productId) {
-                list.innerHTML = "<p style='text-align:center; color:#ef4444; font-size:13px; padding: 20px; font-weight: 600;'>Error: Product ID missing.</p>";
-                return;
-            }
+    if (!productId || !storeId) return; // Silent return, loadProductInfo already shows the error
 
-            const { data: reviews, error } = await db
-                .from('reviews')
-                .select('*')
-                .eq('product_id', productId) 
-                .order('created_at', { ascending: false })
-                .limit(10);
+    // 🟢 NEW: Add .eq('store_id', storeId)
+    const { data: reviews, error } = await db
+        .from('reviews')
+        .select('*')
+        .eq('product_id', productId) 
+        .eq('store_id', storeId)
+        .order('created_at', { ascending: false })
+        .limit(10);
+        
+    // ... rest of the function remains exactly the same
 
             if (error || !reviews || reviews.length === 0) {
                 list.innerHTML = "<p style='text-align:center; color:#64748b; font-size:13px; padding: 20px; font-weight: 500;'>No reviews yet. Be the first to review!</p>";
