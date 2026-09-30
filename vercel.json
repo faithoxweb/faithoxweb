@@ -9,6 +9,8 @@
     { "src": "api/verify.js", "use": "@vercel/node" },
     { "src": "api/merchant/sync.js", "use": "@vercel/node" },
     { "src": "api/merchant/reply.js", "use": "@vercel/node" },
+    { "src": "api/submit-review.js", "use": "@vercel/node" },
+    { "src": "api/check-token.js", "use": "@vercel/node" },
     { "src": "**/*.html", "use": "@vercel/static" }
   ],
   "routes": [
@@ -19,7 +21,9 @@
     { "src": "/api/reviews", "dest": "api/reviews.js" },
     { "src": "/api/verify", "dest": "api/verify.js" },
     { "src": "/api/merchant/sync", "dest": "api/merchant/sync.js" },
-    { "src": "/api/merchant/reply", "dest": "api/merchant/reply.js" }
+    { "src": "/api/merchant/reply", "dest": "api/merchant/reply.js" },
+    { "src": "/api/submit-review", "dest": "api/submit-review.js" },
+    { "src": "/api/check-token", "dest": "api/check-token.js" }
   ],
   "headers": [
     {

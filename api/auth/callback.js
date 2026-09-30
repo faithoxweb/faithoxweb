@@ -8,10 +8,26 @@ export default async function handler(req, res) {
     process.env.SUPABASE_SERVICE_ROLE_KEY 
   );
 
-  const { shop, code, hmac } = req.query;
+  const { shop, code, hmac, state } = req.query;
 
-  if (!shop || !code || !hmac) {
+  if (!shop || !code || !hmac || !state) {
     return res.status(400).send('Missing required parameters.');
+  }
+
+  // 1.1 Strict Shop Validation
+  const shopRegex = /^[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com$/;
+  if (!shopRegex.test(shop)) {
+    return res.status(400).send('Invalid shop parameter.');
+  }
+
+  // 1.2 Validate State (CSRF Protection)
+  const cookies = req.headers.cookie || '';
+  const match = cookies.match(/(?:^|;\s*)shopify_nonce=([^;]*)/);
+  const storedNonce = match ? match[1] : null;
+
+  if (!storedNonce || state !== storedNonce) {
+    console.error('CSRF Validation Failed! State mismatch.');
+    return res.status(403).send('Invalid state parameter. CSRF detected.');
   }
 
   // 2. HMAC Security Validation

@@ -345,7 +345,7 @@
         let hiddenGuestEmail = null;
         let urlToken = null;
 
-        // 🟢 NEW: 2. Auto-Fetch Details on Page Load
+        // 🟢 NEW: 2. Auto-Fetch Details on Page Load via Secure Backend
         async function fetchDetailsFromToken() {
             const urlParams = new URLSearchParams(window.location.search);
             urlToken = urlParams.get('token');
@@ -356,31 +356,33 @@
                 return;
             }
 
-            // Ask Supabase for the matching Store and Product IDs
-            const { data, error } = await db
-                .from('review_tokens')
-                .select('store_id, product_id, buyer_email, status')
-                .eq('token', urlToken)
-                .single();
+            try {
+                // Ask the secure Vercel API, not Supabase directly!
+                const res = await fetch(`/api/check-token?token=${urlToken}`);
+                const data = await res.json();
 
-            if (error || !data) {
-                alert("This review link has expired or is invalid.");
+                if (!res.ok) {
+                    alert(data.error || "This review link has expired or is invalid.");
+                    document.getElementById('submit-btn').disabled = true;
+                    return;
+                }
+
+                // Block submission if token is already used
+                if (data.status === 'used') {
+                    alert("This review link has already been used to post a review.");
+                    document.getElementById('submit-btn').disabled = true;
+                    return;
+                }
+
+                // Save them silently in the background
+                hiddenStoreId = data.store_id;
+                hiddenProductId = data.product_id;
+                hiddenGuestEmail = data.buyer_email;
+                console.log("Secure Token Verified by Backend!");
+            } catch (err) {
+                alert("Connection error. Please try again later.");
                 document.getElementById('submit-btn').disabled = true;
-                return;
             }
-
-            // Block submission if token is already used
-            if (data.status === 'used') {
-                alert("This review link has already been used to post a review.");
-                document.getElementById('submit-btn').disabled = true;
-                return;
-            }
-
-            // Save them silently in the background
-            hiddenStoreId = data.store_id;
-            hiddenProductId = data.product_id;
-            hiddenGuestEmail = data.buyer_email;
-            console.log("Secure Token Verified!");
         }
 
         // Run the fetch as soon as the page loads
@@ -529,53 +531,56 @@
             progressBar.style.width = "80%";
             btn.innerText = "Saving Review...";
 
-            // Insert into the MAIN reviews table!
-            const { error: insertError } = await db.from('reviews').insert([{
-                store_id: hiddenStoreId,
-                product_id: hiddenProductId,
-                reviewer_name: guestName,
-                reviewer_email: hiddenGuestEmail, // Pulled securely from the token!
-                comment: reviewText,
-                rating: parseInt(currentRating),
-                token: urlToken,
-                photos: photoUrlsArray
-            }]);
+            try {
+                // Send data to the secure Vercel API
+                const res = await fetch('/api/submit-review', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: urlToken,
+                        rating: currentRating,
+                        guestName: guestName,
+                        reviewText: reviewText,
+                        photoUrlsArray: photoUrlsArray
+                    })
+                });
 
-            progressBar.style.width = "100%";
+                const data = await res.json();
+                progressBar.style.width = "100%";
 
-            if (insertError) {
-                alert("Failed to submit review: " + insertError.message);
+                if (!res.ok) {
+                    throw new Error(data.error || "Failed to submit review");
+                }
+
+                // Success!
+                setTimeout(() => {
+                    alert("Thank you! Your review has been submitted successfully.");
+                    
+                    // Reset UI
+                    btn.disabled = true;
+                    btn.innerText = "Review Submitted ✓";
+                    btn.style.background = "#10B981";
+                    progressBar.style.opacity = "0";
+                    setTimeout(() => progressBar.style.width = "0%", 300);
+                    
+                    // Optionally clear form
+                    currentRating = 0;
+                    starsWrapper.setAttribute('data-rating', '0');
+                    document.getElementById('review-text').value = '';
+                    document.getElementById('guest-name').value = '';
+                    uploadedFiles = [];
+                    previewContainer.innerHTML = '';
+                    ratingText.innerText = "Tap to rate";
+                    ratingText.style.color = "#94a3b8";
+                }, 500);
+
+            } catch (err) {
+                alert("Failed to submit review: " + err.message);
                 btn.disabled = false;
                 btn.innerText = "Post Review";
                 progressBar.style.opacity = "0";
                 setTimeout(() => progressBar.style.width = "0%", 300);
-                return;
             }
-
-            // Immediately mark the token as 'used' to prevent duplicate submissions
-            await db.from('review_tokens').update({ status: 'used' }).eq('token', urlToken);
-
-            // Success!
-            setTimeout(() => {
-                alert("Thank you! Your review has been submitted successfully.");
-                
-                // Reset UI
-                btn.disabled = true;
-                btn.innerText = "Review Submitted ✓";
-                btn.style.background = "#10B981";
-                progressBar.style.opacity = "0";
-                setTimeout(() => progressBar.style.width = "0%", 300);
-                
-                // Optionally clear form
-                currentRating = 0;
-                starsWrapper.setAttribute('data-rating', '0');
-                document.getElementById('review-text').value = '';
-                document.getElementById('guest-name').value = '';
-                uploadedFiles = [];
-                previewContainer.innerHTML = '';
-                ratingText.innerText = "Tap to rate";
-                ratingText.style.color = "#94a3b8";
-            }, 500);
         }
     </script>
 </body>
