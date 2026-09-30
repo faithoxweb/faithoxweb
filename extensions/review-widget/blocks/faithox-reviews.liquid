@@ -265,22 +265,22 @@
 <script>
 (function() {
     function initFaithoxWidget() {
-        // 1. Safety Net: If Shopify is being slow and hasn't loaded Supabase yet, wait 100ms and try again
         if (!window.supabase) {
             setTimeout(initFaithoxWidget, 100);
             return;
         }
 
         const productId = "{{ product.id }}";
+        const storeId = "{{ shop.domain }}"; // 🟢 NEW: Capture the Shopify store domain
         const blockId = "{{ block.id }}";
         const list = document.getElementById(`widget-reviews-list-${blockId}`);
 
-        if (!productId) {
-            list.innerHTML = "<p style='text-align:center; color:#ef4444; font-size:13px; padding: 20px; font-weight: 600;'>Error: Product ID missing.</p>";
+        if (!productId || !storeId) {
+            list.innerHTML = "<p style='text-align:center; color:#ef4444; font-size:13px; padding: 20px; font-weight: 600;'>Error: Product ID or Store ID missing.</p>";
             return;
         }
 
-        // Carousel Global Functions
+        // Carousel Global Functions (Unchanged)
         window.scrollWidgetReviews = function(direction, bId) {
             const carousel = document.getElementById(`widget-reviews-list-${bId}`);
             if(carousel) carousel.scrollBy({ left: direction * 1170, behavior: 'smooth' });
@@ -309,9 +309,10 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        /* --- NEW INFO BOX LOGIC --- */
+        /* --- INFO BOX LOGIC --- */
         async function loadProductInfo() {
-            const { data: prodData, error: prodErr } = await db.from('products').select('*').eq('product_id', productId);
+            // 🟢 NEW: Added .eq('store_id', storeId)
+            const { data: prodData, error: prodErr } = await db.from('products').select('*').eq('product_id', productId).eq('store_id', storeId);
             if (!prodErr && prodData && prodData.length > 0) {
                 const co = prodData[0];
                 
@@ -327,7 +328,8 @@
                 trustBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
                 velocityBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
 
-                const { data: prodAnalytics } = await db.from('product_analytics').select('*').eq('product_id', productId).single();
+                // 🟢 NEW: Added .eq('store_id', storeId)
+                const { data: prodAnalytics } = await db.from('product_analytics').select('*').eq('product_id', productId).eq('store_id', storeId).single();
                 if (prodAnalytics) {
                     trustBadge.style.display = 'inline-flex';
                     document.getElementById(`trust-score-text-${blockId}`).innerText = `Trust Score: ${prodAnalytics.product_trust_score || 400}`;
@@ -347,6 +349,7 @@
             }
         }
 
+        // (Visual Ratings Functions Remain Unchanged Here)
         function updateVisualRatings(ratingValue, totalReviews) {
             const formatted = ratingValue.toFixed(1);
             let activeColor = "#10B981"; 
@@ -405,10 +408,12 @@
         }
 
         async function loadWidgetReviews() {
+            // 🟢 NEW: Added .eq('store_id', storeId)
             const { data: reviews, error } = await db
                 .from('reviews')
                 .select('*')
                 .eq('product_id', productId) 
+                .eq('store_id', storeId)
                 .order('created_at', { ascending: false })
                 .limit(10);
 
@@ -437,17 +442,18 @@
                     : initials;
 
                 let ratingVal = r.rating || 5;
-let activeColor = "#10B981";
-if (ratingVal === 4) activeColor = "#84CC16";
-if (ratingVal === 3) activeColor = "#F59E0B";
-if (ratingVal === 2) activeColor = "#F97316";
-if (ratingVal === 1) activeColor = "#EF4444";
+                let activeColor = "#10B981";
+                if (ratingVal === 4) activeColor = "#84CC16";
+                if (ratingVal === 3) activeColor = "#F59E0B";
+                if (ratingVal === 2) activeColor = "#F97316";
+                if (ratingVal === 1) activeColor = "#EF4444";
 
-let starsHtml = '';
-for(let i = 1; i <= 5; i++) {
-    let starColor = (i <= ratingVal) ? activeColor : "#e2e8f0";
-    starsHtml += `<span style="width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;"><svg width="100%" height="100%" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill: ${starColor} !important;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" style="fill: ${starColor} !important; stroke: none !important;" /></svg></span>`;
-}
+                let starsHtml = '';
+                for(let i = 1; i <= 5; i++) {
+                    let starColor = (i <= ratingVal) ? activeColor : "#e2e8f0";
+                    starsHtml += `<span style="width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;"><svg width="100%" height="100%" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill: ${starColor} !important;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" style="fill: ${starColor} !important; stroke: none !important;" /></svg></span>`;
+                }
+
                 let photoUrls = [];
                 try {
                     if (r.photos) {
@@ -538,7 +544,6 @@ for(let i = 1; i <= 5; i++) {
         setTimeout(loadWidgetReviews, 150);
     }
 
-    // 2. The Smart Trigger: Checks if the page is already loaded (for Shopify Theme Editor)
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initFaithoxWidget);
     } else {
