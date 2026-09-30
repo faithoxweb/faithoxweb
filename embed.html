@@ -267,58 +267,66 @@
             requestAnimationFrame(updateWidgetCarouselUI);
         });
 
-        const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Inside embed.html -> <script>
+const SUPABASE_URL = 'https://fdjcvpsqossuiljuadkk.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const params = new URLSearchParams(window.location.search);
-        const productId = params.get('id'); 
+const params = new URLSearchParams(window.location.search);
+const productId = params.get('id'); 
+const storeId = params.get('store_id'); // 🟢 NEW: Capture store_id from the iframe URL
 
-        // --- NEW: FETCH & RENDER PRODUCT INFO BOX ---
-        async function loadProductInfo() {
-            if (!productId) return;
+// --- NEW: FETCH & RENDER PRODUCT INFO BOX ---
+async function loadProductInfo() {
+    if (!productId || !storeId) {
+        document.getElementById('widget-reviews-list').innerHTML = "<p style='text-align:center; color:#ef4444; font-size:13px; padding: 20px; font-weight: 600;'>Error: Product ID or Store ID missing.</p>";
+        return;
+    }
 
-            const { data: prodData, error: prodErr } = await db.from('products').select('*').eq('product_id', productId);
-            if (!prodErr && prodData && prodData.length > 0) {
-                const co = prodData[0];
-                
-                // Remove Skeletons
-                document.getElementById('dynamic-company-name').classList.remove('skeleton-anim', 'sk-title');
-                document.getElementById('exact-rating-box').classList.remove('skeleton-anim', 'skel-exact-rating');
-                document.getElementById('top-review-count-badge').classList.remove('skeleton-anim', 'skel-exact-rating');
-                document.getElementById('rating-square-box').classList.remove('skeleton-anim', 'skel-rating-square');
-                
-                document.getElementById('dynamic-company-name').innerText = co.name;
-                if(co.website) {
-                    document.getElementById('dynamic-company-link').href = co.website;
-                }
+    // 🟢 NEW: Add .eq('store_id', storeId)
+    const { data: prodData, error: prodErr } = await db.from('products').select('*').eq('product_id', productId).eq('store_id', storeId);
+    
+    if (!prodErr && prodData && prodData.length > 0) {
+        const co = prodData[0];
+        
+        // Remove Skeletons
+        document.getElementById('dynamic-company-name').classList.remove('skeleton-anim', 'sk-title');
+        document.getElementById('exact-rating-box').classList.remove('skeleton-anim', 'skel-exact-rating');
+        document.getElementById('top-review-count-badge').classList.remove('skeleton-anim', 'skel-exact-rating');
+        document.getElementById('rating-square-box').classList.remove('skeleton-anim', 'skel-rating-square');
+        
+        document.getElementById('dynamic-company-name').innerText = co.name;
+        if(co.website) {
+            document.getElementById('dynamic-company-link').href = co.website;
+        }
 
-                // Analytics
-                const trustBadge = document.getElementById('trust-score-badge');
-                const velocityBadge = document.getElementById('velocity-badge');
-                trustBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
-                velocityBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
+        // Analytics
+        const trustBadge = document.getElementById('trust-score-badge');
+        const velocityBadge = document.getElementById('velocity-badge');
+        trustBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
+        velocityBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
 
-                const { data: prodAnalytics } = await db.from('product_analytics').select('*').eq('product_id', productId).single();
-                if (prodAnalytics) {
-                    trustBadge.style.display = 'inline-flex';
-                    document.getElementById('trust-score-text').innerText = `Trust Score: ${prodAnalytics.product_trust_score || 400}`;
-                    velocityBadge.style.display = 'inline-flex';
-                    document.getElementById('velocity-text').innerText = `+${prodAnalytics.review_velocity_30d || 0} this month`;
-                } else {
-                    trustBadge.style.display = 'none';
-                    velocityBadge.style.display = 'none';
-                }
-                
-                // Store Domain
-                if (co.store_id) {
-                    const { data: storeData } = await db.from('stores').select('domain_name').eq('store_id', co.store_id).single();
-                    if (storeData && storeData.domain_name) {
-                        document.getElementById('top-left-brand').innerText = `product from ${storeData.domain_name}`;
-                    }
-                }
+        // 🟢 NEW: Add .eq('store_id', storeId)
+        const { data: prodAnalytics } = await db.from('product_analytics').select('*').eq('product_id', productId).eq('store_id', storeId).single();
+        if (prodAnalytics) {
+            trustBadge.style.display = 'inline-flex';
+            document.getElementById('trust-score-text').innerText = `Trust Score: ${prodAnalytics.product_trust_score || 400}`;
+            velocityBadge.style.display = 'inline-flex';
+            document.getElementById('velocity-text').innerText = `+${prodAnalytics.review_velocity_30d || 0} this month`;
+        } else {
+            trustBadge.style.display = 'none';
+            velocityBadge.style.display = 'none';
+        }
+        
+        // Store Domain
+        if (co.store_id) {
+            const { data: storeData } = await db.from('stores').select('domain_name').eq('store_id', co.store_id).single();
+            if (storeData && storeData.domain_name) {
+                document.getElementById('top-left-brand').innerText = `product from ${storeData.domain_name}`;
             }
         }
+    }
+}
 
         // --- RATING CALCULATIONS FOR INFO BOX ---
         function updateVisualRatings(ratingValue, totalReviews) {
