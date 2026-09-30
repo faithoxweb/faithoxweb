@@ -1,6 +1,5 @@
 <!-- Load Supabase Library securely -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <div class="faithox-widget-root" id="faithox-widget-{{ block.id }}">
     <div class="widget-wrapper">
@@ -199,56 +198,54 @@
 #faithox-widget-{{ block.id }} .reviews-scroll-container::-webkit-scrollbar { display: none; }
 
 #faithox-widget-{{ block.id }} .review-item-main { 
-    background: #fdfdfd !important; 
-    border-radius: 32px !important; 
-    padding: 24px !important; 
-    width: 380px !important; 
-    height: 200px !important; 
-    flex-shrink: 0 !important; 
-    transition: all 0.1s ease !important; 
-    display: flex !important; 
-    flex-direction: column !important; 
-    gap: 12px !important; 
-    cursor: pointer !important; 
-    text-align: left !important; 
-    position: relative !important; 
-    overflow: hidden !important; 
-    scroll-snap-align: start !important; 
-    border: none !important; 
-    box-sizing: border-box !important;
+    background: #fdfdfd; 
+    border-radius: 32px; 
+    padding: 24px; 
+    width: 380px; 
+    height: 200px; 
+    flex-shrink: 0;
+    transition: all 0.1s ease; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    cursor: pointer; 
+    text-align: left;
+    position: relative; 
+    overflow: hidden; 
+    scroll-snap-align: start; 
+    border: 1px solid #e2e8f0;
 }
-
-#faithox-widget-{{ block.id }} .review-item-main:hover { background: #dcdcdc !important; }
+#faithox-widget-{{ block.id }} .review-item-main:hover { background: #dcdcdc; }
 
 #faithox-widget-{{ block.id }} .rating-pill { 
-    position: absolute !important; 
-    top: 24px !important; 
-    right: 24px !important; 
-    display: inline-flex !important; 
-    align-items: center !important; 
-    gap: 4px !important; 
-    padding: 0 8px !important; 
-    height: 28px !important; 
-    border-radius: 9px !important; 
-    background: #fdfdfd !important; 
-    border: 2px solid #19bb42 !important; 
-    width: fit-content !important; 
-    margin: 0 !important; 
-    flex-shrink: 0 !important; 
-    box-sizing: border-box !important;
+    position: absolute; 
+    top: 24px; 
+    right: 24px; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 4px; 
+    padding: 0 8px; 
+    height: 28px; 
+    border-radius: 9px; 
+    background: #fdfdfd; 
+    border: 2px solid #19bb42; 
+    width: fit-content; 
+    margin: 0; 
+    flex-shrink: 0; 
 }
-#faithox-widget-{{ block.id }} .rating-pill .star { width: 20px !important; height: 20px !important; color: #e2e8f0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; }
-#faithox-widget-{{ block.id }} .rating-pill .star svg { width: 100% !important; height: 100% !important; fill: currentColor !important; }
-#faithox-widget-{{ block.id }} .rating-pill.rating-5 { border-color: #10B981 !important; } #faithox-widget-{{ block.id }} .rating-pill.rating-5 .filled { color: #10B981 !important; }
-#faithox-widget-{{ block.id }} .rating-pill.rating-4 { border-color: #84CC16 !important; } #faithox-widget-{{ block.id }} .rating-pill.rating-4 .filled { color: #84CC16 !important; }
-#faithox-widget-{{ block.id }} .rating-pill.rating-3 { border-color: #F59E0B !important; } #faithox-widget-{{ block.id }} .rating-pill.rating-3 .filled { color: #F59E0B !important; }
-#faithox-widget-{{ block.id }} .rating-pill.rating-2 { border-color: #F97316 !important; } #faithox-widget-{{ block.id }} .rating-pill.rating-2 .filled { color: #F97316 !important; }
-#faithox-widget-{{ block.id }} .rating-pill.rating-1 { border-color: #EF4444 !important; } #faithox-widget-{{ block.id }} .rating-pill.rating-1 .filled { color: #EF4444 !important; }
+#faithox-widget-{{ block.id }} .rating-pill .star { width: 20px; height: 20px; color: #e2e8f0; display: inline-flex; align-items: center; justify-content: center; }
+#faithox-widget-{{ block.id }} .rating-pill .star svg { width: 100%; height: 100%; fill: currentColor; }
+#faithox-widget-{{ block.id }} .rating-pill.rating-5 { border-color: #10B981; } #faithox-widget-{{ block.id }} .rating-pill.rating-5 .filled { color: #10B981; }
+#faithox-widget-{{ block.id }} .rating-pill.rating-4 { border-color: #84CC16; } #faithox-widget-{{ block.id }} .rating-pill.rating-4 .filled { color: #84CC16; }
+#faithox-widget-{{ block.id }} .rating-pill.rating-3 { border-color: #F59E0B; } #faithox-widget-{{ block.id }} .rating-pill.rating-3 .filled { color: #F59E0B; }
+#faithox-widget-{{ block.id }} .rating-pill.rating-2 { border-color: #F97316; } #faithox-widget-{{ block.id }} .rating-pill.rating-2 .filled { color: #F97316; }
+#faithox-widget-{{ block.id }} .rating-pill.rating-1 { border-color: #EF4444; } #faithox-widget-{{ block.id }} .rating-pill.rating-1 .filled { color: #EF4444; }
 
-#faithox-widget-{{ block.id }} .review-content-wrapper { flex: 1 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; }
-#faithox-widget-{{ block.id }} .review-author { display: flex !important; align-items: center !important; gap: 8px !important; margin-bottom: 6px !important; flex-shrink: 0 !important; }
-#faithox-widget-{{ block.id }} .author-avatar { width: 32px !important; height: 32px !important; border-radius: 50% !important; background: #242424 !important; color: #f2f2f2 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 11px !important; font-weight: 800 !important; flex-shrink: 0 !important; overflow: hidden !important; margin: 0 !important; padding: 0 !important; }
-#faithox-widget-{{ block.id }} .author-name { font-size: 15px !important; font-weight: 700 !important; color: #242424 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+#faithox-widget-{{ block.id }} .review-content-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+#faithox-widget-{{ block.id }} .review-author { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-shrink: 0; }
+#faithox-widget-{{ block.id }} .author-avatar { width: 32px; height: 32px; border-radius: 50%; background: #242424; color: #f2f2f2; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; overflow: hidden; }
+#faithox-widget-{{ block.id }} .author-name { font-size: 15px; font-weight: 700; color: #242424; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#faithox-widget-{{ block.id }} .review-body { font-size: 14px; color: #242424; line-height: 1.5; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
 
 /* Widget Footer */
 #faithox-widget-{{ block.id }} .widget-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; background: transparent; margin-top: auto; }
@@ -265,22 +262,22 @@
 <script>
 (function() {
     function initFaithoxWidget() {
+        // 1. Safety Net: If Shopify is being slow and hasn't loaded Supabase yet, wait 100ms and try again
         if (!window.supabase) {
             setTimeout(initFaithoxWidget, 100);
             return;
         }
 
         const productId = "{{ product.id }}";
-        const storeId = "{{ shop.domain }}"; // 🟢 NEW: Capture the Shopify store domain
         const blockId = "{{ block.id }}";
         const list = document.getElementById(`widget-reviews-list-${blockId}`);
 
-        if (!productId || !storeId) {
-            list.innerHTML = "<p style='text-align:center; color:#ef4444; font-size:13px; padding: 20px; font-weight: 600;'>Error: Product ID or Store ID missing.</p>";
+        if (!productId) {
+            list.innerHTML = "<p style='text-align:center; color:#ef4444; font-size:13px; padding: 20px; font-weight: 600;'>Error: Product ID missing.</p>";
             return;
         }
 
-        // Carousel Global Functions (Unchanged)
+        // Carousel Global Functions
         window.scrollWidgetReviews = function(direction, bId) {
             const carousel = document.getElementById(`widget-reviews-list-${bId}`);
             if(carousel) carousel.scrollBy({ left: direction * 1170, behavior: 'smooth' });
@@ -309,10 +306,9 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkamN2cHNxb3NzdWlsanVhZGtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MDI5ODYsImV4cCI6MjA4NjE3ODk4Nn0.z2ZutYZi_oLr_wYq6LufLyU3bI3XbRuA33JD8iA5Q6o';
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        /* --- INFO BOX LOGIC --- */
+        /* --- NEW INFO BOX LOGIC --- */
         async function loadProductInfo() {
-            // 🟢 NEW: Added .eq('store_id', storeId)
-            const { data: prodData, error: prodErr } = await db.from('products').select('*').eq('product_id', productId).eq('store_id', storeId);
+            const { data: prodData, error: prodErr } = await db.from('products').select('*').eq('product_id', productId);
             if (!prodErr && prodData && prodData.length > 0) {
                 const co = prodData[0];
                 
@@ -328,8 +324,7 @@
                 trustBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
                 velocityBadge.classList.remove('skeleton-anim', 'skel-exact-rating');
 
-                // 🟢 NEW: Added .eq('store_id', storeId)
-                const { data: prodAnalytics } = await db.from('product_analytics').select('*').eq('product_id', productId).eq('store_id', storeId).single();
+                const { data: prodAnalytics } = await db.from('product_analytics').select('*').eq('product_id', productId).single();
                 if (prodAnalytics) {
                     trustBadge.style.display = 'inline-flex';
                     document.getElementById(`trust-score-text-${blockId}`).innerText = `Trust Score: ${prodAnalytics.product_trust_score || 400}`;
@@ -349,7 +344,6 @@
             }
         }
 
-        // (Visual Ratings Functions Remain Unchanged Here)
         function updateVisualRatings(ratingValue, totalReviews) {
             const formatted = ratingValue.toFixed(1);
             let activeColor = "#10B981"; 
@@ -408,12 +402,10 @@
         }
 
         async function loadWidgetReviews() {
-            // 🟢 NEW: Added .eq('store_id', storeId)
             const { data: reviews, error } = await db
                 .from('reviews')
                 .select('*')
                 .eq('product_id', productId) 
-                .eq('store_id', storeId)
                 .order('created_at', { ascending: false })
                 .limit(10);
 
@@ -441,17 +433,9 @@
                     ? `<img src="${escapeHTML(avatarUrl)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` 
                     : initials;
 
-                let ratingVal = r.rating || 5;
-                let activeColor = "#10B981";
-                if (ratingVal === 4) activeColor = "#84CC16";
-                if (ratingVal === 3) activeColor = "#F59E0B";
-                if (ratingVal === 2) activeColor = "#F97316";
-                if (ratingVal === 1) activeColor = "#EF4444";
-
                 let starsHtml = '';
-                for(let i = 1; i <= 5; i++) {
-                    let starColor = (i <= ratingVal) ? activeColor : "#e2e8f0";
-                    starsHtml += `<span style="width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;"><svg width="100%" height="100%" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill: ${starColor} !important;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" style="fill: ${starColor} !important; stroke: none !important;" /></svg></span>`;
+                for(let i = 1; i <= 5; i++) { 
+                    starsHtml += `<span class="star ${i <= (r.rating || 5) ? 'filled' : ''}">${starSvg}</span>`; 
                 }
 
                 let photoUrls = [];
@@ -508,22 +492,22 @@
                 div.onclick = () => window.open(`https://www.faithox.com/company?id=${productId}`, '_blank');
                 
                 div.innerHTML = `
-                    <div style="display: flex; width: 100%; height: 100%; gap: 15px; box-sizing: border-box !important;">
-                        <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%; box-sizing: border-box !important;">
-                            <div style="display: flex; justify-content: flex-start; align-items: flex-start; width: 100%; box-sizing: border-box !important;">
-                                <div class="review-author" style="margin: 0 !important; padding: 0 !important; align-items: center;">
-                                    <div class="author-avatar" >${authorAvatarHtml}</div>
-                                    <div style="display: flex; flex-direction: column; justify-content: center; margin: 0 !important; padding: 0 !important;">
-                                        <div class="author-name" >${escapeHTML(reviewerName)}</div>
-                                        <div style="display: flex; align-items: center; gap: 2px; font-size: 11px !important; color: #64748b !important; font-weight: 700 !important; margin-top: 3px !important; line-height: 1 !important; padding: 0 !important;" >${date}</div>
+                    <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
+                        <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                                <div class="review-author" style="margin: 0; align-items: center;">
+                                    <div class="author-avatar">${authorAvatarHtml}</div>
+                                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                                        <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
+                                        <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">${date}</div>
                                     </div>
                                 </div>
-                                <div class="rating-pill" style="border-color: ${activeColor} !important;">${starsHtml}</div>
+                                <div class="rating-pill rating-${r.rating || 5}">${starsHtml}</div>
                             </div>
-                            <div class="review-content-wrapper" style="padding: 0 !important; flex: 1; height: auto; margin-top: 12px !important; margin-bottom: 0 !important; box-sizing: border-box !important;">
-                                <p class="review-body" style="display: -webkit-box !important; -webkit-line-clamp: 5 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; text-overflow: ellipsis !important; line-height: 1.4 !important; font-size: 14px !important; font-weight: 400 !important; margin: 0 !important; padding: 0 !important; color: #242424 !important; white-space: normal !important; text-align: left !important; background: transparent !important; letter-spacing: normal !important;" >${escapeHTML(r.comment || '')}</p>
+                            <div class="review-content-wrapper" style="padding: 0; flex: 1; height: auto; margin-top: 12px;">
+                                <p class="review-body" style="-webkit-line-clamp: 5; margin-bottom: 4px;">${escapeHTML(r.comment || '')}</p>
                             </div>
-                        </div >
+                        </div>
                         ${photoHtml}
                     </div>
                 `;
@@ -544,6 +528,7 @@
         setTimeout(loadWidgetReviews, 150);
     }
 
+    // 2. The Smart Trigger: Checks if the page is already loaded (for Shopify Theme Editor)
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initFaithoxWidget);
     } else {
