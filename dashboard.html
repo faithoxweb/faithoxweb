@@ -467,6 +467,23 @@
         </div>
     </div>
 
+    <div style="background: #fdfdfd; padding: 24px; border-radius: 16px; border: 1px solid #e5e7eb; max-width: 600px;">
+    <h3 style="margin-bottom: 12px; color: #111827;">Generate Widget Code</h3>
+    <p style="font-size: 14px; color: #6b7280; margin-bottom: 20px;">Enter your product ID to generate the secure iframe for your custom website.</p>
+    
+    <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px;">Product ID</label>
+        <input type="text" id="generator-product-id" oninput="updateEmbedCode()" placeholder="e.g., premium-plan-01" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #d1d5db;">
+    </div>
+
+    <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px;">Your Secure Embed Code</label>
+        <textarea id="generator-iframe-code" readonly style="width: 100%; min-height: 80px; padding: 12px; border-radius: 8px; border: 1px solid #d1d5db; background: #f9fafb; font-family: monospace;"></textarea>
+    </div>
+
+    <button onclick="copyEmbedCode()" style="background: #2a2a2a; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">Copy Code</button>
+</div>
+
     <!-- NEW INTEGRATION MODAL -->
     <div id="code-modal" class="modal-overlay">
         <div class="modal-content">
@@ -1100,6 +1117,45 @@
                 btn.disabled = false;
             }
         };
+
+        let currentMerchantStoreId = "";
+
+// Fetches the store_id from Supabase auth
+async function loadMerchantStoreId() {
+    if (!window.supabase) return;
+    const { data } = await supabase.auth.getSession();
+    if (data.session && data.session.user) {
+        currentMerchantStoreId = data.session.user.user_metadata.store_id; 
+    }
+}
+
+function updateEmbedCode() {
+    const productId = document.getElementById('generator-product-id').value.trim();
+    const codeBox = document.getElementById('generator-iframe-code');
+
+    if (!productId) {
+        codeBox.value = "";
+        return;
+    }
+
+    // Builds the secure URL
+    const secureUrl = `https://faithox.com/embed.html?store_id=${currentMerchantStoreId}&id=${productId}`;
+    codeBox.value = `<iframe src="${secureUrl}" width="100%" height="450px" frameborder="0" style="border:none; overflow:hidden;"></iframe>`;
+}
+
+function copyEmbedCode() {
+    const codeBox = document.getElementById('generator-iframe-code');
+    if (!codeBox.value) {
+        alert("Please enter a Product ID first.");
+        return;
+    }
+    
+    codeBox.select();
+    document.execCommand("copy");
+    alert("Widget code copied to clipboard!");
+}
+
+window.addEventListener('DOMContentLoaded', loadMerchantStoreId);
         
     </script>
 </body>
