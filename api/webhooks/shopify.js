@@ -126,6 +126,7 @@ export default async function handler(req, res) {
                         .from('products')
                         .select('product_id, store_id, name, website')
                         .eq('product_id', shopifyProductId)
+                        .eq('store_id', shopDomain)
                         .maybeSingle();
 
                     if (findError) {
