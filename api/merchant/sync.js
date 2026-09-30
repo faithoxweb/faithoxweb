@@ -63,10 +63,11 @@ export default async function handler(req, res) {
 
       // Check if product already exists in your DB to avoid duplicates
       const { data: existing } = await supabaseAdmin
-        .from('products')
-        .select('id')
-        .eq('product_id', sp.id.toString())
-        .single();
+      .from('products')
+      .select('id')
+      .eq('product_id', sp.id.toString())
+      .eq('store_id', shop) // Add this!
+      .maybeSingle(); // Use maybeSingle instead of single to avoid errors if 0 rows exist
 
       if (existing) {
         // Update existing product
