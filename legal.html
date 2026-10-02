@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal & Privacy | Faithox</title>
+    <title>Legal Hub | Faithox</title>
     <link rel="icon" href="https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/my-logo.png" sizes="any" type="image/png">
+
     <style>
         /* --- Clean SaaS Styling --- */
         :root {
@@ -86,11 +87,11 @@
         }
 
         .document {
-            display: none; /* Hidden by default */
+            display: none;
         }
 
         .document.active {
-            display: block; /* Shows when active */
+            display: block;
             animation: fadeIn 0.3s ease-in-out;
         }
 
@@ -115,7 +116,14 @@
             padding-bottom: 8px;
         }
 
-        .document p, .document ul {
+        .document h3 {
+            font-size: 17px;
+            margin-top: 24px;
+            margin-bottom: 10px;
+        }
+
+        .document p,
+        .document ul {
             color: #4b5563;
             margin-bottom: 16px;
         }
@@ -124,9 +132,25 @@
             margin-bottom: 8px;
         }
 
+        .document a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .document a:hover {
+            text-decoration: underline;
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Mobile Responsiveness */
@@ -137,144 +161,409 @@
                 border-radius: 0;
                 border: none;
             }
+
             .sidebar {
                 width: 100%;
                 border-right: none;
                 border-bottom: 1px solid var(--border-color);
                 padding: 20px;
+                box-sizing: border-box;
             }
+
             .content-area {
                 padding: 30px 20px;
+                max-height: none;
             }
         }
     </style>
 </head>
+
 <body>
 
     <div class="legal-container">
-        
+
+        <!-- Sidebar -->
         <div class="sidebar">
-            <h3>Faithox Legal</h3>
-            <button class="tab-btn active" onclick="switchTab('tos')">Terms of Service</button>
-            <button class="tab-btn" onclick="switchTab('privacy')">Privacy Policy</button>
-            <button class="tab-btn" onclick="switchTab('moderation')">Review Moderation</button>
+            <h3>Legal Hub</h3>
+
+            <button class="tab-btn active" onclick="switchTab('tos')">
+                Terms of Service
+            </button>
+
+            <button class="tab-btn" onclick="switchTab('privacy')">
+                Privacy Policy
+            </button>
+
+            <button class="tab-btn" onclick="switchTab('moderation')">
+                Review Moderation
+            </button>
         </div>
 
+        <!-- Main Content -->
         <div class="content-area">
 
+            <!-- ============================= -->
+            <!-- TERMS OF SERVICE -->
+            <!-- ============================= -->
+
             <div id="tos" class="document active">
+
                 <h1>Terms of Service</h1>
-                <span class="last-updated">Last Updated: June 25, 2026</span>
-                
-                <h2>1. Acceptance of Terms</h2>
-                <p>By registering for an account and embedding the Faithox widget ("Service"), you agree to be bound by these Terms of Service. If you do not agree, you may not use the Service.</p>
 
-                <h2>2. The Service</h2>
-                <p>Faithox provides a trust infrastructure and review management widget for online stores. We reserve the right to update, modify, or discontinue features of the widget at any time to improve performance or security.</p>
+                <span class="last-updated">
+                    Effective Date: October 2026
+                </span>
 
-                <h2>3. Intellectual Property</h2>
-                <p>Faithox retains all ownership, copyright, and intellectual property rights to the widget, backend code, and platform design. You are granted a limited, non-exclusive license to embed the widget on your website. You retain complete ownership of your store's data and your customers' information.</p>
+                <p>
+                    Welcome to Faithox. These Terms of Service ("Terms") govern your access to and use of the Faithox review management platform, widget APIs, and associated services (collectively, the "Service"). By integrating the Service into your Shopify store or custom e-commerce website, you agree to be bound by these Terms.
+                </p>
 
-                <h2>4. Acceptable Use</h2>
-                <p>You agree not to:</p>
+                <h2>1. The Service</h2>
+
+                <p>
+                    Faithox is a B2B2C Software-as-a-Service (SaaS) platform that provides highly secure, verified customer review infrastructure. We automatically trigger review requests based on verified purchase webhooks (via Shopify or Razorpay) and display authentic feedback via embedded web widgets.
+                </p>
+
+                <h2>2. Account Integration &amp; Responsibilities</h2>
+
                 <ul>
-                    <li>Reverse-engineer or attempt to extract the source code of the Faithox widget.</li>
-                    <li>Manipulate, fabricate, or incentivize fake reviews through our platform.</li>
-                    <li>Use the widget on websites containing illegal, explicit, or harmful content.</li>
+                    <li>
+                        <strong>Shopify Merchants:</strong>
+                        By installing our application, you grant Faithox OAuth access to necessary scopes (<code>read_products</code>, <code>read_orders</code>) required to process transactions and trigger review emails.
+                    </li>
+
+                    <li>
+                        <strong>Custom Integrations:</strong>
+                        Merchants using our custom API or Razorpay webhooks are responsible for ensuring payload signatures and secrets are configured correctly to prevent unauthorized access.
+                    </li>
+
+                    <li>
+                        <strong>Account Security:</strong>
+                        You are responsible for maintaining the confidentiality of your dashboard login credentials and API tokens.
+                    </li>
                 </ul>
 
-                <h2>5. Limitation of Liability</h2>
-                <p>Faithox is provided on an "as is" and "as available" basis. While we strive for maximum uptime, we do not guarantee uninterrupted service. Faithox shall not be held liable for any lost revenue, profits, or data resulting from widget downtime, integration errors, or third-party interference.</p>
+                <h2>3. Intellectual Property &amp; Data Ownership</h2>
 
-                <h2>6. Account Termination</h2>
-                <p>We reserve the right to suspend or terminate your account if you violate these terms, attempt to manipulate consumer trust, or fail to pay applicable subscription fees.</p>
-                
-                <p><strong>Contact:</strong> For legal inquiries, contact us at legal@faithox.com.</p>
+                <p>
+                    Faithox retains all ownership, copyrights, and intellectual property rights to the widget architecture, backend systems, database schemas, and platform design. You, the merchant, retain complete ownership of your store's data, your branding, and your customers' information. By using the Service, you grant Faithox a limited, non-exclusive license to process and display this data solely for the purpose of rendering the review widget on your storefront.
+                </p>
+
+                <h2>4. Acceptable Use Policy</h2>
+
+                <p>
+                    To maintain the integrity of our trust infrastructure, you agree not to:
+                </p>
+
+                <ul>
+                    <li>
+                        Reverse-engineer, manipulate, or attempt to extract the source code of the Faithox widget or APIs.
+                    </li>
+
+                    <li>
+                        Attempt to bypass our cryptographic single-use token system to generate fabricated, incentivized, or fake reviews.
+                    </li>
+
+                    <li>
+                        Use the Service to display reviews containing illegal, explicit, harmful, or personally identifiable information.
+                    </li>
+                </ul>
+
+                <h2>5. Limitation of Liability &amp; Uptime</h2>
+
+                <p>
+                    Faithox is provided on an "as is" and "as available" basis. While our infrastructure is built for high availability, we do not guarantee 100% uninterrupted service. Faithox shall not be held liable for any direct, indirect, or consequential damages, including lost revenue or profits, resulting from widget downtime, third-party webhook failures, or integration errors.
+                </p>
+
+                <h2>6. Termination &amp; Data Deletion</h2>
+
+                <p>
+                    We reserve the right to suspend or terminate your account if you violate our Acceptable Use Policy or attempt to manipulate consumer trust metrics. Upon uninstallation of the Faithox Shopify app (or explicit account deletion for custom sites), Faithox initiates an automated cascade protocol to permanently wipe your store configurations, products, and associated reviews from our databases in compliance with data privacy regulations.
+                </p>
+
+                <p>
+                    <strong>Legal Inquiries:</strong>
+                    Contact our legal team at
+                    <a href="mailto:legal@faithox.com">legal@faithox.com</a>.
+                </p>
+
             </div>
+
+
+            <!-- ============================= -->
+            <!-- PRIVACY POLICY -->
+            <!-- ============================= -->
 
             <div id="privacy" class="document">
-                <h1>Privacy Policy</h1>
-                <span class="last-updated">Last Updated: June 25, 2026</span>
 
-                <h2>1. Introduction</h2>
-                <p>Faithox ("we", "our") respects your privacy. This policy explains how we collect, use, and protect data when store owners ("Clients") use our platform, and when consumers ("Shoppers") interact with our embedded review widgets.</p>
+                <h1>Privacy Policy</h1>
+
+                <span class="last-updated">
+                    Effective Date: October 2026
+                </span>
+
+                <p>
+                    At Faithox ("we", "our"), transparency and data security are our foundational principles. This Privacy Policy outlines how we collect, process, and protect data for Merchants (Data Controllers) utilizing our platform, and for Shoppers (Data Subjects) interacting with our review system.
+                </p>
+
+                <h2>1. Our Role in Data Processing</h2>
+
+                <p>
+                    Faithox operates as a <strong>Data Processor</strong>. We only process personal data on behalf of our client Merchants (the Data Controllers) strictly for the purpose of verifying purchases, requesting reviews, and displaying those reviews securely.
+                </p>
 
                 <h2>2. Information We Collect</h2>
+
+                <h3>From Merchants (Store Owners):</h3>
+
+                <p>
+                    We collect your store domain, email address, Shopify OAuth tokens, and Razorpay webhook secrets to authenticate your business and securely operate the service.
+                </p>
+
+                <h3>From Shoppers (Reviewers):</h3>
+
+                <p>
+                    When an order is successfully processed via Shopify or Razorpay, we temporarily process the buyer's email address to generate a secure, cryptographic, one-time-use review token. If a review is submitted, we collect the reviewer's provided name, star rating, written comment, and optionally uploaded product photos (stored securely in our cloud buckets).
+                </p>
+
+                <h2>3. How We Use the Data</h2>
+
                 <ul>
-                    <li><strong>From Clients (Store Owners):</strong> We collect your name, email, website URL, and billing information to provide our SaaS services.</li>
-                    <li><strong>From Shoppers (Widget Users):</strong> When you leave a review via a Faithox widget, we collect the name you provide, your email address (for verification purposes only), the content of your review, and your IP address (to detect and prevent spam).</li>
+                    <li>
+                        <strong>Authentication:</strong>
+                        Email addresses are used to dispatch automated review requests via our email provider (Resend) containing a secure token.
+                    </li>
+
+                    <li>
+                        <strong>Display:</strong>
+                        Shopper names, ratings, text, and photos are displayed publicly on the Merchant's website via the Faithox widget.
+                    </li>
+
+                    <li>
+                        <strong>Fraud Prevention:</strong>
+                        Data is used to track token consumption (marking tokens as "used") to guarantee zero duplicate or fake reviews.
+                    </li>
                 </ul>
 
-                <h2>3. How We Use Your Information</h2>
-                <p>We act as a Data Processor for our Clients. We use Shopper data strictly to verify the authenticity of reviews, display those reviews on the Client's website, and maintain the security of our infrastructure. <strong>We do not sell Shopper data to advertisers or third-party data brokers.</strong></p>
+                <p>
+                    <strong>Strict Privacy Guarantee:</strong>
+                    Faithox does not sell, rent, or trade Merchant or Shopper data to advertisers, data brokers, or any third parties.
+                </p>
 
-                <h2>4. Data Security and Storage</h2>
-                <p>We utilize industry-standard cloud database infrastructure to secure your data against unauthorized access. Store Owners are responsible for maintaining the confidentiality of their Faithox login credentials.</p>
+                <h2>4. Third-Party Sub-Processors</h2>
 
-                <h2>5. Cookies and Tracking</h2>
-                <p>The Faithox widget uses essential cookies or session tokens solely to ensure the functionality of the review submission process and to prevent fraudulent, duplicate reviews. We do not use cross-site tracking cookies for advertising.</p>
+                <p>
+                    To provide high-availability service, Faithox utilizes industry-leading sub-processors:
+                </p>
 
-                <h2>6. Your Rights</h2>
-                <p>Shoppers wishing to delete or modify a review can do so by contacting the store owner directly, or by reaching out to Faithox support.</p>
-                
-                <p><strong>Contact:</strong> For privacy concerns, contact us at privacy@faithox.com.</p>
+                <ul>
+                    <li>
+                        <strong>Supabase:</strong>
+                        For secure PostgreSQL database hosting, authentication, and file storage (product and review imagery).
+                    </li>
+
+                    <li>
+                        <strong>Resend:</strong>
+                        For the secure delivery of transactional review request emails.
+                    </li>
+
+                    <li>
+                        <strong>Vercel:</strong>
+                        For edge-network API hosting and serverless function execution.
+                    </li>
+                </ul>
+
+                <h2>5. Data Retention &amp; GDPR Compliance</h2>
+
+                <p>
+                    Faithox fully complies with global privacy standards, including GDPR and Shopify's strict data protection requirements. We process mandatory compliance webhooks instantly:
+                </p>
+
+                <ul>
+                    <li>
+                        <strong><code>customers/redact</code>:</strong>
+                        If a shopper requests data deletion via the Merchant, we immediately redact their PII from our review database.
+                    </li>
+
+                    <li>
+                        <strong><code>shop/redact</code> &amp; <code>app/uninstalled</code>:</strong>
+                        If a Merchant uninstalls Faithox or closes their store, an automated cascade wipe removes the store profile, all product listings, and all associated consumer reviews permanently from our servers.
+                    </li>
+                </ul>
+
+                <h2>6. Cookies and Tracking</h2>
+
+                <p>
+                    The Faithox widget is designed for performance and privacy. We do not inject cross-site tracking cookies, advertising pixels, or analytics trackers into the Merchant's storefront. Any session tokens utilized are strictly functional to ensure secure review submissions.
+                </p>
+
+                <p>
+                    <strong>Privacy Concerns:</strong>
+                    For data deletion requests or privacy questions, contact our Data Protection Officer at
+                    <a href="mailto:privacy@faithox.com">privacy@faithox.com</a>.
+                </p>
+
             </div>
 
+
+            <!-- ============================= -->
+            <!-- REVIEW MODERATION POLICY -->
+            <!-- ============================= -->
+
             <div id="moderation" class="document">
+
                 <h1>Review Moderation Policy</h1>
-                <span class="last-updated">Last Updated: June 25, 2026</span>
 
-                <h2>1. Our Commitment to Trust</h2>
-                <p>Faithox provides infrastructure to ensure online reviews are authentic, transparent, and helpful. To maintain the integrity of our platform, all submitted reviews must adhere to the following guidelines.</p>
+                <span class="last-updated">
+                    Effective Date: October 2026
+                </span>
 
-                <h2>2. Authenticity Requirement</h2>
-                <p>Reviews must reflect a genuine, firsthand experience with the product or service. Generating fake reviews, whether positive or negative, is strictly prohibited and violates consumer trust standards.</p>
+                <p>
+                    Faithox is built on the promise of absolute transparency. We provide a fortified ecosystem designed to bridge the gap between businesses and consumers securely. To maintain this trust, all interactions on our platform are governed by strict moderation protocols.
+                </p>
 
-                <h2>3. Prohibited Content</h2>
-                <p>Faithox and the host store reserve the right to flag, hide, or remove reviews that contain:</p>
+                <h2>1. The "Verified Only" Standard</h2>
+
+                <p>
+                    Unlike open review platforms, Faithox mechanically prevents fabricated reviews. A review can <strong>only</strong> be submitted using a unique, cryptographically secure token. These tokens are generated exclusively by our backend systems after catching a verified <code>orders/paid</code> webhook from Shopify or a <code>payment.captured</code> webhook from Razorpay. Once a review is submitted, the token is permanently invalidated, ensuring zero spam or duplicate entries.
+                </p>
+
+                <h2>2. Content Guidelines</h2>
+
+                <p>
+                    While we champion free speech and honest consumer feedback, reviews must remain relevant and safe. Faithox reserves the right to remove reviews that violate the following standards:
+                </p>
+
                 <ul>
-                    <li><strong>Hate Speech or Harassment:</strong> Profanity, abuse, or discriminatory language.</li>
-                    <li><strong>Spam or Promotion:</strong> Links to other websites, promotional material, or irrelevant content.</li>
-                    <li><strong>Personal Information:</strong> Phone numbers, physical addresses, or other sensitive personal data of the reviewer or employees of the store.</li>
-                    <li><strong>Irrelevant Content:</strong> Commentary that does not pertain to the product or the purchasing experience.</li>
+                    <li>
+                        <strong>Hate Speech &amp; Harassment:</strong>
+                        Profanity, threats, abuse, or discriminatory language targeting individuals or protected groups.
+                    </li>
+
+                    <li>
+                        <strong>Personal Information (PII):</strong>
+                        Reviews exposing sensitive data, including phone numbers, home addresses, or full names of store employees or other consumers.
+                    </li>
+
+                    <li>
+                        <strong>Spam &amp; Self-Promotion:</strong>
+                        Irrelevant links, promotional material for competing businesses, or bot-generated text.
+                    </li>
+
+                    <li>
+                        <strong>Irrelevant Commentary:</strong>
+                        Feedback that has absolutely no relation to the product purchased or the shopping experience.
+                    </li>
                 </ul>
 
-                <h2>4. Moderation Process</h2>
-                <p>We utilize automated spam detection alongside manual reporting tools. Store owners may flag suspicious reviews, but Faithox retains the final authority to remove content that violates this policy to ensure the widget remains a source of truth.</p>
-                
-                <p><strong>Contact:</strong> support@faithox.com</p>
+                <h2>3. Media Uploads</h2>
+
+                <p>
+                    Consumers may upload images alongside their reviews. All imagery must be relevant to the product. Uploads containing explicit, illegal, copyrighted (without permission), or inappropriate visual content will be deleted immediately from our storage buckets, and the associated review may be revoked.
+                </p>
+
+                <h2>4. Merchant Rights &amp; Restrictions</h2>
+
+                <p>
+                    Merchants using Faithox have access to a live dashboard where they can track analytics and manage their reputation.
+                </p>
+
+                <ul>
+                    <li>
+                        <strong>Right to Reply:</strong>
+                        Merchants are encouraged to use the Faithox API/Dashboard to post public replies to reviews to resolve customer issues.
+                    </li>
+
+                    <li>
+                        <strong>Flagging:</strong>
+                        Merchants may flag reviews they believe violate our Content Guidelines (e.g., containing PII or hate speech).
+                    </li>
+
+                    <li>
+                        <strong>No Censorship:</strong>
+                        To maintain consumer trust, <strong>Merchants cannot delete negative reviews simply because they are negative.</strong> Faithox's core value is authenticity; valid low-star ratings from verified buyers will remain visible.
+                    </li>
+                </ul>
+
+                <h2>5. Enforcement Authority</h2>
+
+                <p>
+                    Faithox acts as the neutral arbiter of trust. We utilize a combination of automated scanning and manual review reports to enforce this policy. Faithox retains the final, non-negotiable authority to determine if content violates these guidelines and to take appropriate action, including content removal or merchant account suspension.
+                </p>
+
+                <p>
+                    <strong>Report Abuse:</strong>
+                    To report a review that violates these guidelines, contact
+                    <a href="mailto:support@faithox.com">support@faithox.com</a>.
+                </p>
+
             </div>
 
         </div>
     </div>
 
+
     <script>
         function switchTab(tabId) {
+
             // 1. Remove 'active' class from all buttons
             const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
+
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
 
             // 2. Hide all documents
             const documents = document.querySelectorAll('.document');
-            documents.forEach(doc => doc.classList.remove('active'));
+
+            documents.forEach(doc => {
+                doc.classList.remove('active');
+            });
+
 
             // 3. Add 'active' class to clicked button
-            // Finds the button that was clicked by matching the onclick attribute
-            const clickedBtn = document.querySelector(`button[onclick="switchTab('${tabId}')"]`);
-            if(clickedBtn) clickedBtn.classList.add('active');
+            const clickedBtn = document.querySelector(
+                `button[onclick="switchTab('${tabId}')"]`
+            );
+
+            if (clickedBtn) {
+                clickedBtn.classList.add('active');
+            }
+
 
             // 4. Show the selected document
             const targetDoc = document.getElementById(tabId);
-            if(targetDoc) targetDoc.classList.add('active');
+
+            if (targetDoc) {
+                targetDoc.classList.add('active');
+            }
         }
 
-        // ADDED: Auto-load exact tab based on URL hash (e.g. from footer click)
+
+        // Auto-load exact tab based on URL hash
+        // Example:
+        // legal.html#tos
+        // legal.html#privacy
+        // legal.html#moderation
+
         window.addEventListener('DOMContentLoaded', () => {
-            const hash = window.location.hash.substring(1); 
-            if (hash && (hash === 'tos' || hash === 'privacy' || hash === 'moderation')) {
+
+            const hash = window.location.hash.substring(1);
+
+            if (
+                hash &&
+                (
+                    hash === 'tos' ||
+                    hash === 'privacy' ||
+                    hash === 'moderation'
+                )
+            ) {
                 switchTab(hash);
             }
+
         });
     </script>
+
 </body>
 </html>
