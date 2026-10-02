@@ -473,17 +473,24 @@
             <button class="close-modal" onclick="closeCodeModal()">✕</button>
             <h2 style="font-size: 24px; font-weight: 700; color: #242424; letter-spacing: -0.5px; margin-bottom: 8px;">Integration Details</h2>
             
-            <!-- SECTION 1: Website Widget -->
-            <div style="margin-bottom: 24px;">
-                <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">1. Website Embed Code (Frontend)</p>
-                <p style="font-size: 13px; color: #64748b;">Paste this exactly where you want the reviews widget to appear on your product page.</p>
+            <!-- SECTION 1: Shopify Theme Integration -->
+            <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0;">
+                <p style="font-size: 14px; font-weight: 700; color: #10B981; margin-bottom: 4px;">1. Shopify Store Setup (Recommended)</p>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">No coding required. Go to your Shopify Theme Editor, navigate to your Product Page, and click <b>Add Block &gt; Faithox Review Widget</b>.</p>
+                <button class="btn-primary" onclick="window.open('https://admin.shopify.com/store/' + (activeShopifyDomain ? activeShopifyDomain.replace('.myshopify.com', '') : 'my-store') + '/themes/current/editor?context=apps', '_blank')" style="background: #10B981; margin-top: 5px; width: auto; padding: 10px 16px; font-size: 13px;">Open Shopify Theme Editor</button>
+            </div>
+
+            <!-- SECTION 2: Custom Website Widget -->
+            <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0;">
+                <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">2. Custom Website Embed Code</p>
+                <p style="font-size: 13px; color: #64748b;">If you are not using Shopify, paste this HTML where you want the reviews widget to appear.</p>
                 <div class="code-block" id="embed-code-text"></div>
                 <button class="btn-primary copy-btn" onclick="copyCode()" style="margin-top: 10px; width: auto; padding: 10px 16px; font-size: 13px;">Copy Embed Code</button>
             </div>
 
-            <!-- SECTION 2: Razorpay Backend IDs -->
-            <div style="padding-top: 24px; border-top: 1px solid #e2e8f0;">
-                <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">2. Razorpay Checkout Data (Backend)</p>
+            <!-- SECTION 3: Razorpay Backend IDs -->
+            <div style="padding-top: 24px;">
+                <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">3. Razorpay Checkout Data (Backend)</p>
                 <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Pass this exact Product ID inside the <code>notes</code> object of your Razorpay checkout code so Faithox can automatically verify purchases.</p>
                 
                 <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
