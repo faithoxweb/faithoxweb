@@ -462,8 +462,7 @@
       margin: 0 auto; 
       position: relative; 
       display: block; 
-      z-index: 200; 
-      transition: border-radius 0.2s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+      z-index: 200;  
       border-radius: 50px; 
       animation: fadeFromBackground 0.9s ease-in-out 0.2s forwards;
       opacity: 0;
@@ -482,12 +481,6 @@
       box-shadow: none; 
       position: relative; 
       z-index: 2; 
-    }
-
-    .search-bar::placeholder { 
-      color: rgba(15, 23, 42, 0.5); 
-      font-weight: 500; 
-      letter-spacing: 0.3px; 
     }
 
     .search-icon { 
@@ -525,7 +518,7 @@
       left: 50%;
       transform: translateX(-50%);
       width: calc(100% - 40px);
-      max-width: 650px;
+      max-width: 570px;
       margin: 0;
     } 
 
@@ -536,14 +529,17 @@
     .search-container.active .search-bar { 
       background: #fdfdfd !important; 
       color: #2a2a2a; 
-      /* Rounded top, flat bottom to connect to the dropdown */
-      border-radius: 18px 18px 0 0 !important; 
-      border: 3px solid transparent!important; 
-      /* Subtle inner divider line instead of a thick bottom border */
-      border-bottom: 1px solid #e2e8f0 !important; 
-      /* Light shadow for the top half */
-      box-shadow: 0 -4px 30px rgba(0,0,0,0.05); 
-      padding: 14px 30px 14px 50px !important;
+      border-radius: 11px !important;
+      padding: 12px 30px 12px 40px !important;
+      font-size: 15px !important;
+      
+    }
+
+    .search-container.active .search-bar::placeholder { 
+      /* Change this to whatever color you want the placeholder to be */
+      color: #777777 !important; 
+      text-indent: 0px !important;
+      font-weight: 430 !important;
     }
 
     .search-container.active .search-icon { 
@@ -552,12 +548,24 @@
 
     .active-left-icon {
       position: absolute;
-      left: 20px;
+      left: 13px;
       top: 50%;
       transform: translateY(-50%); /* Perfectly centers it vertically */
       z-index: 5;
       display: none; /* Hidden by default */
       pointer-events: none; /* Prevents the icon from blocking text selection/clicks */
+    }
+
+    .active-left-icon svg {
+      /* 1. Change the SIZE of the icon (Original was 20px) */
+      width: 19px !important;
+      height: 19px !important;
+  
+      /* 2. Change the COLOR of the icon */
+      stroke: #2a2a2a !important; 
+  
+      /* 3. Optional: Change the THICKNESS of the icon lines */
+      stroke-width: 2 !important;
     }
 
     .search-container.active .active-left-icon {
@@ -566,23 +574,23 @@
 
     .results-dropdown { 
       position: absolute; 
-      /* Snap perfectly flush against the bottom of the search bar */
-      top: 100%; 
+      top: calc(100% + 12px); 
       left: 0; 
       width: 100%; 
       background: #fdfdfd; 
-      /* Flat top, rounded bottom to complete the box */
-      border-radius: 0 0 18px 18px; 
+      border-radius: 11px; 
       display: none; 
-      overflow: hidden; 
-      margin-top: 0; 
-      padding: 10px 0 15px 0; 
-      /* Continue the outer border, but remove the top so they merge */
-      border: 3px solid transparent; 
-      border-top: none; 
-      /* Deep shadow for the floating effect */
-      box-shadow: 0 20px 40px rgba(0,0,0,0.12); 
-    }
+  
+      /* 1. ADD THIS: Set your standard fixed height here */
+      height: 450px; 
+  
+      /* 2. CHANGE THIS: Allow vertical scrolling if results exceed 380px */
+      overflow-y: auto; 
+      overflow-x: hidden; 
+  
+  margin-top: 0; 
+  padding: 10px 0 8px 0;  
+}
 
     .search-container.active .results-dropdown { 
       display: block; 
@@ -2322,7 +2330,7 @@
 
     const searchIconSVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2a2a2a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`;
 
-    // Convert trending items into an array to dynamically select how many are needed
+        // Convert trending items into an array to dynamically select how many are needed
     const trendingItems = [
       `
       <div class="result-item" onclick="navigateTo('#')">
@@ -2360,6 +2368,46 @@
           ${searchIconSVG}
           <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1;">
             <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">Cloud Services</span>
+          </div>
+        </div>
+      </div>
+      `,
+      `
+      <div class="result-item" onclick="navigateTo('#')">
+        <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+          ${searchIconSVG}
+          <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1;">
+            <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">Finance & Banking</span>
+          </div>
+        </div>
+      </div>
+      `,
+      `
+      <div class="result-item" onclick="navigateTo('#')">
+        <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+          ${searchIconSVG}
+          <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1;">
+            <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">Healthcare & Medical</span>
+          </div>
+        </div>
+      </div>
+      `,
+      `
+      <div class="result-item" onclick="navigateTo('#')">
+        <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+          ${searchIconSVG}
+          <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1;">
+            <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">E-Commerce Stores</span>
+          </div>
+        </div>
+      </div>
+      `,
+      `
+      <div class="result-item" onclick="navigateTo('#')">
+        <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+          ${searchIconSVG}
+          <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1;">
+            <span style="font-weight: 600; color: #0f172a; font-size: 14px; line-height: 1;">Travel & Hospitality</span>
           </div>
         </div>
       </div>
@@ -2405,17 +2453,17 @@
           resultsBox.insertAdjacentHTML('afterbegin', '<div id="live-dropdown-loader" class="dropdown-loader-bar active"><div class="loader-fill"></div></div>');
         }
         
-        searchTimeout = setTimeout(async () => {
+                searchTimeout = setTimeout(async () => {
           // LIVE SUPABASE QUERY FOR BOTH PRODUCTS AND STORES!
           const [productsRes, storesRes] = await Promise.all([
             db.from('products')
               .select('product_id, name, parent_company, is_product, category, rating')
               .or(`name.ilike.%${term}%,parent_company.ilike.%${term}%`)
-              .limit(4),
+              .limit(8),
             db.from('stores')
               .select('store_id, display_name, domain_name')
               .or(`display_name.ilike.%${term}%,domain_name.ilike.%${term}%`)
-              .limit(4)
+              .limit(8)
           ]);
 
           let combinedMatches = [];
@@ -2448,8 +2496,8 @@
             });
           }
 
-          // 3. Limit to exactly 4 maximum results total
-          combinedMatches = combinedMatches.slice(0, 4);
+          // 3. Limit to exactly 8 maximum results total
+          combinedMatches = combinedMatches.slice(0, 8);
 
           let newHTML = "";
           let resultsCount = combinedMatches.length;
@@ -2484,9 +2532,9 @@
             });
           }
           
-          // Always guarantee exactly 4 results by padding the bottom with trending items
-          if (resultsCount < 4) {
-            const needed = 4 - resultsCount;
+          // Always guarantee exactly 8 results by padding the bottom with trending items
+          if (resultsCount < 8) {
+            const needed = 8 - resultsCount;
             newHTML += trendingItems.slice(0, needed).join('');
           }
 
