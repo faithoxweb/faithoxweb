@@ -522,6 +522,76 @@
       margin: 0;
     } 
 
+        /* --- SEARCH HISTORY STYLES --- */
+    .history-section {
+      padding: 10px 16px 15px 16px;
+      margin-bottom: 5px;
+      border-bottom: 1px solid #f0f1f1;
+    }
+    
+    .history-content-wrapper {
+      position: relative; /* Anchors the button */
+      padding-right: 40px; /* Reserves a permanent empty column on the right for the button */
+    }
+    
+    .history-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-height: 66px; 
+      overflow: hidden;
+      transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .history-tags.expanded {
+      max-height: 150px; /* Expands to show up to 10 history items */
+    }
+    .history-expand-btn {
+      position: absolute;
+      right: 0;
+      top: 35px; /* Mathematically centers the button perfectly on the 2nd row */
+      background: #fdfdfd;
+      border: 1px solid #dcdcdc;
+      color: #64748b;
+      cursor: pointer;
+      display: none; 
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+    .history-expand-btn:hover {
+      background: #f0f1f1;
+      color: #2a2a2a;
+    }
+    .history-expand-btn svg {
+      transition: transform 0.3s ease;
+    }
+    .history-expand-btn.expanded svg {
+      transform: rotate(180deg); /* Arrow points up when expanded */
+    }
+    .history-box {
+      background: #fdfdfd;
+      border: 1px solid #dcdcdc;
+      color: #2a2a2a;
+      padding: 6px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      line-height: 14px; /* Locks total box height to exactly 28px */
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap; /* Prevents text from breaking inside the box */
+    }
+    .history-box:hover {
+      background: #f0f1f1;
+      border-color: #cbd5e1;
+    }
+
     .search-container.active + .scrolling-reviews-container {
       margin-top: 218px; /* Prevent layout shift when search bar becomes fixed */
     }
@@ -619,7 +689,7 @@
       left: -50%; 
       height: 100%; 
       width: 50%; 
-      background: #00c853; 
+      background: #6bbbea; 
       border-radius: 4px; 
       animation: dropSearchSwipe 1s infinite linear; 
     }
@@ -2088,7 +2158,17 @@
 
     // --- PROGRESS BAR GLOBALS & ROUTING ---
     let progressInterval;
-    window.navigateTo = (url) => {
+     window.navigateTo = (url) => {
+      // 1. INSTANTLY CLOSE SEARCH BAR SO BROWSER CACHES IT CLOSED
+      const searchInput = document.getElementById('main-search');
+      if (searchInput) {
+        searchInput.value = '';
+        const searchContainer = document.querySelector('.search-container');
+        const overlay = document.getElementById('search-overlay');
+        if (searchContainer) searchContainer.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+      }
+      // 2. EXISTING PROGRESS BAR LOGIC
       const bar = document.getElementById('pro-progress-bar');
       if (!bar) { window.location.href = url; return; }
 
@@ -2125,6 +2205,20 @@
         }, 150);
       }, 300); // Fake delay to allow trickle to be seen
     };
+
+    // Clean up state INVISIBLY after the user is looking at the new page
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'hidden') {
+        const searchInput = document.getElementById('main-search');
+        if (searchInput) {
+          searchInput.value = '';
+          const searchContainer = document.querySelector('.search-container');
+          const overlay = document.getElementById('search-overlay');
+          if (searchContainer) searchContainer.classList.remove('active');
+          if (overlay) overlay.classList.remove('active');
+        }
+      }
+    });
 
     // BFCache reset for progress bar (when user clicks 'back' button)
     window.addEventListener('pageshow', function(event) {
@@ -2413,13 +2507,78 @@
       </div>
       `
     ];
+
+    // --- SEARCH HISTORY LOGIC ---
+    function saveSearchHistory(term) {
+      if (!term || term.trim() === '') return;
+      try {
+        let history = JSON.parse(localStorage.getItem('faithox_search_history') || '[]');
+        
+        // Remove term if it already exists so we can move it back to the top
+        history = history.filter(item => item.toLowerCase() !== term.trim().toLowerCase());
+        history.unshift(term.trim());
+        
+        if (history.length > 10) history = history.slice(0, 10); // Keep max 10 items
+        localStorage.setItem('faithox_search_history', JSON.stringify(history));
+      } catch(e) { console.warn("History saving disabled"); }
+    }
+    function clickHistoryItem(term) {
+      const searchInput = document.getElementById('main-search');
+      if (searchInput) {
+        searchInput.value = term;
+        searchInput.dispatchEvent(new Event('input')); // This forces the live search to instantly run!
+      }
+    }
     
     const trendingHTML = trendingItems.join('');
 
     function showTrending() {
-      resultsBox.innerHTML = trendingHTML;
+      let history = [];
+      try { history = JSON.parse(localStorage.getItem('faithox_search_history') || '[]'); } catch(e) {}
+      
+      let historyHTML = '';
+      if (history.length > 0) {
+        let tagsHTML = history.map(term => {
+          const safeTermJS = term.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+          return `<span class="history-box" onclick="clickHistoryItem('${safeTermJS}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            ${escapeHTML(term)}
+          </span>`;
+        }).join('');
+        historyHTML = `
+          <div class="history-section">
+            <div class="history-content-wrapper">
+              <div class="history-tags" id="faithox-history-tags">${tagsHTML}</div>
+              <button class="history-expand-btn" type="button" style="transition: transform 0.3s ease;" onclick="
+                event.stopPropagation(); 
+                var tags = document.getElementById('faithox-history-tags'); 
+                if (tags.style.maxHeight === '400px') { 
+                  tags.style.maxHeight = '66px'; // Collapses back to exactly 2 rows
+                  this.style.transform = 'rotate(0deg)'; 
+                } else { 
+                  tags.style.maxHeight = '400px'; 
+                  this.style.transform = 'rotate(180deg)'; 
+                }
+              ">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+      resultsBox.innerHTML = historyHTML + trendingHTML;
       searchContainer.classList.add('active');
       overlay.classList.add('active');
+      // NEW: Check if tags wrap to a THIRD line. If so, reveal the arrow!
+      const tagsContainer = document.getElementById('faithox-history-tags');
+      const expandBtn = document.querySelector('.history-expand-btn');
+      if (tagsContainer && expandBtn) {
+        if (tagsContainer.scrollHeight > 75) { // If it's larger than 2 rows, show the button
+          expandBtn.style.display = 'flex';
+        }
+      }
     }
 
     if (searchInput) {
@@ -2517,8 +2676,12 @@
 
               const subtitleHtml = item.subtitle ? `<span style="font-size: 12px; color: #64748b; font-weight: 500; line-height: 1;">( ${escapeHTML(item.subtitle)} )</span>` : '';
               
+
+             // NEW: Create a safe string to save to history without breaking Javascript
+              const safeNameForJS = item.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+              
               newHTML += `
-                <div class="result-item" onclick="navigateTo('${linkUrl}')">
+                <div class="result-item" onclick="saveSearchHistory('${safeNameForJS}'); navigateTo('${linkUrl}')">
                   <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
                     ${searchIconSVG}
                     <div style="display: flex; flex-direction: row; align-items: center; text-align: left; gap: 8px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -2546,7 +2709,10 @@
       
       overlay.addEventListener('click', () => { 
         searchContainer.classList.remove('active'); 
-        overlay.classList.remove('active'); 
+        overlay.classList.remove('active');
+        if (searchInput) {
+          searchInput.value = ''; // This clears the text!
+        } 
       });
     }
 
