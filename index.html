@@ -2531,51 +2531,76 @@
     }
     
     const trendingHTML = trendingItems.join('');
-
+    // --- 10 DEFAULT TRENDING TAGS ---
+    const defaultTrendingTags = [
+      "Software Solutions",
+      "Eco Friendly Products",
+      "Marketing Agencies",
+      "Cloud Services",
+      "Finance & Banking",
+      "Healthcare & Medical",
+      "E-Commerce Stores",
+      "Travel & Hospitality",
+      "AI Tools",
+      "Cybersecurity"
+    ];
     function showTrending() {
       let history = [];
-      try { history = JSON.parse(localStorage.getItem('faithox_search_history') || '[]'); } catch(e) {}
+      try { 
+        history = JSON.parse(localStorage.getItem('faithox_search_history') || '[]'); 
+      } catch(e) {}
       
-      let historyHTML = '';
-      if (history.length > 0) {
-        let tagsHTML = history.map(term => {
-          const safeTermJS = term.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-          return `<span class="history-box" onclick="clickHistoryItem('${safeTermJS}')">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            ${escapeHTML(term)}
-          </span>`;
-        }).join('');
-        historyHTML = `
-          <div class="history-section">
-            <div class="history-content-wrapper">
-              <div class="history-tags" id="faithox-history-tags">${tagsHTML}</div>
-              <button class="history-expand-btn" type="button" style="transition: transform 0.3s ease;" onclick="
-                event.stopPropagation(); 
-                var tags = document.getElementById('faithox-history-tags'); 
-                if (tags.style.maxHeight === '400px') { 
-                  tags.style.maxHeight = '66px'; // Collapses back to exactly 2 rows
-                  this.style.transform = 'rotate(0deg)'; 
-                } else { 
-                  tags.style.maxHeight = '400px'; 
-                  this.style.transform = 'rotate(180deg)'; 
-                }
-              ">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-            </div>
+      // Filter out trending items already searched by the user (no duplicates)
+      const availableTrending = defaultTrendingTags.filter(trendingItem => 
+        !history.some(histItem => histItem.toLowerCase() === trendingItem.toLowerCase())
+      );
+      // Take user history first, then fill remainder with trending tags up to 10 total
+      const combinedItems = [
+        ...history.map(name => ({ name, type: 'history' })),
+        ...availableTrending.map(name => ({ name, type: 'trending' }))
+      ].slice(0, 10);
+      // Clock icon for history, Trending arrow for trending items
+      const clockSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
+      const trendingSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`;
+      let tagsHTML = combinedItems.map(item => {
+        const safeTermJS = item.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const icon = item.type === 'history' ? clockSvg : trendingSvg;
+        return `<span class="history-box" onclick="clickHistoryItem('${safeTermJS}')">
+          ${icon}
+          ${escapeHTML(item.name)}
+        </span>`;
+      }).join('');
+      // Always renders the section now (no "if (history.length > 0)" check)
+      const historyHTML = `
+        <div class="history-section">
+          <div class="history-content-wrapper">
+            <div class="history-tags" id="faithox-history-tags">${tagsHTML}</div>
+            <button class="history-expand-btn" type="button" style="transition: transform 0.3s ease;" onclick="
+              event.stopPropagation(); 
+              var tags = document.getElementById('faithox-history-tags'); 
+              if (tags.style.maxHeight === '400px') { 
+                tags.style.maxHeight = '66px'; // Collapses back to exactly 2 rows
+                this.style.transform = 'rotate(0deg)'; 
+              } else { 
+                tags.style.maxHeight = '400px'; 
+                this.style.transform = 'rotate(180deg)'; 
+              }
+            ">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
           </div>
-        `;
-      }
+        </div>
+      `;
       resultsBox.innerHTML = historyHTML + trendingHTML;
       searchContainer.classList.add('active');
       overlay.classList.add('active');
-      // NEW: Check if tags wrap to a THIRD line. If so, reveal the arrow!
+      // Check if tags wrap to a third line; show expand button if so
       const tagsContainer = document.getElementById('faithox-history-tags');
       const expandBtn = document.querySelector('.history-expand-btn');
       if (tagsContainer && expandBtn) {
-        if (tagsContainer.scrollHeight > 75) { // If it's larger than 2 rows, show the button
+        if (tagsContainer.scrollHeight > 75) {
           expandBtn.style.display = 'flex';
         }
       }
