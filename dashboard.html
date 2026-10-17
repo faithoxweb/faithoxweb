@@ -497,36 +497,66 @@
         </div>
     </div>
 
-    <!-- NEW INTEGRATION MODAL -->
+    <!-- INTEGRATION / WIDGET MODAL -->
     <div id="code-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeCodeModal()">✕</button>
-            <h2 style="font-size: 24px; font-weight: 700; color: #242424; letter-spacing: -0.5px; margin-bottom: 8px;">Integration Details</h2>
+            <h2 id="modal-title" style="font-size: 24px; font-weight: 700; color: #242424; letter-spacing: -0.5px; margin-bottom: 8px;">Widget Setup</h2>
+            <p id="modal-subtitle" style="font-size: 14px; color: #64748b; margin-bottom: 24px;">Configure how your reviews appear to shoppers.</p>
             
-            <!-- SECTION 1: Shopify Theme Integration -->
-            <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0;">
-                <p style="font-size: 14px; font-weight: 700; color: #10B981; margin-bottom: 4px;">1. Shopify Store Setup (Recommended)</p>
-                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">No coding required. Go to your Shopify Theme Editor, navigate to your Product Page, and click <b>Add Block &gt; Faithox Review Widget</b>.</p>
-                <button class="btn-primary" onclick="window.open('https://admin.shopify.com/store/' + (activeShopifyDomain ? activeShopifyDomain.replace('.myshopify.com', '') : 'my-store') + '/themes/current/editor?context=apps', '_blank')" style="background: #10B981; margin-top: 5px; width: auto; padding: 10px 16px; font-size: 13px;">Open Shopify Theme Editor</button>
-            </div>
+            <!-- SHOPIFY MODAL VIEW (Zero embed codes!) -->
+            <div id="modal-shopify-view" style="display: none;">
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <span style="font-size: 15px; font-weight: 700; color: #166534;">Native Shopify App Block</span>
+                    </div>
+                    <p style="font-size: 13px; color: #15803d; line-height: 1.5; margin: 0 0 12px 0;">
+                        No manual code or embed codes required. Your widget loads natively through the Shopify Theme Editor:
+                    </p>
+                    <ol style="margin: 0; padding-left: 20px; font-size: 13px; color: #166534; line-height: 1.6;">
+                        <li>Click <b>Open Theme Editor</b> below.</li>
+                        <li>Navigate to your <b>Default Product</b> template.</li>
+                        <li>Click <b>Add Block</b> and select <b>Faithox Review Widget</b>.</li>
+                        <li>Position the block wherever you want reviews to appear and click <b>Save</b>.</li>
+                    </ol>
+                </div>
 
-            <!-- SECTION 2: Custom Website Widget -->
-            <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0;">
-                <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">2. Custom Website Embed Code</p>
-                <p style="font-size: 13px; color: #64748b;">If you are not using Shopify, paste this HTML where you want the reviews widget to appear.</p>
-                <div class="code-block" id="embed-code-text"></div>
-                <button class="btn-primary copy-btn" onclick="copyCode()" style="margin-top: 10px; width: auto; padding: 10px 16px; font-size: 13px;">Copy Embed Code</button>
-            </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;">
+                    <button class="btn-primary" onclick="openShopifyThemeEditor()" style="background: #10B981; width: auto; padding: 10px 18px; font-size: 13px; margin: 0; display: inline-flex; align-items: center; gap: 6px;">
+                        Open Shopify Theme Editor ↗
+                    </button>
+                    <button id="modal-store-preview-btn" class="btn-outline" style="width: auto; padding: 10px 18px; font-size: 13px; margin: 0; display: none;" onclick="window.open(this.dataset.url, '_blank')">
+                        View Live on Storefront ↗
+                    </button>
+                </div>
 
-            <!-- SECTION 3: Product Identifier -->
-            <div style="padding-top: 24px;">
-                <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">3. Product Identifier</p>
-                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">This is the unique Product ID registered in Faithox for this item.</p>
-                
                 <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <span style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Unique Product ID</span>
+                        <span style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Shopify Product ID</span>
                         <div id="modal-product-id" style="font-family: monospace; font-size: 14px; font-weight: 600; color: #242424; margin-top: 4px;">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUSTOM / NON-SHOPIFY MODAL VIEW (Embed code provided here) -->
+            <div id="modal-custom-view">
+                <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0;">
+                    <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Custom Website Embed Code</p>
+                    <p style="font-size: 13px; color: #64748b;">Paste this HTML where you want the reviews widget to appear on your product page.</p>
+                    <div class="code-block" id="embed-code-text"></div>
+                    <button class="btn-primary copy-btn" onclick="copyCode()" style="margin-top: 10px; width: auto; padding: 10px 16px; font-size: 13px;">Copy Embed Code</button>
+                </div>
+
+                <div style="padding-top: 0px;">
+                    <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Product Identifier</p>
+                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">This is the unique Product ID registered in Faithox for this item.</p>
+                    
+                    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Unique Product ID</span>
+                            <div id="modal-custom-product-id" style="font-family: monospace; font-size: 14px; font-weight: 600; color: #242424; margin-top: 4px;">Loading...</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -753,6 +783,12 @@
                 // If no custom image, use a grey placeholder
                 const imgUrl = product.image_url || 'https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/Grade%20Grey.jpg';
 
+                const safeName = escapeHTML(product.name).replace(/'/g, "\\'");
+                const safeWebsite = (product.website || '').replace(/'/g, "\\'");
+                const actionBtn = activeShopifyDomain 
+                    ? `<button class="widget-btn" onclick="openCodeModal('${product.product_id}', '${safeName}', '${safeWebsite}')" style="background: #f0fdf4; border-color: #86efac; color: #166534; font-weight: 600;">Widget Setup</button>`
+                    : `<button class="widget-btn" onclick="openCodeModal('${product.product_id}', '${safeName}', '${safeWebsite}')">&lt;/&gt; Get Embed Code</button>`;
+
                 html += `
                     <div class="product-item">
                         <div class="product-info">
@@ -763,8 +799,7 @@
                             </div>
                         </div>
                         <div class="product-actions">
-                            <!-- Passing product_id to the widget modal -->
-                            <button class="widget-btn" onclick="openCodeModal('${product.product_id}')">&lt;/&gt; Get Widget</button>
+                            ${actionBtn}
                         </div>
                     </div>
                 `;
@@ -984,16 +1019,40 @@
         }
 
 
-        // --- WIDGET MODAL LOGIC (UPDATED WITH PRODUCT ID) ---
-        function openCodeModal(productId) {
-            const liveUrl = `https://faithox.com/embed.html?id=${productId}`;
-            const code = `\n<iframe \n  src="${liveUrl}" \n  width="100%" \n "max-width: 1204px; \n height="350px" \n  style="border: none; background: transparent; overflow: hidden; display: block; margin: 0 auto;">\n</iframe>`;
-            
-            // Set Embed Code
-            document.getElementById('embed-code-text').innerText = code;
-            
-            // Set Product ID securely in the modal
-            document.getElementById('modal-product-id').innerText = productId;
+        function openShopifyThemeEditor() {
+            const storeHandle = activeShopifyDomain ? activeShopifyDomain.replace('.myshopify.com', '') : 'my-store';
+            window.open(`https://admin.shopify.com/store/${storeHandle}/themes/current/editor?context=apps`, '_blank');
+        }
+
+        // --- WIDGET MODAL LOGIC (SEPARATING SHOPIFY THEME SETUP & CUSTOM EMBED CODE) ---
+        function openCodeModal(productId, productName = '', productWebsite = '') {
+            if (activeShopifyDomain) {
+                document.getElementById('modal-title').innerText = "Shopify Widget Setup";
+                document.getElementById('modal-subtitle').innerText = "Native Theme App Block — Zero coding or embed codes required.";
+                document.getElementById('modal-shopify-view').style.display = 'block';
+                document.getElementById('modal-custom-view').style.display = 'none';
+                
+                document.getElementById('modal-product-id').innerText = productId;
+                
+                const previewBtn = document.getElementById('modal-store-preview-btn');
+                if (productWebsite && productWebsite.startsWith('http')) {
+                    previewBtn.style.display = 'inline-flex';
+                    previewBtn.dataset.url = productWebsite;
+                } else {
+                    previewBtn.style.display = 'none';
+                }
+            } else {
+                document.getElementById('modal-title').innerText = "Integration Details";
+                document.getElementById('modal-subtitle').innerText = "Paste the widget snippet onto your product page.";
+                document.getElementById('modal-shopify-view').style.display = 'none';
+                document.getElementById('modal-custom-view').style.display = 'block';
+                
+                const liveUrl = `https://faithox.com/embed.html?id=${productId}`;
+                const code = `<iframe \n  src="${liveUrl}" \n  width="100%" \n  height="350px" \n  style="border: none; background: transparent; overflow: hidden; display: block; margin: 0 auto;">\n</iframe>`;
+                
+                document.getElementById('embed-code-text').innerText = code;
+                document.getElementById('modal-custom-product-id').innerText = productId;
+            }
             
             document.getElementById('code-modal').classList.add('open');
         }
@@ -1001,8 +1060,10 @@
         function closeCodeModal() {
             document.getElementById('code-modal').classList.remove('open');
             const copyBtn = document.querySelector('.copy-btn');
-            copyBtn.innerText = 'Copy Embed Code';
-            copyBtn.style.background = '#242424';
+            if (copyBtn) {
+                copyBtn.innerText = 'Copy Embed Code';
+                copyBtn.style.background = '#242424';
+            }
         }
 
         function copyCode() {
