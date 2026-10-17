@@ -303,11 +303,11 @@
                     <h2 style="position: absolute; top: 24px; left: 32px; font-size: 28px; font-weight: 600; color: #2a2a2a; letter-spacing: -1px; margin: 0;">Overview</h2>
                     
                     <div style="position: absolute; top: 24px; right: 24px; display: flex; gap: 10px; z-index: 50;">
-                        <button class="btn-outline" onclick="syncShopifyProducts()" style="margin: 0; display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 20px;">
+                        <button id="sync-shopify-btn" class="btn-outline" onclick="syncShopifyProducts()" style="margin: 0; display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 20px;">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
                             Sync Shopify
                         </button>
-                        <button class="edit-btn-top" onclick="openRegisterModal()" style="position: relative; top: 0; right: 0;">
+                        <button id="register-product-btn" class="edit-btn-top" onclick="openRegisterModal()" style="position: relative; top: 0; right: 0;">
                             + Register New Product
                         </button>
                     </div>
@@ -333,7 +333,7 @@
                         
                         <div class="inner-right-panel">
                             <div class="dash-card">
-                                <span class="dash-title">Registered Products</span>
+                                <span class="dash-title">Total Products</span>
                                 <span class="dash-value" id="stat-products">0</span>
                             </div>
                             <div class="dash-card">
@@ -400,16 +400,46 @@
                     </div>
                 </div>
 
-                <div class="profile-settings-card" style="margin-top: 30px; border-color: #38bdf8; border-width: 2px;">
+                <!-- SHOPIFY CONNECTED INTEGRATION CARD -->
+                <div id="shopify-integration-card" class="profile-settings-card" style="display: none; margin-top: 30px; border-color: #10B981; border-width: 2px;">
+                    <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 12px; color: #065f46; display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Shopify App Connected
+                    </h3>
+                    <p style="font-size: 13px; color: #047857; margin-bottom: 20px; line-height: 1.5;">
+                        Your store is connected via the official Faithox Shopify App. Order verification webhooks and product catalog syncing are fully automated.
+                    </p>
+
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div>
+                            <span style="font-size: 11px; font-weight: 700; color: #166534; text-transform: uppercase; letter-spacing: 0.5px;">Active Storefront</span>
+                            <div id="shopify-active-domain-display" style="font-family: monospace; font-size: 15px; font-weight: 700; color: #065f46; margin-top: 4px;">...</div>
+                        </div>
+                        <span style="background: #10B981; color: white; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px;">LIVE &amp; SYNCED</span>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn-primary" onclick="window.open('https://admin.shopify.com/store/' + (activeShopifyDomain ? activeShopifyDomain.replace('.myshopify.com', '') : 'my-store') + '/themes/current/editor?context=apps', '_blank')" style="background: #10B981; width: auto; padding: 10px 18px; font-size: 13px; margin: 0;">
+                            Open Shopify Theme Editor
+                        </button>
+                        <button class="btn-outline" onclick="syncShopifyProducts()" style="width: auto; padding: 10px 18px; font-size: 13px; margin: 0; display: inline-flex; align-items: center; gap: 6px;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                            Sync Products
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CUSTOM WEBSITE WEBHOOK INTEGRATION CARD -->
+                <div id="custom-api-card" class="profile-settings-card" style="margin-top: 30px; border-color: #38bdf8; border-width: 2px;">
                     <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px; color: #242424; display: flex; align-items: center; gap: 8px;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                        API & Webhook Integration
+                        Custom Website Webhook Integration
                     </h3>
-                    <p style="font-size: 13px; color: #64748b; margin-bottom: 24px; line-height: 1.5;">Use these credentials to connect your payment gateway (Razorpay, Stripe) to the Faithox automated review engine. Your secret key is unique to your account.</p>
+                    <p style="font-size: 13px; color: #64748b; margin-bottom: 24px; line-height: 1.5;">Use these credentials to connect your custom website's order events to the Faithox automated review engine. Your secret key is unique to your account.</p>
 
                     <div class="form-group">
-                        <label>Global Endpoint URL (Paste into Razorpay)</label>
-                        <input type="text" class="form-input" value="https://faithoxweb.vercel.app/api/razorpay" readonly style="background: #f0f1f1; color: #64748b; cursor: copy;" onclick="this.select(); document.execCommand('copy'); showStatus('Endpoint URL Copied!');">
+                        <label>Webhook Endpoint URL</label>
+                        <input type="text" class="form-input" value="https://faithoxweb.vercel.app/api/webhooks" readonly style="background: #f0f1f1; color: #64748b; cursor: copy;" onclick="this.select(); document.execCommand('copy'); showStatus('Endpoint URL Copied!');">
                     </div>
 
                     <div class="form-group">
@@ -457,9 +487,9 @@
             </div>
 
           <div class="form-group">
-                <label>Shopify Product ID <span style="color: #ef4444;">*</span></label>
-                <input type="text" id="reg-product-id" class="form-input" placeholder="e.g. 8472910382" required>
-                <p style="font-size: 11px; color: #64748b; margin-top: 4px;">This is the unique ID from your Shopify store, required for linking reviews.</p>
+                <label>Product ID / SKU <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="reg-product-id" class="form-input" placeholder="e.g. PROD-1001" required>
+                <p style="font-size: 11px; color: #64748b; margin-top: 4px;">Unique ID or SKU from your storefront, used to link verified reviews.</p>
             </div>
 
 
@@ -488,10 +518,10 @@
                 <button class="btn-primary copy-btn" onclick="copyCode()" style="margin-top: 10px; width: auto; padding: 10px 16px; font-size: 13px;">Copy Embed Code</button>
             </div>
 
-            <!-- SECTION 3: Razorpay Backend IDs -->
+            <!-- SECTION 3: Product Identifier -->
             <div style="padding-top: 24px;">
-                <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">3. Razorpay Checkout Data (Backend)</p>
-                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Pass this exact Product ID inside the <code>notes</code> object of your Razorpay checkout code so Faithox can automatically verify purchases.</p>
+                <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">3. Product Identifier</p>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">This is the unique Product ID registered in Faithox for this item.</p>
                 
                 <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
@@ -569,6 +599,23 @@
                 updateSidebarAndProfileUI();
                 document.getElementById('sidebar-avatar').innerHTML = 'S';
                 document.getElementById('profile-avatar-display').innerHTML = 'S';
+
+                // Shopify UI adjustments:
+                const regBtn = document.getElementById('register-product-btn');
+                if (regBtn) regBtn.style.display = 'none'; // Hide manual register for Shopify stores
+                const syncBtn = document.getElementById('sync-shopify-btn');
+                if (syncBtn) syncBtn.style.display = 'inline-flex';
+
+                // Profile tab: show Shopify card, hide custom webhook card
+                const shopifyCard = document.getElementById('shopify-integration-card');
+                if (shopifyCard) {
+                    shopifyCard.style.display = 'block';
+                    const domainDisplay = document.getElementById('shopify-active-domain-display');
+                    if (domainDisplay) domainDisplay.innerText = activeShopifyDomain;
+                }
+                const customCard = document.getElementById('custom-api-card');
+                if (customCard) customCard.style.display = 'none';
+
                 await fetchBusinessProducts();
                 await fetchReviews();
                 return;
@@ -591,6 +638,18 @@
 
             currentUser = session.user;
             updateSidebarAndProfileUI();
+
+            // Custom UI adjustments:
+            const regBtn = document.getElementById('register-product-btn');
+            if (regBtn) regBtn.style.display = 'inline-block';
+            const syncBtn = document.getElementById('sync-shopify-btn');
+            if (syncBtn) syncBtn.style.display = 'none'; // Hide Shopify sync for custom stores
+
+            // Profile tab: show custom webhook card, hide Shopify card
+            const shopifyCard = document.getElementById('shopify-integration-card');
+            if (shopifyCard) shopifyCard.style.display = 'none';
+            const customCard = document.getElementById('custom-api-card');
+            if (customCard) customCard.style.display = 'block';
             
             // Wait for products to load before anything else
             await fetchBusinessProducts();
@@ -650,7 +709,20 @@
             }
 
             if (!products || products.length === 0) {
-                container.innerHTML = `<p style="text-align:center; padding: 20px; color:#64748b; font-weight: 500;">You haven't registered any products yet. Click the button above to start!</p>`;
+                if (activeShopifyDomain) {
+                    container.innerHTML = `<div style="text-align:center; padding: 35px 20px; color:#64748b;">
+                        <p style="font-weight: 500; margin-bottom: 15px;">No products synced from your Shopify store yet.</p>
+                        <button class="btn-primary" onclick="syncShopifyProducts()" style="display:inline-flex; align-items:center; gap:8px; width:auto; margin:0 auto; padding:10px 22px; font-size:14px; border-radius:20px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                            Sync Shopify Products Now
+                        </button>
+                    </div>`;
+                } else {
+                    container.innerHTML = `<div style="text-align:center; padding: 35px 20px; color:#64748b;">
+                        <p style="font-weight: 500; margin-bottom: 15px;">You haven't registered any products yet.</p>
+                        <button class="edit-btn-top" onclick="openRegisterModal()" style="position:static; margin:0 auto; display:inline-block;">+ Register New Product</button>
+                    </div>`;
+                }
                 return;
             }
 
@@ -864,7 +936,7 @@
             const storeId = await getStoreIdSecurely();
 
             if (!name || !website) return alert("Please fill in both the Product Name and the Product Link.");
-            if (!productId) return alert("Please enter the Shopify Product ID.");
+            if (!productId) return alert("Please enter the Product ID / SKU.");
             if (!fileInput.files || fileInput.files.length === 0) return alert("Please upload an image of your product.");
             if (!storeId) return alert("Store ID not found. Ensure you created your business account correctly.");
 
