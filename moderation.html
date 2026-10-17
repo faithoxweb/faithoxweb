@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faithox | Review Moderation Engine</title>
+    <link rel="icon" href="https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/my-logo.png" sizes="any" type="image/png">
+    
+    <!-- Modern Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #0b0f19;
+            --bg-card: #111827;
+            --bg-card-hover: #162032;
+            --bg-secondary: #1f2937;
+            --border-color: #243042;
+            --border-light: #374151;
+            
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --text-dim: #6b7280;
+
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.12);
+            --success-border: rgba(16, 185, 129, 0.3);
+
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.12);
+            --warning-border: rgba(245, 158, 11, 0.3);
+
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.12);
+            --danger-border: rgba(239, 68, 68, 0.3);
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Navigation Header */
+        .top-navbar {
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-cluster {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .brand-title {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link-btn:hover {
+            color: #ffffff;
+            background: var(--bg-card-hover);
+            border-color: var(--border-light);
+        }
+
+        .btn-lock {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+            cursor: pointer;
+        }
+
+        .btn-lock:hover {
+            background: rgba(239, 68, 68, 0.3);
+            color: #ffffff;
+        }
+
+        /* Layout Container */
+        .main-wrapper {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 32px 24px 80px 24px;
+        }
+
+        /* Header Subtitle */
+        .page-header {
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header-left p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .live-pulse-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulseAnim 2s infinite;
+        }
+
+        @keyframes pulseAnim {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Top KPI Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-light);
+        }
+
+        .stat-card.warning-glow {
+            border-color: var(--warning-border);
+            background: linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, var(--bg-card) 100%);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-top: 4px;
+        }
+
+        .stat-desc {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        /* Controls, Filters & Search Bar */
+        .controls-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .tabs-list {
+            display: flex;
+            gap: 6px;
+            background: var(--bg-secondary);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: #ffffff;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(99, 102, 241, 0.35);
+        }
+
+        .tab-count {
+            background: rgba(255, 255, 255, 0.15);
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .filters-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            max-width: 600px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .search-box-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 9px 14px 9px 36px;
+            color: #ffffff;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            background: #172033;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            pointer-events: none;
+        }
+
+        .custom-select {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 9px 14px;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            min-width: 160px;
+        }
+
+        .refresh-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            border-radius: 10px;
+            padding: 9px 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            color: #ffffff;
+            background: var(--bg-card-hover);
+        }
+
+        /* Bulk Action Bar */
+        .bulk-bar {
+            display: none;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            align-items: center;
+            justify-content: space-between;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .bulk-bar.visible {
+            display: flex;
+        }
+
+        .bulk-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .bulk-actions-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Review Cards Feed */
+        .reviews-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .review-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .review-card:hover {
+            border-color: var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .review-card.status-pending {
+            border-left: 4px solid var(--warning);
+        }
+
+        .review-card.status-approved {
+            border-left: 4px solid var(--success);
+        }
+
+        .review-card.status-rejected {
+            border-left: 4px solid var(--danger);
+            opacity: 0.75;
+        }
+
+        .review-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .reviewer-info-cluster {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #374151, #1f2937);
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            color: #ffffff;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .reviewer-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reviewer-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .verified-badge {
+            color: var(--success);
+            display: inline-flex;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .reviewer-email {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 2px;
+            font-family: monospace;
+        }
+
+        .meta-tags-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .meta-pill {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .meta-pill.store-pill {
+            color: #93c5fd;
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.25);
+        }
+
+        .meta-pill.prod-pill {
+            color: #c4b5fd;
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.25);
+        }
+
+        .card-header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .status-badge {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-badge.pending {
+            background: var(--warning-bg);
+            color: var(--warning);
+            border: 1px solid var(--warning-border);
+        }
+
+        .status-badge.approved {
+            background: var(--success-bg);
+            color: var(--success);
+            border: 1px solid var(--success-border);
+        }
+
+        .status-badge.rejected {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid var(--danger-border);
+        }
+
+        .stars-row {
+            color: #fbbf24;
+            font-size: 15px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rating-number {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-left: 4px;
+            background: var(--bg-secondary);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        /* Review Content Box */
+        .review-text-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+        }
+
+        .review-body-text {
+            font-size: 15px;
+            color: #e2e8f0;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Customer Attached Photos */
+        .photos-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .photo-thumb-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .photo-thumb-wrapper:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary);
+        }
+
+        .photo-thumb-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .zoom-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            color: #ffffff;
+        }
+
+        .photo-thumb-wrapper:hover .zoom-overlay {
+            opacity: 1;
+        }
+
+        /* Card Action Buttons */
+        .card-actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .action-btns-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 9px 18px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-approve {
+            background: var(--success);
+            color: #ffffff;
+        }
+
+        .btn-approve:hover:not(:disabled) {
+            background: #059669;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-reject {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid var(--danger-border);
+        }
+
+        .btn-reject:hover:not(:disabled) {
+            background: var(--danger);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: var(--text-dim);
+            border: 1px solid transparent;
+            padding: 8px 12px;
+        }
+
+        .btn-delete:hover:not(:disabled) {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger-border);
+        }
+
+        /* Empty State */
+        .empty-state-box {
+            background: var(--bg-card);
+            border: 1px dashed var(--border-light);
+            border-radius: 20px;
+            padding: 60px 24px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .empty-sub {
+            font-size: 14px;
+            color: var(--text-muted);
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        /* Fullscreen Image Lightbox Modal */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 8, 16, 0.92);
+            backdrop-filter: blur(8px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .lightbox-modal.open {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .lightbox-content {
+            max-width: 90vw;
+            max-height: 85vh;
+            border-radius: 14px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            object-fit: contain;
+        }
+
+        .lightbox-close-btn {
+            position: absolute;
+            top: 24px;
+            right: 28px;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .lightbox-close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Master Security Lock Screen Overlay */
+        .security-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 15, 25, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .security-card {
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 440px;
+            padding: 40px 32px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(99, 102, 241, 0.15);
+            animation: scaleIn 0.3s ease;
+        }
+
+        .security-icon-circle {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            color: #818cf8;
+        }
+
+        .security-card h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .security-card p {
+            font-size: 14px;
+            color: #9ca3af;
+            line-height: 1.5;
+            margin-bottom: 28px;
+        }
+
+        .passkey-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .passkey-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .passkey-input {
+            width: 100%;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #ffffff;
+            font-size: 15px;
+            letter-spacing: 2px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .passkey-input:focus {
+            border-color: #6366f1;
+            background: #1a2333;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        }
+
+        .passkey-submit-btn {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .passkey-submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .passkey-error {
+            color: #ef4444;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+            margin-top: 8px;
+        }
+
+        .security-footer-badge {
+            margin-top: 24px;
+            font-size: 12px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* Toast Message */
+        .toast-msg {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            animation: slideUp 0.25s ease;
+        }
+
+        .toast-msg.show {
+            display: flex;
+        }
+
+        .toast-msg.success {
+            border-color: var(--success);
+            background: #064e3b;
+        }
+
+        .toast-msg.error {
+            border-color: var(--danger);
+            background: #7f1d1d;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .controls-panel { flex-direction: column; align-items: stretch; }
+            .filters-right { max-width: 100%; justify-content: stretch; }
+            .card-header-right { align-items: flex-start; }
+            .card-actions-bar { flex-direction: column; align-items: stretch; }
+            .action-btns-group { width: 100%; justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MASTER SECURITY GATE OVERLAY (ACTIVE UNTIL UNLOCKED) -->
+    <div class="security-overlay" id="security-gate">
+        <div class="security-card">
+            <div class="security-icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h2>Faithox Admin Security Gate</h2>
+            <p>This console is restricted to the platform owner. Enter your Master Admin Passkey to unlock review moderation.</p>
+
+            <form class="passkey-form" onsubmit="handlePasskeySubmit(event)">
+                <div class="passkey-input-wrapper">
+                    <input type="password" id="passkey-input" class="passkey-input" placeholder="••••••••" autocomplete="current-password" autofocus required>
+                </div>
+                <div class="passkey-error" id="passkey-error">Invalid Passkey. Access Denied.</div>
+                <button type="submit" class="passkey-submit-btn" id="unlock-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Unlock Moderation Console
+                </button>
+            </form>
+
+            <div class="security-footer-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Protected by Faithox Zero-Trust Authentication
+            </div>
+        </div>
+    </div>
+
+    <!-- TOP NAVIGATION -->
+    <nav class="top-navbar">
+        <div class="brand-cluster" onclick="window.location.href='index.html'">
+            <img src="https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/my-logo.png" alt="Faithox Logo" class="brand-logo">
+            <span class="brand-title">
+                FAITHOX <span class="brand-badge">MODERATION</span>
+            </span>
+        </div>
+
+        <div class="nav-actions">
+            <button class="nav-link-btn btn-lock" onclick="lockConsole()" title="Lock the console and clear active credentials">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Lock Console
+            </button>
+            <a href="dashboard.html" class="nav-link-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                Merchant Dashboard
+            </a>
+            <a href="index.html" class="nav-link-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Faithox Home
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN WRAPPER -->
+    <main class="main-wrapper" id="main-content" style="filter: blur(8px); pointer-events: none; transition: filter 0.3s ease;">
+        
+        <!-- HEADER -->
+        <header class="page-header">
+            <div class="header-left">
+                <h1>Review Moderation Center</h1>
+                <p>Thoroughly inspect incoming customer feedback &amp; photos before approving them to merchant storefronts.</p>
+            </div>
+            <div class="live-pulse-chip">
+                <span class="pulse-dot"></span>
+                <span>Live Moderation Pipeline Active</span>
+            </div>
+        </header>
+
+        <!-- KPI METRICS GRID -->
+        <section class="stats-grid">
+            <div class="stat-card warning-glow">
+                <div class="stat-label">
+                    <span>Awaiting Inspection</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div class="stat-value" id="count-pending" style="color: #f59e0b;">0</div>
+                <div class="stat-desc">New reviews waiting for your manual approval</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">
+                    <span>Live &amp; Approved</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div class="stat-value" id="count-approved" style="color: #10b981;">0</div>
+                <div class="stat-desc">Active reviews displaying on store websites &amp; widgets</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">
+                    <span>Rejected Content</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                </div>
+                <div class="stat-value" id="count-rejected" style="color: #ef4444;">0</div>
+                <div class="stat-desc">Blocked reviews hidden from public storefronts</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">
+                    <span>Total Evaluated</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </div>
+                <div class="stat-value" id="count-total">0</div>
+                <div class="stat-desc">Platform-wide customer review submissions</div>
+            </div>
+        </section>
+
+        <!-- CONTROLS & FILTER BAR -->
+        <section class="controls-panel">
+            <div class="tabs-list">
+                <button class="tab-btn active" id="tab-pending" onclick="setTab('pending')">
+                    Pending
+                    <span class="tab-count" id="tab-count-pending">0</span>
+                </button>
+                <button class="tab-btn" id="tab-approved" onclick="setTab('approved')">
+                    Approved
+                    <span class="tab-count" id="tab-count-approved">0</span>
+                </button>
+                <button class="tab-btn" id="tab-rejected" onclick="setTab('rejected')">
+                    Rejected
+                    <span class="tab-count" id="tab-count-rejected">0</span>
+                </button>
+                <button class="tab-btn" id="tab-all" onclick="setTab('all')">
+                    All
+                    <span class="tab-count" id="tab-count-all">0</span>
+                </button>
+            </div>
+
+            <div class="filters-right">
+                <select class="custom-select" id="store-selector" onchange="applyFilters()">
+                    <option value="all">All Merchant Stores</option>
+                </select>
+
+                <div class="search-box-wrapper">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="search-input" class="search-input" placeholder="Search author, email, or content..." oninput="debounceSearch()">
+                </div>
+
+                <button class="refresh-btn" onclick="fetchModerationData(true)" title="Reload latest reviews">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                    Refresh
+                </button>
+            </div>
+        </section>
+
+        <!-- BULK ACTIONS BAR (Shows when items are checked) -->
+        <section class="bulk-bar" id="bulk-bar">
+            <div class="bulk-left">
+                <input type="checkbox" id="select-all-box" onchange="toggleSelectAll(this.checked)" style="width: 18px; height: 18px; cursor: pointer;">
+                <span id="bulk-selection-count">0 reviews selected</span>
+            </div>
+            <div class="bulk-actions-group">
+                <button class="btn btn-approve" onclick="executeBulkAction('bulk_approve')">
+                    ✓ Approve Selected
+                </button>
+                <button class="btn btn-reject" onclick="executeBulkAction('bulk_reject')">
+                    ✕ Reject Selected
+                </button>
+            </div>
+        </section>
+
+        <!-- REVIEWS FEED LIST -->
+        <section class="reviews-feed" id="reviews-feed">
+            <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                <p>Awaiting authentication...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FULLSCREEN IMAGE LIGHTBOX MODAL -->
+    <div class="lightbox-modal" id="lightbox-modal" onclick="closeLightbox(event)">
+        <button class="lightbox-close-btn" onclick="closeLightbox()">&times;</button>
+        <img src="" alt="Enlarged Review Evidence" class="lightbox-content" id="lightbox-img">
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast-msg" id="toast-msg"></div>
+
+    <script>
+        // State management
+        let adminPasskey = sessionStorage.getItem('faithox_admin_passkey') || '';
+        let currentFilter = 'pending';
+        let currentStore = 'all';
+        let searchQuery = '';
+        let allLoadedReviews = [];
+        let selectedReviewIds = new Set();
+        let searchTimeout = null;
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (adminPasskey) {
+                unlockConsole();
+            } else {
+                showSecurityGate();
+            }
+        });
+
+        // Security Gate Functions
+        function showSecurityGate() {
+            document.getElementById('security-gate').style.display = 'flex';
+            const mainContent = document.getElementById('main-content');
+            mainContent.style.filter = 'blur(8px)';
+            mainContent.style.pointerEvents = 'none';
+            document.getElementById('passkey-input').value = '';
+            document.getElementById('passkey-input').focus();
+        }
+
+        async function handlePasskeySubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('passkey-input');
+            const entered = input.value.trim();
+            const errorBox = document.getElementById('passkey-error');
+            const submitBtn = document.getElementById('unlock-btn');
+
+            if (!entered) return;
+
+            errorBox.style.display = 'none';
+            submitBtn.innerText = "Verifying Key...";
+            submitBtn.disabled = true;
+
+            try {
+                // Test the key against backend API
+                const testUrl = new URL('/api/moderation', window.location.origin);
+                testUrl.searchParams.set('filter', 'pending');
+                testUrl.searchParams.set('limit', '1');
+
+                const res = await fetch(testUrl.toString(), {
+                    headers: { 'x-admin-key': entered }
+                });
+
+                const data = await res.json().catch(() => ({}));
+
+                if (res.status === 401) {
+                    errorBox.style.display = 'block';
+                    errorBox.innerText = data.error || "Access Denied: Incorrect Master Admin Passkey.";
+                    submitBtn.innerText = "Unlock Moderation Console";
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                if (!res.ok) {
+                    errorBox.style.display = 'block';
+                    errorBox.innerText = data.error || "Server Error: Could not verify passkey.";
+                    submitBtn.innerText = "Unlock Moderation Console";
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                // If authorized, save and unlock
+                adminPasskey = entered;
+                sessionStorage.setItem('faithox_admin_passkey', adminPasskey);
+                unlockConsole();
+                showToast("Console Unlocked. Welcome, Faithox Admin!", "success");
+
+            } catch (err) {
+                errorBox.style.display = 'block';
+                errorBox.innerText = "Network Error: Could not verify key.";
+            } finally {
+                submitBtn.innerText = "Unlock Moderation Console";
+                submitBtn.disabled = false;
+            }
+        }
+
+        function unlockConsole() {
+            document.getElementById('security-gate').style.display = 'none';
+            const mainContent = document.getElementById('main-content');
+            mainContent.style.filter = 'none';
+            mainContent.style.pointerEvents = 'auto';
+            fetchModerationData();
+        }
+
+        function lockConsole() {
+            sessionStorage.removeItem('faithox_admin_passkey');
+            adminPasskey = '';
+            showSecurityGate();
+            showToast("Moderation Console Locked.");
+        }
+
+        // Tab Switching
+        function setTab(filterName) {
+            currentFilter = filterName;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`tab-${filterName}`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            selectedReviewIds.clear();
+            updateBulkBar();
+            fetchModerationData();
+        }
+
+        // Store and Search Filters
+        function applyFilters() {
+            currentStore = document.getElementById('store-selector').value;
+            fetchModerationData();
+        }
+
+        function debounceSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchQuery = document.getElementById('search-input').value.trim();
+                renderReviewsList();
+            }, 250);
+        }
+
+        // Fetch Data from Serverless API with x-admin-key Header
+        async function fetchModerationData(isManualRefresh = false) {
+            if (!adminPasskey) {
+                showSecurityGate();
+                return;
+            }
+
+            const feed = document.getElementById('reviews-feed');
+            if (isManualRefresh) {
+                showToast("Refreshing review stream...");
+            }
+
+            try {
+                const url = new URL('/api/moderation', window.location.origin);
+                url.searchParams.set('filter', currentFilter);
+                if (currentStore && currentStore !== 'all') {
+                    url.searchParams.set('store', currentStore);
+                }
+
+                const res = await fetch(url.toString(), {
+                    headers: { 'x-admin-key': adminPasskey }
+                });
+
+                if (res.status === 401) {
+                    lockConsole();
+                    return;
+                }
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to load reviews');
+
+                // Update metric counters
+                if (data.counts) {
+                    document.getElementById('count-pending').innerText = data.counts.pending || 0;
+                    document.getElementById('count-approved').innerText = data.counts.approved || 0;
+                    document.getElementById('count-rejected').innerText = data.counts.rejected || 0;
+                    document.getElementById('count-total').innerText = data.counts.total || 0;
+
+                    document.getElementById('tab-count-pending').innerText = data.counts.pending || 0;
+                    document.getElementById('tab-count-approved').innerText = data.counts.approved || 0;
+                    document.getElementById('tab-count-rejected').innerText = data.counts.rejected || 0;
+                    document.getElementById('tab-count-all').innerText = data.counts.total || 0;
+                }
+
+                // Populate store selector dropdown once
+                if (data.stores && data.stores.length > 0) {
+                    populateStoreDropdown(data.stores);
+                }
+
+                allLoadedReviews = data.reviews || [];
+                renderReviewsList();
+
+            } catch (err) {
+                console.error("Moderation Fetch Error:", err);
+                feed.innerHTML = `
+                    <div class="empty-state-box">
+                        <div class="empty-icon">⚠️</div>
+                        <div class="empty-title">Error Loading Reviews</div>
+                        <div class="empty-sub">${escapeHTML(err.message)}</div>
+                        <button class="btn btn-approve" onclick="fetchModerationData()" style="margin-top: 16px;">Try Again</button>
+                    </div>
+                `;
+            }
+        }
+
+        function populateStoreDropdown(stores) {
+            const select = document.getElementById('store-selector');
+            const currentSelected = select.value;
+
+            select.innerHTML = '<option value="all">All Merchant Stores</option>';
+
+            stores.forEach(st => {
+                const opt = document.createElement('option');
+                opt.value = st;
+                opt.innerText = st;
+                if (st === currentSelected) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        // Render Reviews
+        function renderReviewsList() {
+            const feed = document.getElementById('reviews-feed');
+            
+            // Apply client-side search query
+            let reviews = allLoadedReviews;
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                reviews = reviews.filter(r => {
+                    const name = (r.reviewer_name || '').toLowerCase();
+                    const email = (r.reviewer_email || '').toLowerCase();
+                    const prod = (r.product_id || '').toLowerCase();
+                    const text = (r.comment || r.body || '').toLowerCase();
+                    const st = (r.store_id || '').toLowerCase();
+                    return name.includes(q) || email.includes(q) || prod.includes(q) || text.includes(q) || st.includes(q);
+                });
+            }
+
+            if (!reviews || reviews.length === 0) {
+                let msg = "No reviews found in this view.";
+                let title = "No Reviews";
+                if (currentFilter === 'pending') {
+                    title = "All Caught Up! 🎉";
+                    msg = "There are no pending reviews awaiting manual moderation. Every submission is clean and processed.";
+                } else if (currentFilter === 'rejected') {
+                    title = "No Blocked Reviews";
+                    msg = "No reviews have been rejected for explicit or inappropriate content.";
+                }
+
+                feed.innerHTML = `
+                    <div class="empty-state-box">
+                        <div class="empty-icon">🛡️</div>
+                        <div class="empty-title">${title}</div>
+                        <div class="empty-sub">${msg}</div>
+                    </div>
+                `;
+                return;
+            }
+
+            feed.innerHTML = reviews.map(r => {
+                const status = (r.status || 'approved').toLowerCase();
+                const reviewText = r.comment || r.body || '(No text provided)';
+                const rating = r.rating || 5;
+                const reviewerName = r.reviewer_name || 'Verified Customer';
+                const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                const timeStr = r.created_at ? new Date(r.created_at).toLocaleString() : 'Recently';
+
+                // Parse Photos safely
+                const photoUrls = extractPhotoUrls(r.photos);
+                const isChecked = selectedReviewIds.has(r.id);
+
+                return `
+                    <div class="review-card status-${status}" id="review-card-${r.id}">
+                        <div class="review-card-header">
+                            <div class="reviewer-info-cluster">
+                                <input type="checkbox" onchange="toggleSelectReview('${r.id}', this.checked)" ${isChecked ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer; margin-right: 4px;">
+                                <div class="avatar-circle">
+                                    ${r.avatar_url ? `<img src="${escapeHTML(r.avatar_url)}" alt="">` : initials}
+                                </div>
+                                <div class="reviewer-details">
+                                    <div class="reviewer-name">
+                                        ${escapeHTML(reviewerName)}
+                                        <span class="verified-badge">✓ Verified Buyer</span>
+                                    </div>
+                                    <div class="reviewer-email">${escapeHTML(r.reviewer_email || 'No email')}</div>
+                                    <div class="meta-tags-row">
+                                        <span class="meta-pill store-pill">Store: ${escapeHTML(r.store_id || 'Global')}</span>
+                                        <span class="meta-pill prod-pill">Product: ${escapeHTML(r.product_id || 'N/A')}</span>
+                                        <span class="meta-pill">📅 ${timeStr}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-header-right">
+                                <span class="status-badge ${status}">
+                                    ${status === 'pending' ? '⏳ Pending Review' : (status === 'rejected' ? '✕ Blocked' : '✓ Approved & Live')}
+                                </span>
+                                <div class="stars-row">
+                                    ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}
+                                    <span class="rating-number">${rating}/5</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Review Body -->
+                        <div class="review-text-container">
+                            <p class="review-body-text">${escapeHTML(reviewText)}</p>
+                        </div>
+
+                        <!-- Attached Evidence Photos -->
+                        ${photoUrls.length > 0 ? `
+                            <div style="margin-bottom: 8px;">
+                                <span style="font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">
+                                    Attached Media (${photoUrls.length}) — Click to Inspect Fullscreen
+                                </span>
+                                <div class="photos-gallery" style="margin-top: 8px;">
+                                    ${photoUrls.map(url => `
+                                        <div class="photo-thumb-wrapper" onclick="openLightbox('${url}')">
+                                            <img src="${url}" alt="Customer photo proof" loading="lazy">
+                                            <div class="zoom-overlay">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <!-- Action Controls -->
+                        <div class="card-actions-bar">
+                            <div style="font-size: 12px; color: var(--text-dim);">
+                                ID: <span style="font-family: monospace;">${r.id}</span>
+                            </div>
+
+                            <div class="action-btns-group">
+                                ${status !== 'approved' ? `
+                                    <button class="btn btn-approve" onclick="performAction('approve', '${r.id}')" id="btn-approve-${r.id}">
+                                        ✓ Approve &amp; Post to Store
+                                    </button>
+                                ` : ''}
+
+                                ${status !== 'rejected' ? `
+                                    <button class="btn btn-reject" onclick="performAction('reject', '${r.id}')" id="btn-reject-${r.id}">
+                                        ✕ Reject (Explicit / Inappropriate)
+                                    </button>
+                                ` : ''}
+
+                                <button class="btn btn-delete" onclick="performAction('delete', '${r.id}')" title="Permanently delete record">
+                                    🗑 Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Photo URL Parser
+        function extractPhotoUrls(photosData) {
+            if (!photosData) return [];
+            try {
+                if (Array.isArray(photosData)) return photosData.filter(u => typeof u === 'string' && u.startsWith('http'));
+                if (typeof photosData === 'string') {
+                    const trimmed = photosData.trim();
+                    if (trimmed.startsWith('[')) {
+                        return JSON.parse(trimmed).filter(u => typeof u === 'string' && u.startsWith('http'));
+                    } else if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                        return trimmed.slice(1, -1).split(',').map(s => s.replace(/^"|"$/g, '').trim()).filter(u => u.startsWith('http'));
+                    } else if (trimmed.startsWith('http')) {
+                        return [trimmed];
+                    } else {
+                        const matches = photosData.match(/https?:\/\/[^\s"\]}]+/g);
+                        if (matches) return matches;
+                    }
+                }
+            } catch (e) {
+                console.warn("Photo parsing note:", e);
+            }
+            return [];
+        }
+
+        // Single Moderation Action
+        async function performAction(action, reviewId) {
+            if (action === 'delete') {
+                if (!confirm("Are you sure you want to permanently delete this review?")) return;
+            }
+
+            const btn = document.getElementById(`btn-${action}-${reviewId}`);
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = "Processing...";
+            }
+
+            try {
+                const res = await fetch('/api/moderation', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-admin-key': adminPasskey
+                    },
+                    body: JSON.stringify({ action, reviewId })
+                });
+
+                if (res.status === 401) {
+                    lockConsole();
+                    return;
+                }
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to update review');
+
+                showToast(data.message || 'Updated successfully!', 'success');
+                await fetchModerationData();
+
+            } catch (err) {
+                console.error("Action error:", err);
+                showToast(err.message, 'error');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = action === 'approve' ? '✓ Approve' : '✕ Reject';
+                }
+            }
+        }
+
+        // Selection & Bulk Actions
+        function toggleSelectReview(id, isChecked) {
+            if (isChecked) selectedReviewIds.add(id);
+            else selectedReviewIds.delete(id);
+            updateBulkBar();
+        }
+
+        function toggleSelectAll(isChecked) {
+            if (isChecked) {
+                allLoadedReviews.forEach(r => selectedReviewIds.add(r.id));
+            } else {
+                selectedReviewIds.clear();
+            }
+            renderReviewsList();
+            updateBulkBar();
+        }
+
+        function updateBulkBar() {
+            const bar = document.getElementById('bulk-bar');
+            const countLabel = document.getElementById('bulk-selection-count');
+            const count = selectedReviewIds.size;
+
+            if (count > 0) {
+                bar.classList.add('visible');
+                countLabel.innerText = `${count} review${count > 1 ? 's' : ''} selected`;
+            } else {
+                bar.classList.remove('visible');
+            }
+        }
+
+        async function executeBulkAction(action) {
+            const ids = Array.from(selectedReviewIds);
+            if (ids.length === 0) return;
+
+            const actionLabel = action === 'bulk_approve' ? 'approve' : 'reject';
+            if (!confirm(`Are you sure you want to ${actionLabel} ${ids.length} selected reviews?`)) return;
+
+            try {
+                const res = await fetch('/api/moderation', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-admin-key': adminPasskey
+                    },
+                    body: JSON.stringify({ action, reviewIds: ids })
+                });
+
+                if (res.status === 401) {
+                    lockConsole();
+                    return;
+                }
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Bulk action failed');
+
+                showToast(data.message || 'Bulk update complete!', 'success');
+                selectedReviewIds.clear();
+                updateBulkBar();
+                await fetchModerationData();
+
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        // Lightbox Zoom
+        function openLightbox(url) {
+            const modal = document.getElementById('lightbox-modal');
+            const img = document.getElementById('lightbox-img');
+            img.src = url;
+            modal.classList.add('open');
+        }
+
+        function closeLightbox(e) {
+            if (!e || e.target.id === 'lightbox-modal' || e.target.classList.contains('lightbox-close-btn')) {
+                document.getElementById('lightbox-modal').classList.remove('open');
+            }
+        }
+
+        // Toast Messages
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast-msg');
+            toast.innerText = message;
+            toast.className = `toast-msg show ${type}`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+
+        // Helper: escape HTML
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[tag]));
+        }
+    </script>
+</body>
+</html>

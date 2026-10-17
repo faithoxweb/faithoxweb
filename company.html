@@ -1335,17 +1335,27 @@
         }
 
         async function loadReviews(exactUuid, exactName) {
-            // First we try to grab reviews strictly linked to the UUID
-            let { data: reviews } = await db.from('reviews')
+            // First we try to grab approved reviews strictly linked to the UUID
+            let { data: reviews, error: revError } = await db.from('reviews')
                 .select('*')
                 .eq('product_id', exactUuid) 
+                .or('status.eq.approved,status.is.null')
                 .order('created_at', { ascending: false });
+
+            if (revError && revError.message && revError.message.includes('status')) {
+                const fallback = await db.from('reviews')
+                    .select('*')
+                    .eq('product_id', exactUuid) 
+                    .order('created_at', { ascending: false });
+                reviews = fallback.data;
+            }
 
             // Fallback: If reviews were accidentally saved under the product's text name instead of the UUID, fetch those
             if (!reviews || reviews.length === 0) {
                 const { data: nameReviews } = await db.from('reviews')
                     .select('*')
                     .ilike('product_id', exactName) 
+                    .or('status.eq.approved,status.is.null')
                     .order('created_at', { ascending: false });
                 reviews = nameReviews;
             }

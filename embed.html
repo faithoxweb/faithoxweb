@@ -386,12 +386,24 @@
                 return;
             }
 
-            const { data: reviews, error } = await db
+            let { data: reviews, error } = await db
                 .from('reviews')
                 .select('*')
                 .eq('product_id', productId) 
+                .or('status.eq.approved,status.is.null')
                 .order('created_at', { ascending: false })
                 .limit(10);
+
+            if (error && error.message && error.message.includes('status')) {
+                const fallback = await db
+                    .from('reviews')
+                    .select('*')
+                    .eq('product_id', productId)
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+                reviews = fallback.data;
+                error = fallback.error;
+            }
 
             if (error || !reviews || reviews.length === 0) {
                 list.innerHTML = "<p style='text-align:center; color:#64748b; font-size:13px; padding: 20px; font-weight: 500;'>No reviews yet. Be the first to review!</p>";

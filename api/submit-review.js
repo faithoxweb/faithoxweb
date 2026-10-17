@@ -41,19 +41,30 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'This review link has already been used.' });
         }
 
-        // 3. Insert Review Securely
-        const { error: insertError } = await supabaseAdmin
+        // 3. Insert Review Securely (Marked as pending for admin moderation)
+        const reviewPayload = {
+            store_id: tokenData.store_id,
+            product_id: tokenData.product_id,
+            reviewer_name: guestName || "Verified Buyer",
+            reviewer_email: tokenData.buyer_email,
+            comment: reviewText,
+            rating: parseInt(rating),
+            token: token,
+            photos: photoUrlsArray,
+            status: 'pending'
+        };
+
+        let { error: insertError } = await supabaseAdmin
             .from('reviews')
-            .insert([{
-                store_id: tokenData.store_id,
-                product_id: tokenData.product_id,
-                reviewer_name: guestName || "Verified Buyer",
-                reviewer_email: tokenData.buyer_email,
-                comment: reviewText,
-                rating: parseInt(rating),
-                token: token,
-                photos: photoUrlsArray
-            }]);
+            .insert([reviewPayload]);
+
+        // Graceful fallback if status column has not been added to Supabase yet
+        if (insertError && insertError.message && insertError.message.includes('status')) {
+            console.warn('⚠️ "status" column missing in reviews table, inserting without status:', insertError.message);
+            delete reviewPayload.status;
+            const retry = await supabaseAdmin.from('reviews').insert([reviewPayload]);
+            insertError = retry.error;
+        }
 
         if (insertError) throw insertError;
 

@@ -27,11 +27,24 @@ export default async function handler(req, res) {
     }
 
     try {
-        // 3. Fetch reviews for this specific product
-        const { data, error } = await supabase
+        // 3. Fetch approved reviews for this specific product
+        let query = supabase
             .from('reviews')
             .select('*')
-            .eq('product_id', product_id);
+            .eq('product_id', product_id)
+            .or('status.eq.approved,status.is.null');
+
+        let { data, error } = await query;
+
+        // Graceful fallback if status column has not been added to Supabase yet
+        if (error && error.message && error.message.includes('status')) {
+            const fallback = await supabase
+                .from('reviews')
+                .select('*')
+                .eq('product_id', product_id);
+            data = fallback.data;
+            error = fallback.error;
+        }
 
         if (error) throw error;
 
