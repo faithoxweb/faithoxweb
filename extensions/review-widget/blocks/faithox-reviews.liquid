@@ -3,74 +3,82 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <div class="faithox-widget-root" id="faithox-widget-{{ block.id }}">
-    <div class="widget-wrapper">
-        
-        <!-- NEW PRODUCT INFO BOX SECTION -->
-        <div class="hole-info-box" id="embed-info-box-{{ block.id }}">
-            <div class="hole-info-text-col">
-                <span id="top-left-brand-{{ block.id }}" style="font-size: 14px; font-weight: 600; color: #1e293b; z-index: 20; display: block;"></span>
-                <div class="title-container"><h1 id="dynamic-company-name-{{ block.id }}" class="skeleton-anim sk-title"></h1></div>
-                
-                <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px;">
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <div class="product-exact-rating-row skeleton-anim skel-exact-rating" id="exact-rating-box-{{ block.id }}">
-                            <div id="exact-stars-container-{{ block.id }}" class="stars-container-flex"></div><span id="exact-rating-text-{{ block.id }}">0.0</span>
-                        </div>
-                        
-                        <div class="top-review-count-badge skeleton-anim skel-exact-rating" id="top-review-count-badge-{{ block.id }}">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                            <span id="top-review-count-text-{{ block.id }}">0 reviews</span>
-                        </div>
-
-                        <div class="top-review-count-badge skeleton-anim skel-exact-rating" id="trust-score-badge-{{ block.id }}" style="border-color: #3b82f6;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                            <span id="trust-score-text-{{ block.id }}" style="color: #1d4ed8;">Trust Score: --</span>
-                        </div>
-
-                        <div class="top-review-count-badge skeleton-anim skel-exact-rating" id="velocity-badge-{{ block.id }}" style="border-color: #8b5cf6;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                            <span id="velocity-text-{{ block.id }}" style="color: #5b21b6;">-- recent</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="widget-wrapper">
+        <div class="faithox-2col-layout">
             
-            <div class="top-rating-square skeleton-anim skel-rating-square" id="rating-square-box-{{ block.id }}">
-                <div class="top-rating-square-header">Rating Breakdown</div>
-                <div class="rating-overview">
-                    <div class="big-rating">
-                        <div class="big-rating-val" id="big-rating-val-{{ block.id }}">—</div>
-                        <div class="big-rating-stars" id="big-rating-stars-{{ block.id }}"></div>
-                        <div class="big-rating-count" id="big-rating-count-{{ block.id }}">0 reviews</div>
+            <!-- LEFT COLUMN: Rating Breakdown (top) + Product Details (bottom) -->
+            <div class="faithox-left-col">
+                <!-- 1. Star Rating Breakdown Box -->
+                <div class="top-rating-square skeleton-anim skel-rating-square" id="rating-square-box-{{ block.id }}">
+                    <div class="top-rating-square-header">Rating Breakdown</div>
+                    <div class="rating-overview">
+                        <div class="big-rating">
+                            <div class="big-rating-val" id="big-rating-val-{{ block.id }}">—</div>
+                            <div class="big-rating-stars" id="big-rating-stars-{{ block.id }}"></div>
+                            <div class="big-rating-count" id="big-rating-count-{{ block.id }}">0 reviews</div>
+                        </div>
+                        <div class="rating-bars" id="rating-bars-{{ block.id }}"></div>
                     </div>
-                    <div class="rating-bars" id="rating-bars-{{ block.id }}"></div>
                 </div>
-            </div>
-        </div>
-        <!-- END PRODUCT INFO BOX SECTION -->
 
-        <div class="reviews-scroll-container" id="widget-reviews-list-{{ block.id }}">
-            <p style="text-align:center; color:#64748b; font-size:13px; padding: 20px; font-weight: 500;">Loading reviews...</p>
-        </div>
-        
-        <div class="widget-footer">
-            <div class="faithox-branding">Powered by Faithox</div>
-            <div class="footer-actions">
-                <div class="carousel-controls" id="carousel-controls-{{ block.id }}" style="display: none;">
-                    <button class="scroll-btn left-btn" onclick="scrollWidgetReviews(-1, '{{ block.id }}')" id="btn-left-{{ block.id }}" disabled>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                    </button>
-                    <button class="scroll-btn right-btn" onclick="scrollWidgetReviews(1, '{{ block.id }}')" id="btn-right-{{ block.id }}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
+                <!-- 2. Product Details Box -->
+                <div class="hole-info-box" id="embed-info-box-{{ block.id }}">
+                    <div class="hole-info-text-col">
+                        <span id="top-left-brand-{{ block.id }}" style="font-size: 14px; font-weight: 600; color: #1e293b; z-index: 20; display: block;"></span>
+                        <div class="title-container"><h1 id="dynamic-company-name-{{ block.id }}" class="skeleton-anim sk-title"></h1></div>
+                        
+                        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                <div class="product-exact-rating-row skeleton-anim skel-exact-rating" id="exact-rating-box-{{ block.id }}">
+                                    <div id="exact-stars-container-{{ block.id }}" class="stars-container-flex"></div><span id="exact-rating-text-{{ block.id }}">0.0</span>
+                                </div>
+                                
+                                <div class="top-review-count-badge skeleton-anim skel-exact-rating" id="top-review-count-badge-{{ block.id }}">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                                    <span id="top-review-count-text-{{ block.id }}">0 reviews</span>
+                                </div>
+
+                                <div class="top-review-count-badge skeleton-anim skel-exact-rating" id="trust-score-badge-{{ block.id }}" style="border-color: #3b82f6;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                    <span id="trust-score-text-{{ block.id }}" style="color: #1d4ed8;">Trust Score: --</span>
+                                </div>
+
+                                <div class="top-review-count-badge skeleton-anim skel-exact-rating" id="velocity-badge-{{ block.id }}" style="border-color: #8b5cf6;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                                    <span id="velocity-text-{{ block.id }}" style="color: #5b21b6;">-- recent</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <a id="see-more-link-{{ block.id }}" href="#" target="_blank" class="see-more-btn" style="display: none;">
-                    Read all reviews
-                </a>
             </div>
+
+            <!-- RIGHT COLUMN: Reviews Cards + Carousel Controls -->
+            <div class="faithox-right-col">
+                <div class="reviews-scroll-container" id="widget-reviews-list-{{ block.id }}">
+                    <p style="text-align:center; color:#64748b; font-size:13px; padding: 20px; font-weight: 500;">Loading reviews...</p>
+                </div>
+                
+                <div class="widget-footer">
+                    <div class="faithox-branding">Powered by Faithox</div>
+                    <div class="footer-actions">
+                        <div class="carousel-controls" id="carousel-controls-{{ block.id }}" style="display: none;">
+                            <button class="scroll-btn left-btn" onclick="scrollWidgetReviews(-1, '{{ block.id }}')" id="btn-left-{{ block.id }}" disabled>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </button>
+                            <button class="scroll-btn right-btn" onclick="scrollWidgetReviews(1, '{{ block.id }}')" id="btn-right-{{ block.id }}">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </button>
+                        </div>
+                        <a id="see-more-link-{{ block.id }}" href="#" target="_blank" class="see-more-btn" style="display: none;">
+                            Read all reviews
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-</div>
 
 <style>
 /* 1. Reset scoped ONLY to your widget to prevent Shopify theme bleed */
@@ -112,6 +120,36 @@
     box-shadow: none !important;
 }
 
+/* 2-Column layout */
+#faithox-widget-{{ block.id }} .faithox-2col-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: flex-start;
+    width: 100%;
+}
+#faithox-widget-{{ block.id }} .faithox-left-col {
+    width: 340px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+#faithox-widget-{{ block.id }} .faithox-right-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+@media (max-width: 900px) {
+    #faithox-widget-{{ block.id }} .faithox-2col-layout {
+        flex-direction: column;
+    }
+    #faithox-widget-{{ block.id }} .faithox-left-col {
+        width: 100%;
+    }
+}
+
 /* --- NEW STYLES FOR PRODUCT INFO BOX --- */
 #faithox-widget-{{ block.id }} .hole-info-box {
     background: #fdfdfd; border-radius: 24px; display: flex; flex-direction: row;
@@ -150,7 +188,7 @@
 #faithox-widget-{{ block.id }} [id^="dynamic-company-link-"]:hover { border-color: #2a2a2a; }
 
 #faithox-widget-{{ block.id }} .top-rating-square {
-    width: 350px; max-height: 200px; background: #f0f1f1; border-radius: 16px; display: flex; flex-direction: column;
+    width: 100px; max-height: 200px; background: #f0f1f1; border-radius: 16px; display: flex; flex-direction: column;
     justify-content: center; padding: 22px; flex-shrink: 0; 
 }
 #faithox-widget-{{ block.id }} .top-rating-square-header { font-size: 12px; font-weight: 800; color: #2a2a2a; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 16px; }
@@ -202,7 +240,8 @@
     background: #fdfdfd !important; 
     border-radius: 32px !important; 
     padding: 24px !important; 
-    width: 380px !important; 
+    width: calc(25% - 8px) !important;
+    min-width: 250px !important; 
     height: 200px !important; 
     flex-shrink: 0 !important; 
     transition: all 0.1s ease !important; 
@@ -282,9 +321,9 @@
 
         // Carousel Global Functions
         window.scrollWidgetReviews = function(direction, bId) {
-            const carousel = document.getElementById(`widget-reviews-list-${bId}`);
-            if(carousel) carousel.scrollBy({ left: direction * 1170, behavior: 'smooth' });
-        };
+        const carousel = document.getElementById(`widget-reviews-list-${bId}`);
+        if(carousel) carousel.scrollBy({ left: direction * carousel.clientWidth, behavior: 'smooth' });
+          };
 
         function updateWidgetCarouselUI() {
             const btnLeft = document.getElementById(`btn-left-${blockId}`);
