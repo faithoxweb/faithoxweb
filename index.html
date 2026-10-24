@@ -16,6 +16,7 @@
     /* --- 1. BASE STYLES --- */
     html {
       overflow-y: scroll; 
+      overflow-x: hidden;
     }
     
     * { 
@@ -522,7 +523,7 @@
       margin: 0;
     } 
 
-        /* --- SEARCH HISTORY STYLES --- */
+    /* --- SEARCH HISTORY STYLES --- */
     .history-section {
       padding: 10px 16px 15px 16px;
       margin-bottom: 5px;
@@ -602,7 +603,6 @@
       border-radius: 11px !important;
       padding: 12px 30px 12px 40px !important;
       font-size: 15px !important;
-      
     }
 
     .search-container.active .search-bar::placeholder { 
@@ -658,9 +658,9 @@
       overflow-y: auto; 
       overflow-x: hidden; 
   
-  margin-top: 0; 
-  padding: 10px 0 8px 0;  
-}
+      margin-top: 0; 
+      padding: 10px 0 8px 0;  
+    }
 
     .search-container.active .results-dropdown { 
       display: block; 
@@ -1181,7 +1181,7 @@
       align-items: center; 
     }
 
-   /* --- PROFESSIONAL FOOTER --- */
+    /* --- PROFESSIONAL FOOTER --- */
     .pro-footer { 
       width: 100%; 
       max-width: 100%; 
@@ -1247,6 +1247,8 @@
       position: fixed; 
       top: 0; 
       left: 0; 
+      right: 0;
+      bottom: 0;
       width: 100%; 
       height: 100%; 
       background: rgba(0, 0, 0, 0.4); 
@@ -1385,8 +1387,34 @@
       50% { transform: translateX(-50%) translate(0, -18px) rotate(-3deg); }
     }
 
-    /* --- RESPONSIVE STYLES --- */
-    @media (max-width: 900px) {
+    /* --- LOCKED DESKTOP CANVAS (> 768px) --- */
+    @media (min-width: 769px) {
+      body {
+        width: 1518px;
+      }
+      .floating-hero-bg.side {
+        width: 315px;
+        min-width: 315px;
+        max-width: 315px;
+        flex: 0 0 315px;
+      }
+      .floating-hero-bg.center {
+        width: 820px;
+        min-width: 820px;
+        max-width: 820px;
+        flex: 0 0 820px;
+      }
+      .scrolling-reviews-container {
+        width: 1518px;
+      }
+      .business-banner {
+        width: 1465px;
+        max-width: 1465px;
+      }
+    }
+
+    /* --- MOBILE VIEW (<= 768px) --- */
+    @media (max-width: 768px) {
       .business-banner { 
         flex-direction: column; 
         padding: 60px 30px; 
@@ -1411,9 +1439,7 @@
         justify-content: center; 
         flex-wrap: wrap; 
       }
-    }
 
-    @media (max-width: 768px) {
       .floating-hero-wrapper {
         top: 55px;
         left: 12px;
@@ -1467,7 +1493,6 @@
       .bb-btn, .bb-btn-secondary { width: 100%; justify-content: center; padding: 14px 35px; font-size: 15px; }
       
       /* Footer Mobile */
-      /* Footer Responsive */
       .pro-footer { margin-top: 30px; padding: 40px 0 20px; }
       .footer-wrapper { padding: 0 16px; }
       .footer-top { display: flex; flex-direction: column; gap: 32px; padding-bottom: 30px; }
@@ -1536,6 +1561,30 @@
   </style>
 </head>
 <body>
+  <script>
+    // --- DESKTOP FIXED-LAYOUT SCALING CONTROLLER (> 768px) ---
+    (function() {
+      const DESKTOP_BASE_WIDTH = 1518; // 24px + 315px + 10px + 820px + 10px + 315px + 24px
+      const mobileQuery = window.matchMedia('(max-width: 768px)');
+
+      function syncPageScale() {
+        if (!document.body) return;
+        if (mobileQuery.matches) {
+          document.body.style.width = '100%';
+          document.body.style.zoom = '1';
+        } else {
+          const clientWidth = document.documentElement.clientWidth || window.innerWidth;
+          document.body.style.width = DESKTOP_BASE_WIDTH + 'px';
+          document.body.style.zoom = clientWidth / DESKTOP_BASE_WIDTH;
+        }
+      }
+
+      syncPageScale();
+      window.addEventListener('resize', syncPageScale);
+      window.addEventListener('DOMContentLoaded', syncPageScale);
+      window.addEventListener('load', syncPageScale);
+    })();
+  </script>
   
   <div class="floating-hero-wrapper">
     <div class="floating-hero-bg side left-feature-box">
@@ -2424,7 +2473,7 @@
 
     const searchIconSVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2a2a2a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`;
 
-        // Convert trending items into an array to dynamically select how many are needed
+    // Convert trending items into an array to dynamically select how many are needed
     const trendingItems = [
       `
       <div class="result-item" onclick="navigateTo('#')">
@@ -2637,7 +2686,7 @@
           resultsBox.insertAdjacentHTML('afterbegin', '<div id="live-dropdown-loader" class="dropdown-loader-bar active"><div class="loader-fill"></div></div>');
         }
         
-                searchTimeout = setTimeout(async () => {
+        searchTimeout = setTimeout(async () => {
           // LIVE SUPABASE QUERY FOR BOTH PRODUCTS AND STORES!
           const [productsRes, storesRes] = await Promise.all([
             db.from('products')
@@ -2701,8 +2750,7 @@
 
               const subtitleHtml = item.subtitle ? `<span style="font-size: 12px; color: #64748b; font-weight: 500; line-height: 1;">( ${escapeHTML(item.subtitle)} )</span>` : '';
               
-
-             // NEW: Create a safe string to save to history without breaking Javascript
+              // NEW: Create a safe string to save to history without breaking Javascript
               const safeNameForJS = item.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
               
               newHTML += `
