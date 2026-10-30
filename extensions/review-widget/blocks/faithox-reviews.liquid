@@ -12,7 +12,13 @@
 
           <!-- 1. Star Rating Breakdown Section -->
           <div class="top-rating-square skeleton-anim skel-rating-square" id="rating-square-box-{{ block.id }}">
-            <div class="top-rating-square-header">Rating Breakdown</div>
+            <div class="top-rating-square-header-row">
+              <span class="top-rating-square-header">Rating Breakdown</span>
+              <span class="faithox-audit-mini-tag">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                Verified Metrics
+              </span>
+            </div>
             <div class="rating-overview">
               <div class="big-rating">
                 <div class="big-rating-val" id="big-rating-val-{{ block.id }}">—</div>
@@ -34,7 +40,7 @@
               </div>
 
               <div class="faithox-badges-wrapper">
-                <div class=" product-exact-rating-row skeleton-anim skel-exact-rating" id="exact-rating-box-{{ block.id }}">
+                <div class="product-exact-rating-row skeleton-anim skel-exact-rating" id="exact-rating-box-{{ block.id }}">
                   <div id="exact-stars-container-{{ block.id }}" class="stars-container-flex"></div>
                   <span id="exact-rating-text-{{ block.id }}">0.0</span>
                 </div>
@@ -67,28 +73,80 @@
         </div>
       </div>
 
-      <!-- REVIEWS COLUMN: Review Cards + Carousel Controls -->
+      <!-- REVIEWS COLUMN: Trust Header + Centered Review Cards + Verification Footer -->
       <div class="faithox-right-col">
+
+        <!-- TOP TRUST & MODERATION HEADER -->
+        <div class="faithox-reviews-header">
+          <div class="faithox-header-titles">
+            <div class="faithox-header-title-row">
+              <h2 class="faithox-section-heading">Verified Customer Reviews</h2>
+              <span class="faithox-live-dot" title="Live verified feed"></span>
+            </div>
+            <p class="faithox-section-subheading">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <polyline points="9 12 11 14 15 10"></polyline>
+              </svg>
+              <span>Moderated by <strong>Faithox</strong> • Controlled by none</span>
+            </p>
+          </div>
+
+          <div class="faithox-trust-pills">
+            <div class="faithox-trust-pill">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>Tamper-Proof</span>
+            </div>
+            <div class="faithox-trust-pill faithox-pill-green">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>100% Unfiltered</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MIDDLE: EXACT 380x200 REVIEW CARDS CAROUSEL -->
         <div class="reviews-scroll-container" id="widget-reviews-list-{{ block.id }}">
           <div class="faithox-empty-state">Loading reviews...</div>
         </div>
 
+        <!-- BOTTOM: FOOTER BAR WITH TRANSPARENCY STATEMENT & CONTROLS -->
         <div class="widget-footer">
-          <div class="faithox-branding">Powered by Faithox</div>
+          <div class="faithox-footer-left">
+            <div class="faithox-branding-badge">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+              <span>POWERED BY FAITHOX</span>
+            </div>
+            <span class="faithox-footer-divider">•</span>
+            <span class="faithox-Zero-edit-note">Merchants cannot edit, hide, or delete authentic reviews</span>
+          </div>
+
           <div class="footer-actions">
             <div class="carousel-controls" id="carousel-controls-{{ block.id }}" style="display: none;">
               <button type="button" class="scroll-btn left-btn" onclick="scrollWidgetReviews(-1, '{{ block.id }}')" id="btn-left-{{ block.id }}" aria-label="Previous reviews" disabled>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
               </button>
+              <div class="carousel-indicator" id="carousel-indicator-{{ block.id }}">1 / 1</div>
               <button type="button" class="scroll-btn right-btn" onclick="scrollWidgetReviews(1, '{{ block.id }}')" id="btn-right-{{ block.id }}" aria-label="Next reviews">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </button>
             </div>
             <a id="see-more-link-{{ block.id }}" href="#" target="_blank" rel="noopener noreferrer" class="see-more-btn" style="display: none;">
-              Read all reviews
+              <span>Read all reviews</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 5px;">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
             </a>
           </div>
         </div>
+
       </div>
 
     </div>
@@ -136,14 +194,13 @@
 #faithox-widget-{{ block.id }} .faithox-2col-layout {
   display: flex;
   flex-direction: {% if block.settings.layout_direction == 'reviews_left' %}row-reverse{% else %}row{% endif %};
-  gap: 20px;
+  gap: 24px;
   align-items: stretch;
   width: 100%;
   max-width: {{ block.settings.widget_width | default: 1200 }}px;
   margin: 0 auto !important;
 }
 
-/* When widget_width is set to max (1200), allow full inner width so edge-to-edge feel stays intact */
 {% if block.settings.widget_width == 1200 or block.settings.widget_width == blank %}
 #faithox-widget-{{ block.id }} .faithox-2col-layout {
   max-width: 100%;
@@ -163,13 +220,13 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
 }
 
 /* 4. Unified Box (Rating Breakdown + Product Details) */
 #faithox-widget-{{ block.id }} .faithox-unified-box {
   background: #fdfdfd;
-  border-radius: 28px;
+  border-radius: 32px;
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -199,13 +256,32 @@
   flex-shrink: 0;
 }
 
+#faithox-widget-{{ block.id }} .top-rating-square-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
 #faithox-widget-{{ block.id }} .top-rating-square-header {
   font-size: 11px;
   font-weight: 800;
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  margin-bottom: 12px;
+}
+
+#faithox-widget-{{ block.id }} .faithox-audit-mini-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #059669;
+  background: #ecfdf5;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.2px;
 }
 
 #faithox-widget-{{ block.id }} .rating-overview {
@@ -458,15 +534,102 @@
   visibility: hidden !important;
 }
 
-/* 6. Review Cards Carousel */
+/* 6. Right Column Top Header (Trust & Moderation Banner) */
+#faithox-widget-{{ block.id }} .faithox-reviews-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #fdfdfd;
+  padding: 14px 22px;
+  border-radius: 22px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.02);
+  flex-shrink: 0;
+}
+
+#faithox-widget-{{ block.id }} .faithox-header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+#faithox-widget-{{ block.id }} .faithox-header-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#faithox-widget-{{ block.id }} .faithox-section-heading {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  color: #1e293b !important;
+  letter-spacing: -0.3px !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+}
+
+#faithox-widget-{{ block.id }} .faithox-live-dot {
+  width: 7px;
+  height: 7px;
+  background: #10B981;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+}
+
+#faithox-widget-{{ block.id }} .faithox-section-subheading {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #64748b !important;
+  line-height: 1.3 !important;
+  margin: 0 !important;
+}
+
+#faithox-widget-{{ block.id }} .faithox-section-subheading strong {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+#faithox-widget-{{ block.id }} .faithox-trust-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+#faithox-widget-{{ block.id }} .faithox-trust-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 11px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+  white-space: nowrap;
+}
+
+#faithox-widget-{{ block.id }} .faithox-trust-pill.faithox-pill-green {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #15803d;
+}
+
+/* 7. Review Cards Carousel (Centered with Equal Vertical Space) */
 #faithox-widget-{{ block.id }} .reviews-scroll-container {
   flex: 1;
   overflow-x: auto;
   overflow-y: hidden;
   display: flex;
   flex-direction: row;
-  align-items: stretch;
-  gap: 14px;
+  align-items: center; /* Leaves equal gap above and below the 200px cards */
+  padding: 4px 0;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -478,9 +641,9 @@
 
 #faithox-widget-{{ block.id }} .faithox-empty-state {
   width: 100%;
-  min-height: 215px;
+  height: 200px;
   background: #fdfdfd;
-  border-radius: 28px;
+  border-radius: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -491,134 +654,128 @@
   font-weight: 500;
 }
 
-#faithox-widget-{{ block.id }} .review-item-main {
-  background: #fdfdfd !important;
-  border-radius: 28px !important;
-  padding: 22px !important;
-  width: calc(33.333% - 10px) !important;
-  min-width: 280px !important;
-  min-height: 215px !important;
-  height: auto !important;
-  flex-shrink: 0 !important;
-  transition: background 0.15s ease, transform 0.15s ease !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 12px !important;
-  cursor: pointer !important;
-  text-align: left !important;
-  position: relative !important;
-  overflow: hidden !important;
-  scroll-snap-align: start !important;
-  border: none !important;
-  box-sizing: border-box !important;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.03) !important;
+/* 100% Identical Review Cards from company.html */
+#faithox-widget-{{ block.id }} .review-item-main { 
+  background: #fdfdfd;
+  border-radius: 32px;
+  padding: 24px;
+  width: 380px;
+  height: 200px;
+  flex-shrink: 0;
+  transition: all 0.1s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  scroll-snap-align: start;
+  margin-right: 10px; 
+}
+
+#faithox-widget-{{ block.id }} .review-item-main:last-child {
+  margin-right: 0;
 }
 
 #faithox-widget-{{ block.id }} .review-item-main:hover {
-  background: #e9ebeb !important;
+  background: #dcdcdc;
 }
 
 #faithox-widget-{{ block.id }} .rating-pill {
-  position: absolute !important;
-  top: 22px !important;
-  right: 22px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 3px !important;
-  padding: 0 7px !important;
-  height: 26px !important;
-  border-radius: 8px !important;
-  background: #fdfdfd !important;
-  border: 2px solid #10B981 !important;
-  width: fit-content !important;
-  margin: 0 !important;
-  flex-shrink: 0 !important;
-  box-sizing: border-box !important;
-  z-index: 5 !important;
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  height: 28px;
+  border-radius: 9px;
+  background: #fdfdfd;
+  border: 2px solid #19bb42;
+  width: fit-content;
+  margin: 0;
+  flex-shrink: 0;
+  z-index: 5;
 }
+#faithox-widget-{{ block.id }} .rating-pill .star { width: 20px; height: 20px; color: #e2e8f0; display: inline-flex; align-items: center; justify-content: center; }
+#faithox-widget-{{ block.id }} .rating-pill .star svg { width: 100%; height: 100%; fill: currentColor; }
+#faithox-widget-{{ block.id }} .rating-pill.rating-5 { border-color: #10B981; } #faithox-widget-{{ block.id }} .rating-pill.rating-5 .filled { color: #10B981; }
+#faithox-widget-{{ block.id }} .rating-pill.rating-4 { border-color: #84CC16; } #faithox-widget-{{ block.id }} .rating-pill.rating-4 .filled { color: #84CC16; }
+#faithox-widget-{{ block.id }} .rating-pill.rating-3 { border-color: #F59E0B; } #faithox-widget-{{ block.id }} .rating-pill.rating-3 .filled { color: #F59E0B; }
+#faithox-widget-{{ block.id }} .rating-pill.rating-2 { border-color: #F97316; } #faithox-widget-{{ block.id }} .rating-pill.rating-2 .filled { color: #F97316; }
+#faithox-widget-{{ block.id }} .rating-pill.rating-1 { border-color: #EF4444; } #faithox-widget-{{ block.id }} .rating-pill.rating-1 .filled { color: #EF4444; }
 
-#faithox-widget-{{ block.id }} .review-content-wrapper {
-  flex: 1 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
-}
+#faithox-widget-{{ block.id }} .review-content-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+#faithox-widget-{{ block.id }} .review-author { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-shrink: 0; }
+#faithox-widget-{{ block.id }} .author-avatar { width: 32px; height: 32px; border-radius: 50%; background: #242424; color: #f2f2f2; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; overflow: hidden; }
+#faithox-widget-{{ block.id }} .author-name { font-size: 15px; font-weight: 700; color: #242424; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#faithox-widget-{{ block.id }} .review-body { font-size: 14px; color: #242424; line-height: 1.5; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; white-space: normal; text-align: left; }
 
-#faithox-widget-{{ block.id }} .review-author {
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  margin-bottom: 4px !important;
-  flex-shrink: 0 !important;
-  max-width: calc(100% - 105px) !important;
-  min-width: 0 !important;
-}
-
-#faithox-widget-{{ block.id }} .author-avatar {
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 50% !important;
-  background: #242424 !important;
-  color: #f2f2f2 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 11px !important;
-  font-weight: 800 !important;
-  flex-shrink: 0 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-#faithox-widget-{{ block.id }} .author-name {
-  font-size: 14px !important;
-  font-weight: 700 !important;
-  color: #242424 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  line-height: 1.2 !important;
-}
-
-/* 7. Widget Footer */
+/* 8. Upgraded Widget Footer Bar */
 #faithox-widget-{{ block.id }} .widget-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 4px;
-  background: transparent;
-  margin-top: auto;
+  gap: 12px;
+  background: #fdfdfd;
+  padding: 10px 18px;
+  border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.02);
+  flex-shrink: 0;
 }
 
-#faithox-widget-{{ block.id }} .faithox-branding {
+#faithox-widget-{{ block.id }} .faithox-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+#faithox-widget-{{ block.id }} .faithox-branding-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 10px;
-  font-weight: 700;
-  color: #94a3b8;
+  font-weight: 800;
+  color: #1e293b;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+#faithox-widget-{{ block.id }} .faithox-footer-divider {
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+#faithox-widget-{{ block.id }} .faithox-Zero-edit-note {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
 }
 
 #faithox-widget-{{ block.id }} .footer-actions {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 #faithox-widget-{{ block.id }} .carousel-controls {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 #faithox-widget-{{ block.id }} .scroll-btn {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #fdfdfd;
-  border: 1px solid #dcdcdc;
+  background: #f0f1f1;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -642,6 +799,22 @@
   stroke-width: 3;
 }
 
+#faithox-widget-{{ block.id }} .carousel-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 12px;
+  background: #f0f1f1;
+  border-radius: 20px;
+  color: #2a2a2a;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 64px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
 #faithox-widget-{{ block.id }} .see-more-btn {
   display: flex;
   align-items: center;
@@ -649,21 +822,29 @@
   background: #2a2a2a;
   color: #ffffff;
   border: none;
-  padding: 0 16px;
+  padding: 0 14px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
   font-size: 12px;
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  transition: background 0.2s ease;
+  white-space: nowrap;
 }
 
 #faithox-widget-{{ block.id }} .see-more-btn:hover {
-  opacity: 0.9;
+  background: #0f172a;
 }
 
-/* 8. Responsive Breakpoints */
+/* 9. Responsive Breakpoints */
+@media (max-width: 1024px) {
+  #faithox-widget-{{ block.id }} .faithox-Zero-edit-note,
+  #faithox-widget-{{ block.id }} .faithox-footer-divider {
+    display: none;
+  }
+}
+
 @media (max-width: 960px) {
   #faithox-widget-{{ block.id }} .faithox-2col-layout {
     flex-direction: column !important;
@@ -671,10 +852,36 @@
   #faithox-widget-{{ block.id }} .faithox-left-col {
     width: 100%;
   }
-  #faithox-widget-{{ block.id }} .review-item-main {
-    width: calc(50% - 8px) !important;
-    min-width: 260px !important;
+}
+
+@media (max-width: 768px) {
+  #faithox-widget-{{ block.id }} .faithox-reviews-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 18px;
+    gap: 10px;
   }
+  #faithox-widget-{{ block.id }} .review-item-main {
+    width: 85%;
+    min-width: 260px;
+    height: 160px;
+    min-height: 160px;
+    margin-right: 10px;
+    margin-bottom: 0;
+    padding: 16px;
+    border-radius: 24px;
+  }
+  #faithox-widget-{{ block.id }} .rating-pill {
+    top: 16px !important;
+    right: 16px !important;
+    transform: scale(0.8);
+    transform-origin: top right;
+  }
+  #faithox-widget-{{ block.id }} .review-author { max-width: 55%; }
+  #faithox-widget-{{ block.id }} .author-avatar { width: 26px !important; height: 26px !important; font-size: 10px !important; }
+  #faithox-widget-{{ block.id }} .author-name { font-size: 13px !important; }
+  #faithox-widget-{{ block.id }} .review-body { font-size: 12px !important; line-height: 1.4 !important; -webkit-line-clamp: 4 !important; }
+  #faithox-widget-{{ block.id }} .review-photo-container { margin-top: 32px !important; } 
 }
 
 @media (max-width: 600px) {
@@ -685,10 +892,18 @@
     padding: 20px;
     border-radius: 24px;
   }
-  #faithox-widget-{{ block.id }} .review-item-main {
-    width: 88% !important;
-    min-width: 250px !important;
-    border-radius: 24px !important;
+  #faithox-widget-{{ block.id }} .widget-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px 16px;
+  }
+  #faithox-widget-{{ block.id }} .faithox-footer-left {
+    justify-content: center;
+  }
+  #faithox-widget-{{ block.id }} .footer-actions {
+    justify-content: space-between;
+    width: 100%;
   }
 }
 </style>
@@ -707,6 +922,7 @@
     const fallbackTitle = {{ product.title | json }};
     const fallbackDomain = {{ shop.domain | json }};
     const list = document.getElementById(`widget-reviews-list-${blockId}`);
+    let widgetReviewsCount = 0;
 
     if (!productId) {
       if (list) {
@@ -715,20 +931,41 @@
       return;
     }
 
-    // Carousel Global Functions
+    // Carousel Global Functions (Matches company.html 390px card step)
     window.scrollWidgetReviews = function(direction, bId) {
       const carousel = document.getElementById(`widget-reviews-list-${bId}`);
       if (carousel) {
-        carousel.scrollBy({ left: direction * carousel.clientWidth, behavior: 'smooth' });
+        const step = window.innerWidth <= 768 ? 280 : 390;
+        carousel.scrollBy({ left: direction * step, behavior: 'smooth' });
       }
     };
 
     function updateWidgetCarouselUI() {
       const btnLeft = document.getElementById(`btn-left-${blockId}`);
       const btnRight = document.getElementById(`btn-right-${blockId}`);
+      const indicator = document.getElementById(`carousel-indicator-${blockId}`);
+
       if (list && btnLeft && btnRight) {
-        btnLeft.disabled = list.scrollLeft <= 5;
-        btnRight.disabled = Math.ceil(list.scrollLeft + list.clientWidth) >= list.scrollWidth - 5;
+        const scrollPos = list.scrollLeft;
+        const clientSize = list.clientWidth;
+        const scrollSize = list.scrollWidth;
+
+        btnLeft.disabled = scrollPos <= 5;
+        btnRight.disabled = Math.ceil(scrollPos + clientSize) >= scrollSize - 5;
+
+        if (indicator && widgetReviewsCount > 0) {
+          const cardSize = window.innerWidth <= 768 ? 280 : 390;
+          const currentIndex = Math.round(scrollPos / cardSize) + 1;
+          const displayIndex = Math.max(1, Math.min(currentIndex, widgetReviewsCount));
+          const visibleCards = Math.max(1, Math.floor(clientSize / cardSize));
+          const endIndex = Math.min(displayIndex + visibleCards - 1, widgetReviewsCount);
+
+          if (displayIndex >= endIndex) {
+            indicator.innerText = `${displayIndex} / ${widgetReviewsCount}`;
+          } else {
+            indicator.innerText = `${displayIndex}-${endIndex} / ${widgetReviewsCount}`;
+          }
+        }
       }
     }
 
@@ -909,6 +1146,7 @@
         return;
       }
 
+      widgetReviewsCount = reviews.length;
       const totalRatingSum = reviews.reduce((sum, rev) => sum + (rev.rating || 0), 0);
       updateVisualRatings((totalRatingSum / reviews.length), reviews.length);
       buildRatingBars(reviews);
@@ -920,23 +1158,19 @@
         const initials = reviewerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
         const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
-        const avatarUrl = r.avatar_url;
-        const authorAvatarHtml = avatarUrl
-          ? `<img src="${escapeHTML(avatarUrl)}" alt="${escapeHTML(reviewerName)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`
+        const authorAvatarHtml = r.avatar_url 
+          ? `<img src="${escapeHTML(r.avatar_url)}" alt="${escapeHTML(reviewerName)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`
           : initials;
 
         let ratingVal = r.rating || 5;
-        let activeColor = "#10B981";
-        if (ratingVal === 4) activeColor = "#84CC16";
-        if (ratingVal === 3) activeColor = "#F59E0B";
-        if (ratingVal === 2) activeColor = "#F97316";
-        if (ratingVal === 1) activeColor = "#EF4444";
 
-        let starsHtml = '';
-        for (let i = 1; i <= 5; i++) {
-          let starColor = (i <= ratingVal) ? activeColor : "#e2e8f0";
-          starsHtml += `<span style="width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center;"><svg width="100%" height="100%" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill: ${starColor} !important;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" style="fill: ${starColor} !important; stroke: none !important;" /></svg></span>`;
+        // 100% Matching HTML Rating Pill setup from company.html
+        const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
+        let starsHtml = ''; 
+        for(let i=1; i<=5; i++) {
+          starsHtml += `<span class="star ${i <= ratingVal ? 'filled' : ''}">${starSvg}</span>`;
         }
+        let ratingPill = `<div class="rating-pill rating-${ratingVal}">${starsHtml}</div>`;
 
         let photoUrls = [];
         try {
@@ -982,7 +1216,7 @@
               </div>`;
           }
           photoHtml = `
-            <div style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 42px;">
+            <div class="review-photo-container" style="display: flex; flex-direction: column; width: 30%; flex-shrink: 0; margin-top: 46px;">
               ${imagesHtml}
             </div>`;
         }
@@ -991,26 +1225,31 @@
         div.className = 'review-item-main';
         div.onclick = () => window.open(`https://www.faithox.com/company?id=${productId}`, '_blank');
 
+        // 100% Identical card structure mapping company.html
         div.innerHTML = `
-          <div style="display: flex; width: 100%; height: 100%; gap: 14px; box-sizing: border-box !important;">
-            <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%; box-sizing: border-box !important;">
-              <div style="display: flex; justify-content: flex-start; align-items: flex-start; width: 100%; box-sizing: border-box !important;">
-                <div class="review-author" style="margin: 0 !important; padding: 0 !important; align-items: center;">
-                  <div class="author-avatar">${authorAvatarHtml}</div>
-                  <div style="display: flex; flex-direction: column; justify-content: center; min-width: 0; margin: 0 !important; padding: 0 !important;">
-                    <div class="author-name">${escapeHTML(reviewerName)}</div>
-                    <div style="display: flex; align-items: center; gap: 2px; font-size: 11px !important; color: #64748b !important; font-weight: 700 !important; margin-top: 3px !important; line-height: 1 !important; padding: 0 !important;">${date}</div>
+          ${r.merchant_reply ? `<span style="position: absolute; bottom: 10px; left: 24px; color: #16a34a; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; display: inline-flex; align-items: center; gap: 5px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"></polyline><path d="M4 4v7a4 4 0 0 0 4 4h12"></path></svg>Company Replied</span>` : ''}
+          <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
+              <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%;">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                      <div class="review-author" style="margin: 0; align-items: center;">
+                          <div class="author-avatar">${authorAvatarHtml}</div>
+                          <div style="display: flex; flex-direction: column; justify-content: center;">
+                              <div class="author-name" style="line-height: 1.1;">${escapeHTML(reviewerName)}</div>
+                              <div style="display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">
+                                  ${date}
+                              </div>
+                          </div>
+                      </div>
+                      ${ratingPill}
                   </div>
-                </div>
-                <div class="rating-pill" style="border-color: ${activeColor} !important;">${starsHtml}</div>
+                  <div class="review-content-wrapper" style="padding: 0; flex: 1; height: auto; margin-top: 12px;">
+                      <p class="review-body" style="-webkit-line-clamp: 5; margin-bottom: 4px;">${escapeHTML(r.comment || '')}</p>
+                  </div>
               </div>
-              <div class="review-content-wrapper" style="padding: 0 !important; flex: 1; height: auto; margin-top: 12px !important; margin-bottom: 0 !important; box-sizing: border-box !important;">
-                <p class="review-body" style="display: -webkit-box !important; -webkit-line-clamp: 5 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; text-overflow: ellipsis !important; line-height: 1.45 !important; font-size: 14px !important; font-weight: 400 !important; margin: 0 !important; padding: 0 !important; color: #242424 !important; white-space: normal !important; text-align: left !important; background: transparent !important; letter-spacing: normal !important;">${escapeHTML(r.comment || '')}</p>
-              </div>
-            </div>
-            ${photoHtml}
+              ${photoHtml}
           </div>
         `;
+        
         list.appendChild(div);
       });
 
