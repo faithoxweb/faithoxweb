@@ -25,7 +25,8 @@
     { "src": "/api/merchant/reply", "dest": "api/merchant/reply.js" },
     { "src": "/api/submit-review", "dest": "api/submit-review.js" },
     { "src": "/api/check-token", "dest": "api/check-token.js" },
-    { "src": "/api/moderation", "dest": "api/moderation.js" }
+    { "src": "/api/moderation", "dest": "api/moderation.js" },
+    { "src": "^/company(\\.html)?$", "dest": "/productreviews.html" }
   ],
   "headers": [
     {

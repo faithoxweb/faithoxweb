@@ -654,7 +654,7 @@
   font-weight: 500;
 }
 
-/* 100% Identical Review Cards from company.html */
+/* 100% Identical Review Cards from productreviews.html */
 #faithox-widget-{{ block.id }} .review-item-main { 
   background: #fdfdfd;
   border-radius: 32px;
@@ -931,7 +931,7 @@
       return;
     }
 
-    // Carousel Global Functions (Matches company.html 390px card step)
+    // Carousel Global Functions (Matches productreviews.html 390px card step)
     window.scrollWidgetReviews = function(direction, bId) {
       const carousel = document.getElementById(`widget-reviews-list-${bId}`);
       if (carousel) {
@@ -1164,7 +1164,7 @@
 
         let ratingVal = r.rating || 5;
 
-        // 100% Matching HTML Rating Pill setup from company.html
+        // 100% Matching HTML Rating Pill setup from productreviews.html
         const starSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>`;
         let starsHtml = ''; 
         for(let i=1; i<=5; i++) {
@@ -1223,9 +1223,9 @@
 
         const div = document.createElement('div');
         div.className = 'review-item-main';
-        div.onclick = () => window.open(`https://www.faithox.com/company?id=${productId}`, '_blank');
+        div.onclick = () => window.open(`https://www.faithox.com/productreviews?id=${productId}`, '_blank');
 
-        // 100% Identical card structure mapping company.html
+        // 100% Identical card structure mapping productreviews.html
         div.innerHTML = `
           ${r.merchant_reply ? `<span style="position: absolute; bottom: 10px; left: 24px; color: #16a34a; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; display: inline-flex; align-items: center; gap: 5px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"></polyline><path d="M4 4v7a4 4 0 0 0 4 4h12"></path></svg>Company Replied</span>` : ''}
           <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
@@ -1255,7 +1255,7 @@
 
       const seeMoreBtn = document.getElementById(`see-more-link-${blockId}`);
       if (seeMoreBtn) {
-        seeMoreBtn.href = `https://www.faithox.com/company?id=${productId}`;
+        seeMoreBtn.href = `https://www.faithox.com/productreviews?id=${productId}`;
         seeMoreBtn.style.display = 'flex';
       }
 
