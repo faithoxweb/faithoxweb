@@ -12,13 +12,6 @@
 
           <!-- 1. Star Rating Breakdown Section -->
           <div class="top-rating-square skeleton-anim skel-rating-square" id="rating-square-box-{{ block.id }}">
-            <div class="top-rating-square-header-row">
-              <span class="top-rating-square-header">Rating Breakdown</span>
-              <span class="faithox-audit-mini-tag">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                Verified Metrics
-              </span>
-            </div>
             <div class="rating-overview">
               <div class="big-rating">
                 <div class="big-rating-val" id="big-rating-val-{{ block.id }}">—</div>
@@ -34,7 +27,6 @@
           <!-- 2. Downside Product Details Section -->
           <div class="hole-info-box" id="embed-info-box-{{ block.id }}">
             <div class="hole-info-text-col">
-              <span id="top-left-brand-{{ block.id }}" class="faithox-brand-label"></span>
               <div class="title-container">
                 <h1 id="dynamic-company-name-{{ block.id }}" class="skeleton-anim sk-title">{{ product.title | escape }}</h1>
               </div>
@@ -78,34 +70,13 @@
 
         <!-- TOP TRUST & MODERATION HEADER -->
         <div class="faithox-reviews-header">
-          <div class="faithox-header-titles">
-            <div class="faithox-header-title-row">
-              <h2 class="faithox-section-heading">Verified Customer Reviews</h2>
-              <span class="faithox-live-dot" title="Live verified feed"></span>
-            </div>
-            <p class="faithox-section-subheading">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                <polyline points="9 12 11 14 15 10"></polyline>
-              </svg>
-              <span>Moderated by <strong>Faithox</strong> • Controlled by none</span>
-            </p>
+          <div class="faithox-header-title-row">
+            <h2 class="faithox-section-heading">Customer Reviews</h2>
           </div>
-
-          <div class="faithox-trust-pills">
-            <div class="faithox-trust-pill">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-              <span>Tamper-Proof</span>
-            </div>
-            <div class="faithox-trust-pill faithox-pill-green">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span>100% Unfiltered</span>
-            </div>
+          <div class="faithox-moderated-logo">
+            <span class="faithox-mod-label">Moderated by</span>
+            <img src="https://fdjcvpsqossuiljuadkk.supabase.co/storage/v1/object/public/website%20images/my-logo.png" alt="Faithox Logo">
+            <a href="https://www.faithox.com" target="_blank" rel="noopener noreferrer" class="faithox-logo-text">Faithox Reviews</a>
           </div>
         </div>
 
@@ -114,17 +85,12 @@
           <div class="faithox-empty-state">Loading reviews...</div>
         </div>
 
-        <!-- BOTTOM: FOOTER BAR WITH TRANSPARENCY STATEMENT & CONTROLS -->
+        <!-- BOTTOM: FOOTER BAR WITH LEGAL LINKS & CONTROLS -->
         <div class="widget-footer">
           <div class="faithox-footer-left">
-            <div class="faithox-branding-badge">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-              <span>POWERED BY FAITHOX</span>
-            </div>
+            <a href="https://www.faithox.com/legal#moderation" target="_blank" rel="noopener noreferrer" class="faithox-legal-link">Review Moderation</a>
             <span class="faithox-footer-divider">•</span>
-            <span class="faithox-Zero-edit-note">Merchants cannot edit, hide, or delete authentic reviews</span>
+            <a href="https://www.faithox.com/legal#tos" target="_blank" rel="noopener noreferrer" class="faithox-legal-link">Terms of Service</a>
           </div>
 
           <div class="footer-actions">
@@ -230,8 +196,8 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 18px;
+  justify-content: center;
+  gap: 24px;
   width: 100%;
   height: 100%;
   box-shadow: 0 2px 12px rgba(15, 23, 42, 0.03);
@@ -254,34 +220,6 @@
   justify-content: center;
   padding: 0;
   flex-shrink: 0;
-}
-
-#faithox-widget-{{ block.id }} .top-rating-square-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-#faithox-widget-{{ block.id }} .top-rating-square-header {
-  font-size: 11px;
-  font-weight: 800;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-}
-
-#faithox-widget-{{ block.id }} .faithox-audit-mini-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 10px;
-  font-weight: 700;
-  color: #059669;
-  background: #ecfdf5;
-  padding: 3px 8px;
-  border-radius: 20px;
-  letter-spacing: 0.2px;
 }
 
 #faithox-widget-{{ block.id }} .rating-overview {
@@ -392,18 +330,6 @@
   gap: 10px;
   width: 100%;
   min-width: 0;
-}
-
-#faithox-widget-{{ block.id }} .faithox-brand-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  display: block;
-  line-height: 1.2;
-}
-
-#faithox-widget-{{ block.id }} .faithox-brand-label:empty {
-  display: none;
 }
 
 #faithox-widget-{{ block.id }} .title-container {
@@ -524,7 +450,7 @@
 }
 
 #faithox-widget-{{ block.id }} .skel-rating-square {
-  min-height: 108px;
+  min-height: 84px;
   border-color: transparent !important;
   box-shadow: none !important;
 }
@@ -537,30 +463,25 @@
 /* 6. Right Column Top Header (Trust & Moderation Banner) */
 #faithox-widget-{{ block.id }} .faithox-reviews-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   gap: 16px;
   background: #fdfdfd;
-  padding: 14px 22px;
+  padding: 18px 22px;
   border-radius: 22px;
   box-shadow: 0 2px 12px rgba(15, 23, 42, 0.02);
   flex-shrink: 0;
 }
 
-#faithox-widget-{{ block.id }} .faithox-header-titles {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
 #faithox-widget-{{ block.id }} .faithox-header-title-row {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 8px;
 }
 
 #faithox-widget-{{ block.id }} .faithox-section-heading {
-  font-size: 16px !important;
+  font-size: 18px !important; 
   font-weight: 800 !important;
   color: #1e293b !important;
   letter-spacing: -0.3px !important;
@@ -568,57 +489,38 @@
   margin: 0 !important;
 }
 
-#faithox-widget-{{ block.id }} .faithox-live-dot {
-  width: 7px;
-  height: 7px;
-  background: #10B981;
-  border-radius: 50%;
-  display: inline-block;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
-}
-
-#faithox-widget-{{ block.id }} .faithox-section-subheading {
+#faithox-widget-{{ block.id }} .faithox-moderated-logo {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  color: #64748b !important;
-  line-height: 1.3 !important;
-  margin: 0 !important;
-}
-
-#faithox-widget-{{ block.id }} .faithox-section-subheading strong {
-  font-weight: 700;
-  color: #0f172a;
-}
-
-#faithox-widget-{{ block.id }} .faithox-trust-pills {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-#faithox-widget-{{ block.id }} .faithox-trust-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  height: 28px;
-  padding: 0 11px;
-  background: #f8fafc;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 10px;
+  gap: 2px;
   font-size: 11px;
-  font-weight: 700;
-  color: #334155;
+  font-weight: 600;
+  color: #64748b;
   white-space: nowrap;
 }
 
-#faithox-widget-{{ block.id }} .faithox-trust-pill.faithox-pill-green {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
-  color: #15803d;
+#faithox-widget-{{ block.id }} .faithox-mod-label {
+  margin-right: 6px; /* Extra breathing room between "Moderated by" and logo */
+}
+
+#faithox-widget-{{ block.id }} .faithox-moderated-logo img {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+#faithox-widget-{{ block.id }} .faithox-logo-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-left: 0px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+#faithox-widget-{{ block.id }} .faithox-logo-text:hover {
+  text-decoration: underline;
 }
 
 /* 7. Review Cards Carousel (Centered with Equal Vertical Space) */
@@ -628,7 +530,7 @@
   overflow-y: hidden;
   display: flex;
   flex-direction: row;
-  align-items: center; /* Leaves equal gap above and below the 200px cards */
+  align-items: center;
   padding: 4px 0;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
@@ -735,26 +637,23 @@
   min-width: 0;
 }
 
-#faithox-widget-{{ block.id }} .faithox-branding-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 10px;
-  font-weight: 800;
+#faithox-widget-{{ block.id }} .faithox-legal-link {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+#faithox-widget-{{ block.id }} .faithox-legal-link:hover {
   color: #1e293b;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-decoration: underline;
 }
 
 #faithox-widget-{{ block.id }} .faithox-footer-divider {
   color: #cbd5e1;
   font-size: 12px;
-}
-
-#faithox-widget-{{ block.id }} .faithox-Zero-edit-note {
-  font-size: 11px;
-  font-weight: 600;
-  color: #64748b;
 }
 
 #faithox-widget-{{ block.id }} .footer-actions {
@@ -838,13 +737,6 @@
 }
 
 /* 9. Responsive Breakpoints */
-@media (max-width: 1024px) {
-  #faithox-widget-{{ block.id }} .faithox-Zero-edit-note,
-  #faithox-widget-{{ block.id }} .faithox-footer-divider {
-    display: none;
-  }
-}
-
 @media (max-width: 960px) {
   #faithox-widget-{{ block.id }} .faithox-2col-layout {
     flex-direction: column !important;
@@ -856,6 +748,7 @@
 
 @media (max-width: 768px) {
   #faithox-widget-{{ block.id }} .faithox-reviews-header {
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 14px 18px;
@@ -920,7 +813,6 @@
     const productId = "{{ product.id }}";
     const blockId = "{{ block.id }}";
     const fallbackTitle = {{ product.title | json }};
-    const fallbackDomain = {{ shop.domain | json }};
     const list = document.getElementById(`widget-reviews-list-${blockId}`);
     let widgetReviewsCount = 0;
 
@@ -1008,7 +900,6 @@
       const trustBadge = document.getElementById(`trust-score-badge-${blockId}`);
       const velocityBadge = document.getElementById(`velocity-badge-${blockId}`);
       const titleEl = document.getElementById(`dynamic-company-name-${blockId}`);
-      const brandEl = document.getElementById(`top-left-brand-${blockId}`);
 
       clearSkeletons();
 
@@ -1029,16 +920,8 @@
           if (trustBadge) trustBadge.style.display = 'none';
           if (velocityBadge) velocityBadge.style.display = 'none';
         }
-
-        if (co.store_id) {
-          const { data: storeData } = await db.from('stores').select('domain_name').eq('store_id', co.store_id).single();
-          if (storeData && storeData.domain_name && brandEl) {
-            brandEl.innerText = `product from ${storeData.domain_name}`;
-          }
-        }
       } else {
         if (titleEl && fallbackTitle) titleEl.innerText = fallbackTitle;
-        if (brandEl && fallbackDomain) brandEl.innerText = `product from ${fallbackDomain}`;
         if (trustBadge) trustBadge.style.display = 'none';
         if (velocityBadge) velocityBadge.style.display = 'none';
       }
