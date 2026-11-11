@@ -1210,9 +1210,14 @@
             }
             showStatus("Pinging Shopify to sync latest products...");
             
-            fetch(`/api/merchant/sync?shop=${activeShopifyDomain}`)
+            fetch(`/api/merchant/sync?shop=${encodeURIComponent(activeShopifyDomain)}`)
                 .then(res => res.json())
                 .then(data => {
+                    if (data.reauthRequired && data.authUrl) {
+                        showStatus("Session expired. Reconnecting to Shopify...");
+                        window.location.href = data.authUrl;
+                        return;
+                    }
                     if (data.error) throw new Error(data.error);
                     showStatus("Sync Complete! " + (data.count || 0) + " products updated.");
                     fetchBusinessProducts(); 

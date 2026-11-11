@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import { computeTokenFields } from '../_lib/shopify-token.js';
 
 export default async function handler(req, res) {
   // 1. Initialize Supabase INSIDE the handler to guarantee ENV variables are loaded
@@ -65,19 +66,13 @@ export default async function handler(req, res) {
 
     const tokenData = await tokenResponse.json();
     const accessToken = tokenData.access_token;
-    const refreshToken = tokenData.refresh_token; 
-    const expiresIn = tokenData.expires_in; 
 
     if (!accessToken) {
       console.error('Token fetch failed:', tokenData);
       return res.status(400).json({ error: 'Failed to obtain access token' });
     }
 
-    // FIX: Renamed variable to shopifyTokenExpiresAt to prevent crashes
-    const shopifyTokenExpiresAt = new Date(Date.now() + expiresIn * 1000).toISOString();
-    
-    // Refresh tokens are valid for 90 days
-    const refreshTokenExpiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString();
+    const tokenFields = computeTokenFields(tokenData);
 
     // 4. Save store credentials in Supabase
     const { data, error } = await supabase
@@ -85,11 +80,8 @@ export default async function handler(req, res) {
       .upsert(
         {
           shop: shop,
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          expires_at: shopifyTokenExpiresAt, // Updated to use the safe variable name
-          refresh_token_expires_at: refreshTokenExpiresAt,
-          scopes: 'read_products,read_orders',
+          ...tokenFields,
+          scopes: tokenFields.scopes || 'read_products,read_orders',
           is_active: true,
           installed_at: new Date().toISOString(),
         },

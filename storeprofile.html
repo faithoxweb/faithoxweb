@@ -74,8 +74,20 @@
                 `).join('');
             }
 
-            // 3. Fetch Total Reviews for this store
-            const { count } = await db.from('reviews').select('*', { count: 'exact', head: true }).eq('store_id', storeId);
+            // 3. Fetch Total Approved Reviews for this store
+            let { count, error: countErr } = await db
+                .from('reviews')
+                .select('*', { count: 'exact', head: true })
+                .eq('store_id', storeId)
+                .or('status.eq.approved,status.is.null');
+
+            if (countErr && countErr.message && countErr.message.includes('status')) {
+                const fallback = await db
+                    .from('reviews')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('store_id', storeId);
+                count = fallback.count;
+            }
             document.getElementById('review-count').innerText = count || 0;
         }
 

@@ -1059,6 +1059,10 @@
         </div>
 
         <div class="nav-actions">
+            <button class="nav-link-btn" onclick="openTokenModal()" style="cursor: pointer; color: #a5b4fc; border-color: rgba(99, 102, 241, 0.4);" title="Inspect & migrate legacy Shopify access tokens">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                Shopify Tokens
+            </button>
             <button class="nav-link-btn btn-lock" onclick="lockConsole()" title="Lock the console and clear active credentials">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 Lock Console
@@ -1190,6 +1194,28 @@
         </section>
 
     </main>
+
+    <!-- SHOPIFY TOKEN MIGRATION MODAL -->
+    <div class="lightbox-modal" id="token-migration-modal" onclick="if (event.target.id === 'token-migration-modal') closeTokenModal()" style="z-index: 950;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 18px; width: 100%; max-width: 680px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-lg);">
+            <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="font-size: 18px; font-weight: 800; color: #ffffff;">Shopify Expiring Token Migration</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Upgrade legacy non-expiring tokens to expiring offline + refresh tokens.</p>
+                </div>
+                <button onclick="closeTokenModal()" style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-muted); width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 18px;">&times;</button>
+            </div>
+            <div id="token-migration-body" style="padding: 20px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px;">
+                <p style="color: var(--text-muted); font-size: 13px;">Loading Shopify store tokens...</p>
+            </div>
+            <div style="padding: 16px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary);">
+                <span id="token-migration-summary" style="font-size: 12px; color: var(--text-muted); font-weight: 600;"></span>
+                <button class="btn btn-approve" id="run-token-migration-btn" onclick="runTokenMigration()" style="display: none;">
+                    Migrate All Legacy Tokens
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- FULLSCREEN IMAGE LIGHTBOX MODAL -->
     <div class="lightbox-modal" id="lightbox-modal" onclick="closeLightbox(event)">
@@ -1709,6 +1735,115 @@
                 "'": '&#39;',
                 '"': '&quot;'
             }[tag]));
+        }
+
+        // Shopify Token Migration Console
+        async function openTokenModal() {
+            if (!adminPasskey) {
+                showSecurityGate();
+                return;
+            }
+            document.getElementById('token-migration-modal').classList.add('open');
+            await loadTokenMigrationStatus();
+        }
+
+        function closeTokenModal() {
+            document.getElementById('token-migration-modal').classList.remove('open');
+        }
+
+        async function loadTokenMigrationStatus() {
+            const body = document.getElementById('token-migration-body');
+            const summary = document.getElementById('token-migration-summary');
+            const runBtn = document.getElementById('run-token-migration-btn');
+
+            body.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">Inspecting Shopify store tokens...</p>';
+            runBtn.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/migrate-tokens', {
+                    headers: { 'x-admin-key': adminPasskey }
+                });
+                if (res.status === 401) {
+                    closeTokenModal();
+                    lockConsole();
+                    return;
+                }
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to load token status');
+
+                summary.innerText = `${data.migratedCount} Expiring • ${data.legacyCount} Legacy`;
+                if (data.legacyCount > 0) {
+                    runBtn.style.display = 'inline-flex';
+                    runBtn.disabled = false;
+                    runBtn.innerText = `Migrate ${data.legacyCount} Legacy Token${data.legacyCount > 1 ? 's' : ''}`;
+                }
+
+                if (!data.stores || data.stores.length === 0) {
+                    body.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">No stores found in shopify_stores table.</p>';
+                    return;
+                }
+
+                body.innerHTML = data.stores.map(st => {
+                    const isLegacy = st.tokenType === 'legacy_non_expiring';
+                    const badge = isLegacy
+                        ? '<span class="status-badge pending">Legacy Token</span>'
+                        : '<span class="status-badge approved">Expiring + Refresh Active</span>';
+                    return `
+                        <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <div>
+                                <div style="font-weight: 700; font-size: 14px; color: #ffffff;">${escapeHTML(st.shop)}</div>
+                                <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">
+                                    ${st.expires_at ? 'Access expires: ' + new Date(st.expires_at).toLocaleString() : 'No expiration saved (legacy)'}
+                                </div>
+                            </div>
+                            ${badge}
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                body.innerHTML = `<p style="color: var(--danger); font-size: 13px;">${escapeHTML(err.message)}</p>`;
+            }
+        }
+
+        async function runTokenMigration() {
+            const runBtn = document.getElementById('run-token-migration-btn');
+            const body = document.getElementById('token-migration-body');
+            runBtn.disabled = true;
+            runBtn.innerText = 'Migrating...';
+
+            try {
+                const res = await fetch('/api/migrate-tokens', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-admin-key': adminPasskey
+                    }
+                });
+                if (res.status === 401) {
+                    closeTokenModal();
+                    lockConsole();
+                    return;
+                }
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Migration failed');
+
+                showToast(data.message || 'Migration completed!', data.failedCount > 0 ? 'error' : 'success');
+
+                await loadTokenMigrationStatus();
+
+                if (data.results && data.results.length > 0) {
+                    const reportHtml = data.results.map(r => `
+                        <div style="font-size: 12px; padding: 8px 12px; border-radius: 8px; background: ${r.success ? 'var(--success-bg)' : 'var(--danger-bg)'}; border: 1px solid ${r.success ? 'var(--success-border)' : 'var(--danger-border)'}; color: ${r.success ? 'var(--success)' : 'var(--danger)'};">
+                            <strong>${escapeHTML(r.shop)}</strong>: ${r.success ? 'Migrated cleanly' : escapeHTML(r.error || 'Failed')}
+                        </div>
+                    `).join('');
+                    body.insertAdjacentHTML('afterbegin', `<div style="display:flex; flex-direction:column; gap:6px; margin-bottom:6px;">${reportHtml}</div>`);
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+                runBtn.disabled = false;
+                runBtn.innerText = 'Retry Migration';
+            }
         }
     </script>
 </body>

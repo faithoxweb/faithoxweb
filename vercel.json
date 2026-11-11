@@ -12,6 +12,7 @@
     { "src": "api/submit-review.js", "use": "@vercel/node" },
     { "src": "api/check-token.js", "use": "@vercel/node" },
     { "src": "api/moderation.js", "use": "@vercel/node" },
+    { "src": "api/migrate-tokens.js", "use": "@vercel/node" },
     { "src": "**/*.html", "use": "@vercel/static" }
   ],
   "routes": [
@@ -26,6 +27,7 @@
     { "src": "/api/submit-review", "dest": "api/submit-review.js" },
     { "src": "/api/check-token", "dest": "api/check-token.js" },
     { "src": "/api/moderation", "dest": "api/moderation.js" },
+    { "src": "/api/migrate-tokens", "dest": "api/migrate-tokens.js" },
     { "src": "^/company(\\.html)?$", "dest": "/productreviews.html" }
   ],
   "headers": [

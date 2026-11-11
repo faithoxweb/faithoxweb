@@ -489,7 +489,7 @@
                 const div = document.createElement('div');
                 div.className = 'review-item-main';
                 
-                div.onclick = () => window.open(`https://faithoxweb.vercel.app/productreviews.html?id=${productId}`, '_blank');
+                div.onclick = () => window.open(`https://www.faithox.com/productreviews?id=${productId}`, '_blank');
                 
                 div.innerHTML = `
                     <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
@@ -515,7 +515,7 @@
             });
 
             const seeMoreBtn = document.getElementById('see-more-link');
-            seeMoreBtn.href = `https://faithoxweb.vercel.app/productreviews.html?id=${productId}`;
+            seeMoreBtn.href = `https://www.faithox.com/productreviews?id=${productId}`;
             seeMoreBtn.style.display = 'flex';
             
             if (reviews.length > 1) {

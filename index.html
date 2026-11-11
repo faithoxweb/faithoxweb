@@ -2329,12 +2329,24 @@
       const content2 = document.getElementById('scroll-content-2');
       if (!content1 || !content2) return;
 
-      // Fetch the 10 most recent reviews overall
-      const { data: reviews, error } = await db
+      // Fetch the 10 most recent approved reviews overall
+      let { data: reviews, error } = await db
         .from('reviews')
         .select('*')
+        .or('status.eq.approved,status.is.null')
         .order('created_at', { ascending: false })
         .limit(10);
+
+      // Graceful fallback if status column has not been added to Supabase yet
+      if (error && error.message && error.message.includes('status')) {
+        const fallback = await db
+          .from('reviews')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(10);
+        reviews = fallback.data;
+        error = fallback.error;
+      }
 
       if (error || !reviews || reviews.length === 0) {
         content1.innerHTML = "<p style='color:#64748b;'>No recent reviews found.</p>";

@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { shopifyAdminFetch } from '../_lib/shopify-token.js';
 
 export default async function handler(req, res) {
   // CORS Headers
@@ -10,7 +11,10 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method Not Allowed' });
 
   const { shop } = req.query;
-  if (!shop) return res.status(400).json({ error: 'Missing shop parameter' });
+  const shopRegex = /^[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com$/;
+  if (!shop || !shopRegex.test(shop)) {
+    return res.status(400).json({ error: 'Invalid or missing shop parameter' });
+  }
 
   try {
     const supabaseAdmin = createClient(
@@ -18,31 +22,25 @@ export default async function handler(req, res) {
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
-    // 1. Get the Shopify Access Token from your shopify_stores table
-    const { data: storeData, error: storeError } = await supabaseAdmin
-      .from('shopify_stores') 
-      .select('access_token') 
-      .eq('shop', shop) 
-      .single();
-
-    if (storeError || !storeData || !storeData.access_token) {
-      console.error("Token lookup failed for:", shop);
-      return res.status(400).json({ error: 'Shopify access token not found in database.' });
-    }
-
-   // 2. Ask Shopify for the products using a modern API version
-    const shopifyRes = await fetch(`https://${shop}/admin/api/2026-04/products.json?status=active`, {
-      method: 'GET',
-      headers: {
-        'X-Shopify-Access-Token': storeData.access_token,
-        'Content-Type': 'application/json',
-      },
-    });
+    // 1. Call Shopify Admin API with automatic expiring-token refresh
+    const shopifyRes = await shopifyAdminFetch(
+      supabaseAdmin,
+      shop,
+      '/admin/api/2026-04/products.json?status=active',
+      { method: 'GET' }
+    );
 
     if (!shopifyRes.ok) {
        // Catch the EXACT error message Shopify sends back
        const errorText = await shopifyRes.text();
        console.error("Shopify API rejected the request. Status:", shopifyRes.status, "Details:", errorText);
+       if (shopifyRes.status === 401) {
+         return res.status(401).json({
+           error: 'Shopify authorization expired. Please reconnect your store.',
+           reauthRequired: true,
+           authUrl: `/api/auth?shop=${encodeURIComponent(shop)}`,
+         });
+       }
        return res.status(500).json({ error: `Shopify Error: ${errorText}` });
     }
     const shopifyData = await shopifyRes.json();
@@ -83,6 +81,13 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error('Sync error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    if (err.code === 'REAUTH_REQUIRED' || err.code === 'TOKEN_NOT_FOUND') {
+      return res.status(401).json({
+        error: 'Shopify session expired. Redirecting to reconnect your store...',
+        reauthRequired: true,
+        authUrl: `/api/auth?shop=${encodeURIComponent(shop)}`,
+      });
+    }
+    return res.status(500).json({ error: err.message || 'Internal server error' });
   }
 }
